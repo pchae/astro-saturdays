@@ -1,0 +1,55 @@
+---
+interface Project {
+  title: string;
+  description: string;
+  thumbnail: string;
+  url: string;
+  buttonText?: string;
+}
+
+interface Props {
+  projects: Project[];
+  columns?: number;
+  gap?: string;
+}
+
+const { 
+  projects, 
+  columns = 3, 
+  gap = "1.5rem" 
+} = Astro.props;
+
+// Calculate grid columns based on the columns prop
+const gridCols = {
+  1: "grid-cols-1",
+  2: "grid-cols-1 md:grid-cols-2",
+  3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+  4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
+};
+
+const gridColsClass = gridCols[columns as keyof typeof gridCols] || gridCols[3];
+---
+
+<div class={`grid ${gridColsClass} gap-${gap}`}>
+  {projects.map((project) => (
+    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="relative aspect-video overflow-hidden">
+        <img 
+          src={project.thumbnail} 
+          alt={`${project.title} thumbnail`} 
+          class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+        />
+      </div>
+      <div class="p-6">
+        <h3 class="text-xl font-bold mb-2 text-gray-800">{project.title}</h3>
+        <p class="text-gray-600 mb-4">{project.description}</p>
+        <a 
+          href={project.url} 
+          class="inline-block px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+        >
+          {project.buttonText || "View Project"}
+        </a>
+      </div>
+    </div>
+  ))}
+</div> 

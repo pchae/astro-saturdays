@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+/* Gradients */
+
+.red-to-blue {
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: -webkit-linear-gradient(-135deg, rgba(248, 12, 128, 1), rgba(60, 120, 244, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.pink-to-peach {
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: -webkit-linear-gradient(-135deg, rgba(255, 104, 104, 1), rgba(232, 72, 180, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.orange-to-yellow {
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: -webkit-linear-gradient(-120deg, rgba(255, 104, 104, 1), rgba(255, 244, 88, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.lime-to-aqua {
+  -webkit-text-fill-color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: -webkit-linear-gradient(-135deg, rgba(0, 255, 156, 1), rgba(0, 204, 255, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
