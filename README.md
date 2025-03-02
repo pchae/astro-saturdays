@@ -46,3 +46,14 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## 🔄 Dependency Management
+
+This project uses [Mend Renovate](https://www.mend.io/renovate/) for automated dependency updates. Renovate will:
+
+- Create pull requests for outdated dependencies
+- Automatically merge minor and patch updates (for stable dependencies)
+- Run on a weekly schedule (weekends)
+- Group related dependencies when possible
+
+The configuration can be found in `renovate.json` and `.github/workflows/renovate.yml`.

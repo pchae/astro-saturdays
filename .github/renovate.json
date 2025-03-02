@@ -16,4 +16,4 @@
   "prHourlyLimit": 4,
   "prConcurrentLimit": 10,
   "rangeStrategy": "pin"
-}
+} 
