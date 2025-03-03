@@ -7,11 +7,104 @@ import Layout from '../layouts/Layout.astro'
 <Layout title="Engage: Content Studio">
     <Header client:load />
     <main>
-        <section>
+        <section id="hero">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
                 <h1 class="text-6xl font-bold text-center text-gray-900 mb-8">We bridge the gap between design and technology</h1>
             </div>
+        </section>
 
+        <section id="tethics">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+                <div class="mx-auto max-w-4xl">
+                    <h2 class="text-5xl font-bold text-center text-gray-900 mb-12">Keeping it 100</h2>
+                    <p class="text-xl text-gray-600 mb-8">
+                        We believe that our work and ethics define who we are. We're Human-centered Designers and Developers behind some of North America's biggest mobile apps and digital brands looking to make a net-positive impact.
+                    </p>
+                    <p class="text-xl text-gray-600">
+                        Our approach to building software prioritizes accessibility, user-centric design, and inclusion. We research and generate ideas, then build, test, and iterate on them using real-world analytics and actionable KPIs. Our emphasis on data-driven design, diversity, user empathy, and sustainability aren't buzzwords. They're reflected in every stage of our work, and we win because of it.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="values">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+                <h2 class="text-5xl font-bold text-center text-gray-900 mb-12">Our Values</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+                    <div id="leon-belt" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
+                        <div class="rounded-lg overflow-hidden">
+                            <video 
+                                src="/video/leon-belt.mp4"
+                                class="w-full h-full object-cover"
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                            ></video>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4">Be world-class</h3>
+                            <p class="text-xl text-pretty text-gray-600">
+                                We aren't just talking about our skills and achievements, it's how we conduct ourselves too.
+                            </p>
+                        </div>
+                    </div>
+                    <div id="rockstars" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4">No rockstars</h3>
+                            <p class="text-xl text-pretty text-gray-600">
+                                You won't find any 10x developers, unicorns, or rockstars here and we're proud of that. We don't tolerate toxicity or narcissistic behaviour, period.
+                            </p>
+                        </div>
+                        <div class="rounded-lg overflow-hidden">
+                            <video 
+                                src="/video/awkwafina.mp4"
+                                class="w-full h-full object-cover"
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                            ></video>
+                        </div>
+                    </div>
+                    <div id="responsible" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
+                        <div class="rounded-lg overflow-hidden">
+                            <video 
+                                src="/video/uncle-ben.mp4"
+                                class="w-full h-full object-cover"
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                            ></video>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4">Be accountable</h3>
+                            <p class="text-xl text-pretty text-gray-600">
+                                We don't make excuses, and we're allergic to bullshitters because talk is cheap and actions speak louder than words. We get results every time because we actually know what we're doing and have successfully done it before.
+                            </p>
+                        </div>
+                    </div>
+                    <div id="" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
+                        <div class="flex flex-col justify-center">
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4">Be supportive</h3>
+                            <p class="text-xl text-pretty text-gray-600">
+                                It isn't brilliant individual performances that make great teams, it's when talented individuals put their egos aside and work toward a common goal.
+                            </p>
+                        </div>
+                        <div class="rounded-lg overflow-hidden">
+                            <video 
+                                src="/video/drake-apple.mp4"
+                                class="w-full h-full object-cover"
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                            ></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
     <Footer client:load />
