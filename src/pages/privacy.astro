@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/react/Header.tsx'
+import Footer from '../components/react/Footer.tsx'
+---
+
+<Layout title="Privacy Policy">
+    <Header client:load />
+    
+    <main>
+        <section>
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
+                <h1 class="text-4xl font-bold text-center text-gray-900 mb-8">Privacy Policy</h1>
+            </div>
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <p>
+                    This privacy policy outlines how we collect, use, and protect your personal information when you visit our website.
+                </p>
+                <p>
+                    We are committed to protecting your privacy and ensuring that your personal information is handled responsibly.
+                </p>
+                <p>
+                    By using our website, you agree to the terms of this privacy policy.
+                </p>
+                <p>
+                    If you have any questions or concerns about our privacy policy, please contact us at <a href="mailto:hello@saturdays.io">hello@saturdays.io</a>.
+                </p>
+                <p>
+                    We may update this privacy policy from time to time to reflect changes in our practices or legal requirements. We will notify you of significant changes through our website or other communication channels.
+                </p>
+                <p>
+                    This privacy policy is effective as of March 3, 2025.
+                </p>
+            </div>
+        </section>
+    </main>
+
+<Footer client:load />
+
+</Layout>
