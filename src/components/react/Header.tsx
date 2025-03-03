@@ -15,7 +15,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-white">
+    <header className="sticky top-0 left-0 right-0 z-40 bg-white">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <a href="/" className="-m-1.5 p-1.5">
           <span className="text-xl font-bold">Saturdays.io</span>
@@ -50,20 +50,20 @@ export default function Header() {
         onClose={setMobileMenuOpen}
         transition
         className="lg:hidden transition duration-300 ease-out">
-        <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10">
+        <div className="fixed inset-0 z-50 bg-black/20" />
+        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <a href="/" className="-m-1.5 p-1.5">
               <span className="text-xl font-bold">Saturdays.io</span>
             </a>
-            <Button
+            <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
+              className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900"
             >
               <span className="sr-only">Close menu</span>
-              <X aria-hidden="true" className="size-6" />
-            </Button>
+              <X className="h-6 w-6" />
+            </button>
           </div>
           <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
             <div className="divide-y divide-gray-500/10">
