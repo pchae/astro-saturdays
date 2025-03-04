@@ -80,7 +80,7 @@ export default function Header() {
               </div>
               <div className="py-6">
                 <a
-                  href="/"
+                  href="/signin"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-5xl/loose font-bold text-gray-800 hover:bg-gray-50"
                 >
                   Client Login
