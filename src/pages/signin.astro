@@ -2,8 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/react/Header.tsx";
 
+export const prerender = false;
 const { cookies, redirect } = Astro;
-
 const accessToken = cookies.get("sb-access-token");
 const refreshToken = cookies.get("sb-refresh-token");
 

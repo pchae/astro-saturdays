@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
 
+export const prerender = false;
 const accessToken = Astro.cookies.get("sb-access-token");
 const refreshToken = Astro.cookies.get("sb-refresh-token");
 

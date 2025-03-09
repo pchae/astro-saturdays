@@ -6,6 +6,8 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'server',
+  adapter: vercel(),
   integrations: [
     react({
       include: ['**/react/*'],
@@ -17,8 +19,5 @@ export default defineConfig({
       react(),
       tailwindcss()
     ],
-  },
-
-  output: 'server',
-  adapter: vercel()
+  }
 });
