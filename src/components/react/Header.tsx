@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
 
@@ -13,6 +13,25 @@ const navigation: NavigationItem[] = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Control body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // Disable scrolling on body
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+    } else {
+      // Re-enable scrolling on body
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+
+    // Cleanup function to ensure scroll is re-enabled if component unmounts
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+  }, [mobileMenuOpen])
 
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-white">
