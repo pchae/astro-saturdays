@@ -100,7 +100,7 @@ export default function Header() {
         </div>
         <div className="hidden items-center lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-800 hover:text-blue-600">
+            <a key={item.name} href={item.href} className="text-sm/6 font-bold">
               {item.name}
             </a>
           ))}
@@ -143,7 +143,7 @@ export default function Header() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold text-gray-800 hover:bg-gray-50"
+                    className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
                   >
                     {item.name}
                   </a>
@@ -152,7 +152,7 @@ export default function Header() {
               <div className="py-6">
                 <a
                   href="/signin"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold text-gray-800 hover:bg-gray-50"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
                 >
                   Client Login
                 </a>
