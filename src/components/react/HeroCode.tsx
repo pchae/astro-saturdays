@@ -20,7 +20,7 @@ export default function HeroCode() {
                     <Button
                       as="a"
                       href="/privacy"
-                      className="px-3.5 py-2.5 bg-blue-500 rounded-sm shadow-xs text-md font-bold no-underline text-white hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-indigo-400"
+                      className="px-4 py-3 bg-linear-to-tr/srgb from-purple-600 to-blue-400 rounded-sm shadow-xs text-md font-bold no-underline text-white hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-indigo-400"
                     >
                       View Projects
                     </Button>
