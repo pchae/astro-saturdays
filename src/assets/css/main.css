@@ -61,11 +61,39 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
+
+  /* Default link styles */
+  a {
+    @apply text-blue-600 hover:text-blue-800 underline underline-offset-2;
+    transition-property: color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  
+  /* Navigation links - no underline and different colors */
+  nav a, header a {
+    @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
+  }
+  
+  /* Footer links - more subtle styling */
+  footer a {
+    @apply text-gray-600 hover:text-blue-600 underline-offset-4;
+  }
+  
+  /* Card or content links - slightly different styling */
+  .card a, article a, .content a {
+    @apply text-blue-600 hover:text-blue-800 font-medium underline decoration-blue-300 hover:decoration-blue-700 underline-offset-2;
+  }
+
+  /* Button links - no underline and button-like appearance */
+  a.btn, .btn-link {
+    @apply inline-block px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 no-underline font-medium;
+  }
 }
 
 @theme {
   --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Merriweather', serif;
+  --font-serif: 'Merriweather', serif; /* TODO: Add Lora to replace Merriweather - March 11, 2025 */
 
   --breakpoint-xs: 400px;
   --breakpoint-sm: 640px;
@@ -220,15 +248,7 @@ p, ul {
 
 }
 */
-/* Links */
-/* Break off into its own file - 01/01/2023 */
-/*
-a:hover {
-  background: none;
-  -webkit-transition: all .2s ease;
-  -moz-transition: all .2s ease;
-  transition: all .2s ease;
-}
+
 
 /* Gradients */
 
