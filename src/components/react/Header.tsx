@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
 
@@ -13,23 +13,64 @@ const navigation: NavigationItem[] = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
-  // Control body scroll when mobile menu is open
+  // Control body scroll and prevent dragging when mobile menu is open
   useEffect(() => {
+    // Store original body styles to restore later
+    const originalStyles = {
+      overflow: document.body.style.overflow,
+      touchAction: document.body.style.touchAction,
+      position: document.body.style.position,
+      height: document.body.style.height,
+      width: document.body.style.width
+    }
+
+    // Touch event handler to prevent all dragging
+    const preventTouch = (e: TouchEvent) => {
+      e.preventDefault()
+    }
+
     if (mobileMenuOpen) {
-      // Disable scrolling on body
+      // Apply comprehensive body locking
       document.body.style.overflow = 'hidden'
       document.body.style.touchAction = 'none'
+      document.body.style.position = 'relative'
+      document.body.style.height = '100%'
+      document.body.style.width = '100%'
+      
+      // Add touch event listeners with passive: false to allow preventDefault
+      document.addEventListener('touchmove', preventTouch, { passive: false })
+      document.addEventListener('touchstart', preventTouch, { passive: false })
+      
+      // Apply additional styles to dialog if it exists
+      if (dialogRef.current) {
+        dialogRef.current.style.position = 'fixed'
+        dialogRef.current.style.touchAction = 'none'
+      }
     } else {
-      // Re-enable scrolling on body
-      document.body.style.overflow = ''
-      document.body.style.touchAction = ''
+      // Restore original body styles
+      document.body.style.overflow = originalStyles.overflow
+      document.body.style.touchAction = originalStyles.touchAction
+      document.body.style.position = originalStyles.position
+      document.body.style.height = originalStyles.height
+      document.body.style.width = originalStyles.width
+      
+      // Remove event listeners
+      document.removeEventListener('touchmove', preventTouch)
+      document.removeEventListener('touchstart', preventTouch)
     }
 
     // Cleanup function to ensure scroll is re-enabled if component unmounts
     return () => {
-      document.body.style.overflow = ''
-      document.body.style.touchAction = ''
+      document.body.style.overflow = originalStyles.overflow
+      document.body.style.touchAction = originalStyles.touchAction
+      document.body.style.position = originalStyles.position
+      document.body.style.height = originalStyles.height
+      document.body.style.width = originalStyles.width
+      
+      document.removeEventListener('touchmove', preventTouch)
+      document.removeEventListener('touchstart', preventTouch)
     }
   }, [mobileMenuOpen])
 
@@ -70,7 +111,11 @@ export default function Header() {
         transition
         className="lg:hidden transition duration-300 ease-out">
         <div className="fixed inset-0 z-50 bg-black/20" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10">
+        <DialogPanel 
+          ref={dialogRef}
+          className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10"
+          style={{ touchAction: 'none' }}
+        >
           <div className="flex items-center justify-between">
             <a href="/" className="-m-1.5 p-1.5">
               <span className="text-xl font-bold">Saturdays.io</span>
