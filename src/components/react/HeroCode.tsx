@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react'
+import { Button } from '@headlessui/react'
 
 export default function HeroCode() {
   return (
@@ -9,20 +10,21 @@ export default function HeroCode() {
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
-                <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight text-pretty text-gray-900">
-                  Supercharge your web apps
-                </h1>
-                <p className="mt-6 text-lg/8 text-gray-600">
-                  We create fully accessible, responsive, Design systems and performant apps.
-                </p>
-                <div className="mt-10 flex items-center gap-x-6">
-                  <a
-                    href="#"
-                    className="rounded-md bg-blue-500 px-3.5 py-2.5 text-md font-semibold text-white shadow-xs hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
-                  >
-                    View Projects
-                  </a>
-                </div>
+                  <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-pretty red-to-blue">
+                    Supercharge your web apps
+                  </h1>
+                  <p className="mt-6 text-lg/8 text-gray-600">
+                    We create fully accessible, responsive, Design systems and performant apps.
+                  </p>
+                  <div className="mt-10 flex items-center gap-x-6">
+                    <Button
+                      as="a"
+                      href="/privacy"
+                      className="px-3.5 py-2.5 bg-blue-500 rounded-sm shadow-xs text-md font-bold no-underline text-white hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-indigo-400"
+                    >
+                      View Projects
+                    </Button>
+                  </div>
               </div>
             </div>
           </div>
