@@ -1,9 +1,10 @@
 node_modules
 .astro/
-.env
-.env.local
+.cursorrules
 .DS_Store
+.env
+.env.*
+.env.local
+!.env.example
 .vscode
 .vercel
-.env.*
-!.env.example
