@@ -26,9 +26,20 @@ export default function Header() {
       width: document.body.style.width
     }
 
-    // Touch event handler to prevent all dragging
-    const preventTouch = (e: TouchEvent) => {
-      e.preventDefault()
+    // Only prevent touchmove on non-interactive elements
+    const preventTouchMove = (e: TouchEvent) => {
+      // Allow touch events on interactive elements
+      const target = e.target as HTMLElement;
+      const isInteractiveElement = 
+        target.tagName === 'BUTTON' || 
+        target.tagName === 'A' || 
+        target.closest('button') || 
+        target.closest('a');
+      
+      // Only prevent default if not on an interactive element
+      if (!isInteractiveElement) {
+        e.preventDefault();
+      }
     }
 
     if (mobileMenuOpen) {
@@ -39,14 +50,13 @@ export default function Header() {
       document.body.style.height = '100%'
       document.body.style.width = '100%'
       
-      // Add touch event listeners with passive: false to allow preventDefault
-      document.addEventListener('touchmove', preventTouch, { passive: false })
-      document.addEventListener('touchstart', preventTouch, { passive: false })
+      // Only add touchmove prevention, not touchstart
+      document.addEventListener('touchmove', preventTouchMove, { passive: false })
       
       // Apply additional styles to dialog if it exists
       if (dialogRef.current) {
         dialogRef.current.style.position = 'fixed'
-        dialogRef.current.style.touchAction = 'none'
+        // Don't set touchAction: none on the dialog itself to allow interaction
       }
     } else {
       // Restore original body styles
@@ -57,8 +67,7 @@ export default function Header() {
       document.body.style.width = originalStyles.width
       
       // Remove event listeners
-      document.removeEventListener('touchmove', preventTouch)
-      document.removeEventListener('touchstart', preventTouch)
+      document.removeEventListener('touchmove', preventTouchMove)
     }
 
     // Cleanup function to ensure scroll is re-enabled if component unmounts
@@ -69,8 +78,7 @@ export default function Header() {
       document.body.style.height = originalStyles.height
       document.body.style.width = originalStyles.width
       
-      document.removeEventListener('touchmove', preventTouch)
-      document.removeEventListener('touchstart', preventTouch)
+      document.removeEventListener('touchmove', preventTouchMove)
     }
   }, [mobileMenuOpen])
 
@@ -114,7 +122,6 @@ export default function Header() {
         <DialogPanel 
           ref={dialogRef}
           className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10"
-          style={{ touchAction: 'none' }}
         >
           <div className="flex items-center justify-between">
             <a href="/" className="-m-1.5 p-1.5">
