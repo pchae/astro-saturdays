@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react'
 
-export default function Example() {
+export default function HeroCode() {
   return (
     <div className="bg-white">
       <div className="relative isolate overflow-hidden bg-linear-to-b from-indigo-100/20">
@@ -9,18 +9,18 @@ export default function Example() {
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
-                <h1 className="mt-10 text-5xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-7xl">
+                <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight text-pretty text-gray-900">
                   Supercharge your web apps
                 </h1>
                 <p className="mt-6 text-lg/8 text-gray-600">
-                  Modernizing social content for Enterprise SaaS.
+                  We create fully accessible, responsive, Design systems and performant apps.
                 </p>
                 <div className="mt-10 flex items-center gap-x-6">
                   <a
                     href="#"
-                    className="rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-md bg-blue-500 px-3.5 py-2.5 text-md font-semibold text-white shadow-xs hover:bg-gray-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
                   >
-                    View Project
+                    View Projects
                   </a>
                 </div>
               </div>
