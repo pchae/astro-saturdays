@@ -1,0 +1,37 @@
+---
+// src/components/FighterCard.astro
+interface Fighter {
+  id: string;
+  name: string;
+  image?: string;
+  organization?: string;
+}
+
+interface Props {
+  fighter: Fighter;
+}
+
+const { fighter } = Astro.props;
+const imageSrc = fighter.image || '/images/fighter-placeholder.jpg';
+---
+
+<div class="bg-gray-800/20 border border-white/10 rounded-lg overflow-hidden hover:bg-gray-700/30 transition-colors duration-200">
+  <div class="aspect-square w-full bg-gray-900 relative">
+    <img 
+      src={imageSrc} 
+      alt={`${fighter.name}`} 
+      class="w-full h-full object-cover"
+      onerror="this.onerror=null; this.src='/images/fighter-placeholder.jpg';"
+    />
+  </div>
+  <div class="p-4">
+    <h3 class="text-lg font-medium text-white truncate">
+      {fighter.name}
+    </h3>
+    {fighter.organization && (
+      <p class="text-sm text-gray-400 mt-1">
+        {fighter.organization}
+      </p>
+    )}
+  </div>
+</div> 
