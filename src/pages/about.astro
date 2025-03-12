@@ -1,7 +1,9 @@
 ---
-import Header from '../components/react/Header.tsx'
-import Footer from '../components/react/Footer.tsx'
 import Layout from '../layouts/Layout.astro'
+
+import Header from '../components/react/Header.tsx'
+import Contact from '../components/react/Contact.tsx'
+import Footer from '../components/react/Footer.tsx'
 ---
 
 <Layout title="Saturdays.io - About">
@@ -107,5 +109,9 @@ import Layout from '../layouts/Layout.astro'
             </div>
         </section>
     </main>
+
+    <Contact client:load />
+
     <Footer client:load />
+
 </Layout>

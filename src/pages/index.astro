@@ -1,8 +1,9 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Contact from '../components/react/Contact.tsx';
 import Header from '../components/react/Header.tsx';
 import HeroCode from '../components/react/HeroCode.tsx';
 import Footer from '../components/react/Footer.tsx';
-import Layout from '../layouts/Layout.astro';
 
 ---
 <Layout title="Saturdays.io - Design Studio">
@@ -31,6 +32,7 @@ import Layout from '../layouts/Layout.astro';
 
 		<HeroCode client:load />
 
+		<Contact client:load />
 	</main>
 
 	<Footer client:load />
