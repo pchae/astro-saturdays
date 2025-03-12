@@ -1,0 +1,43 @@
+---
+import DashboardLayout from "../layouts/DashboardLayout.astro";
+import SettingsTabs from "../components/SettingsTabs.astro";
+import ProfileSettings from "../components/ProfileSettings.astro";
+import SecuritySettings from "../components/SecuritySettings.astro";
+import NotificationSettings from "../components/NotificationSettings.astro";
+import { checkAuth } from "../lib/auth.ts";
+
+// Use the auth middleware
+export const prerender = false;
+const authResult = await checkAuth(Astro);
+if (authResult.redirect) return authResult.redirect;
+
+// Get user data from session
+const user = authResult.session?.data?.user;
+const email = user?.email;
+
+// Get active tab from URL hash or default to profile
+const url = new URL(Astro.request.url);
+const activeTab = url.hash.substring(1) || 'profile';
+---
+
+<DashboardLayout title="Settings - Saturdays.io" email={email} user={user}>
+  <section>
+    <h1 class="text-2xl font-bold text-white mb-8">Account Settings</h1>
+    
+    <!-- Tab navigation -->
+    <SettingsTabs activeTab={activeTab} />
+    
+    <!-- Tab content -->
+    <div data-tab-content="profile" class={activeTab !== 'profile' ? 'hidden' : ''}>
+      <ProfileSettings user={user} />
+    </div>
+    
+    <div data-tab-content="security" class={activeTab !== 'security' ? 'hidden' : ''}>
+      <SecuritySettings user={user} />
+    </div>
+    
+    <div data-tab-content="notifications" class={activeTab !== 'notifications' ? 'hidden' : ''}>
+      <NotificationSettings user={user} />
+    </div>
+  </section>
+</DashboardLayout>
