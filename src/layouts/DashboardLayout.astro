@@ -1,0 +1,26 @@
+---
+import Layout from "./Layout.astro";
+import Header from "../components/react/Header.tsx";
+
+interface Props {
+  title: string;
+  email?: string;
+  user?: any;
+}
+
+const { title, email, user } = Astro.props;
+---
+
+<Layout title={title}>
+  <div class="min-h-full bg-black">    
+
+    <Header client:load />
+
+    <main class="py-24">
+      <div class="mx-auto max-w-full px-4">
+        <slot />
+      </div>
+    </main>
+
+  </div>
+</Layout> 
