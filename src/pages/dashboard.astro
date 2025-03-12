@@ -1,7 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
+import DashboardNav from "../components/DashboardNav.astro";
+import DashboardHeader from "../components/DashboardHeader.astro";
+import StatCard from "../components/StatCard.astro";
+import AdminToolCard from "../components/AdminToolCard.astro";
+import FighterSection from "../components/FighterSection.astro";
 
+// Auth logic
 export const prerender = false;
 const accessToken = Astro.cookies.get("sb-access-token");
 const refreshToken = Astro.cookies.get("sb-refresh-token");
@@ -36,11 +42,54 @@ try {
 }
 
 const email = session.data.user?.email;
+
+// Dashboard data
+const stats = [
+  { name: 'Number of deploys', value: '9999' },
+  { name: 'Average deploy time', value: '32', unit: 'seconds' },
+  { name: 'Instances', value: '1' },
+  { name: 'Status', value: 'ONLINE' },
+];
+
+const adminTools = [
+  {
+    name: 'Algolia Sync',
+    description: 'Synchronize MMA database with Algolia search indices',
+    to: '/admin/algolia-sync',
+    icon: 'i-heroicons-arrow-path',
+  },
+];
+
+// Mock fighter data - in a real app, this would come from an API or database
+const ufcFighters = [
+  { id: '1', name: 'Jon Jones', organization: 'UFC', image: '/pfp/2335639.png' },
+  { id: '2', name: 'Alex Pereira', organization: 'UFC', image: '/pfp/4705658.png' },
+  { id: '3', name: 'Alexander Volkanovski', organization: 'UFC', image: '/pfp/3949584.png' },
+];
 ---
-<Layout title="dashboard">
-  <h1>Welcome {email}</h1>
-  <p>We are happy to see you here</p>
-  <form action="/api/auth/signout">
-    <button type="submit">Sign out</button>
-  </form>
+
+<Layout title="Dashboard - Saturdays.io">
+  <div class="min-h-full bg-black">
+    <DashboardNav email={email} />
+    
+    <main class="py-24">
+      <div class="mx-auto max-w-full px-4">
+        <section>
+          <DashboardHeader />
+
+          <!-- Stats -->
+          <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-8 gap-0">
+            {stats.map(stat => (
+              <StatCard stat={stat} />
+            ))}
+          </dl>
+
+          <!-- Fighter sections -->
+          <div class="pt-8">
+            <FighterSection title="UFC Fighters" fighters={ufcFighters} />
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
 </Layout>
