@@ -1,0 +1,114 @@
+---
+// Notification settings component
+interface Props {
+  user: any;
+}
+
+const { user } = Astro.props;
+
+// Mock notification preferences - in a real app, these would come from the database
+const notificationPreferences = {
+  email: true,
+  push: false,
+  marketing: true,
+  updates: true,
+  security: true
+};
+---
+
+<div class="bg-gray-800/10 border border-white/20 rounded-lg p-6">
+  <h2 class="text-xl font-semibold text-white mb-6">Notification Preferences</h2>
+  
+  <form action="/api/settings/notifications" method="POST" class="space-y-6">
+    <div class="space-y-4">
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <input 
+            id="email-notifications" 
+            name="emailNotifications" 
+            type="checkbox" 
+            checked={notificationPreferences.email}
+            class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900"
+          />
+        </div>
+        <div class="ml-3">
+          <label for="email-notifications" class="text-sm font-medium text-gray-300">Email Notifications</label>
+          <p class="text-sm text-gray-400">Receive email notifications for important updates</p>
+        </div>
+      </div>
+      
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <input 
+            id="push-notifications" 
+            name="pushNotifications" 
+            type="checkbox" 
+            checked={notificationPreferences.push}
+            class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900"
+          />
+        </div>
+        <div class="ml-3">
+          <label for="push-notifications" class="text-sm font-medium text-gray-300">Push Notifications</label>
+          <p class="text-sm text-gray-400">Receive push notifications in your browser</p>
+        </div>
+      </div>
+      
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <input 
+            id="marketing-emails" 
+            name="marketingEmails" 
+            type="checkbox" 
+            checked={notificationPreferences.marketing}
+            class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900"
+          />
+        </div>
+        <div class="ml-3">
+          <label for="marketing-emails" class="text-sm font-medium text-gray-300">Marketing Emails</label>
+          <p class="text-sm text-gray-400">Receive marketing emails about new features and offers</p>
+        </div>
+      </div>
+      
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <input 
+            id="product-updates" 
+            name="productUpdates" 
+            type="checkbox" 
+            checked={notificationPreferences.updates}
+            class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900"
+          />
+        </div>
+        <div class="ml-3">
+          <label for="product-updates" class="text-sm font-medium text-gray-300">Product Updates</label>
+          <p class="text-sm text-gray-400">Receive notifications about product updates and new features</p>
+        </div>
+      </div>
+      
+      <div class="relative flex items-start">
+        <div class="flex h-6 items-center">
+          <input 
+            id="security-alerts" 
+            name="securityAlerts" 
+            type="checkbox" 
+            checked={notificationPreferences.security}
+            class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-600 focus:ring-offset-gray-900"
+          />
+        </div>
+        <div class="ml-3">
+          <label for="security-alerts" class="text-sm font-medium text-gray-300">Security Alerts</label>
+          <p class="text-sm text-gray-400">Receive notifications about security-related events</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end">
+      <button 
+        type="submit" 
+        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      >
+        Save Preferences
+      </button>
+    </div>
+  </form>
+</div> 
