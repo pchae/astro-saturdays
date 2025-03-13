@@ -19,18 +19,21 @@ This document outlines the planning schedule for design updates and development 
 
 - [ ] Review current design system and identify inconsistencies
 - [ ] Create standardized color palette documentation
-- [ ] Develop component design system in Figma - partially done, needs updates: auto layout, variables
+- [ ] Remove variables from Tailwind css config
+- [ ] Develop component design system in Figma - partially done, needs updates: auto layout, variables, primitives
+- [ ] Add replacement stats and brand logo section components
 - [ ] Add images and videos of products design
 - [ ] Update typography styles and colours for consistency in Tailwind config
 - [ ] Enhance mobile responsiveness for all pages
 
 ### April 2024
 
-- [ ] Implement dark components
+- [ ] Implement stats and social components
 - [ ] Add animations and transitions
 - [ ] Accessibility audit and improvements
 - [ ] User testing and feedback collection
 - [ ] Update branding and illustrations
+- [ ] Add animations and other polish
 
 
 ## Development Tasks
@@ -38,7 +41,7 @@ This document outlines the planning schedule for design updates and development 
 ### Infrastructure
 
 - [ ] Implement Design system components and styling into Tailwind config
-- [ ] Add an animation library, either Framer Motion or GSAP
+- [x] Add an animation library, either Framer Motion or GSAP
 - [ ] Implement MagicUI or another UI effects library
 - [ ] Add Supabase API queries
 - [ ] Add API calls to railway postgres database
