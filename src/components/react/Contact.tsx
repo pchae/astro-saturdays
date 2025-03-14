@@ -1,3 +1,5 @@
+import { Button } from "@headlessui/react";
+
 export default function Contact() {
     return (
       <section id="cta">
@@ -24,12 +26,13 @@ export default function Contact() {
                 Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis.
               </p>
               <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-                <a
+                <Button
+                  as="a"
                   href="/"
                   className="rounded-sm bg-white px-4 py-3 text-sm leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
                   Get in touch
-                </a>
+                </Button>
               </div>
             </div>
             <div className="relative mt-16 h-80 lg:mt-8">
