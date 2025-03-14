@@ -1,0 +1,58 @@
+---
+// Stats.astro - Company statistics component
+const stats = [
+    {
+        id: '0',
+        category: 'Revenue',
+        title: '21 Million',
+        desc: 'USD in Avg. Recurring Revenue for our clients',
+    },
+    {
+        id: '1',
+        category: 'Projects',
+        title: '42+',
+        desc: 'projects completed for Fortune 500s, startups, and SMEs',
+    },
+    {
+        id: '2',
+        category: 'Remote',
+        title: '99.9%',
+        desc: 'guaranteed uptime for our clients',
+    },
+    {
+        id: '3',
+        category: 'Experience',
+        title: '20+',
+        desc: 'collective years of professional experience',
+    },
+]
+---
+
+<section>
+    <div class="mx-auto max-w-7xl px-4 lg:px-8 py-16 md:py-20 lg:py-24 bg-emerald-50 border-x border-orange-200">
+        <div>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-center red-to-blue">
+                Our stats
+            </h2>
+        </div>
+        <dl class="mt-16 grid grid-cols-1 gap-6 overflow-hidden sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {stats.map((item) => (
+                <div class="flex flex-col p-4 md:p-6 aspect-square rounded-xl bg-gray-900 border border-gray-400/10">
+                    <div class="my-4 gap-y-4">
+                        <dt class="order-first text-xl md:text-4xl font-semibold tracking-tight text-white pb-4">
+                            {item.title}
+                        </dt>
+                        <dt class="text-base lg:text-lg font-normal text-gray-200">
+                            {item.desc}
+                        </dt>
+                    </div>
+                </div>
+            ))}
+        </dl>
+    </div>
+</section>
+
+<style>
+    /* Add any component-specific styles here */
+</style>
+    
