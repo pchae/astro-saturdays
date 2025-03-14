@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Button, Dialog, DialogPanel } from '@headlessui/react'
+import { Button, Dialog, DialogPanel, Transition } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
+import { Fragment } from 'react'
 
 interface NavigationItem {
   name: string;
@@ -14,6 +15,15 @@ const navigation: NavigationItem[] = [
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const transitionStartTime = useRef<number>(0)
+
+  // Add transition timing logging
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      transitionStartTime.current = performance.now()
+      console.log('Menu opening started at:', transitionStartTime.current)
+    }
+  }, [mobileMenuOpen])
 
   // Control body scroll and prevent dragging when mobile menu is open
   useEffect(() => {
@@ -82,6 +92,14 @@ export default function Header() {
     }
   }, [mobileMenuOpen])
 
+  const handleTransitionEnd = () => {
+    if (dialogRef.current) {
+      const duration = performance.now() - transitionStartTime.current
+      console.log('Transition completed. Duration:', duration + 'ms')
+      console.log('Final transform:', window.getComputedStyle(dialogRef.current).transform)
+    }
+  }
+
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-white">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
@@ -116,50 +134,78 @@ export default function Header() {
       <Dialog
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
-        transition
-        className="lg:hidden transition duration-300 ease-out">
-        <div className="fixed inset-0 z-50 bg-black/20" />
-        <DialogPanel 
-          ref={dialogRef}
-          className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10"
+        as="div"
+        className="lg:hidden"
+      >
+        <Transition 
+          show={mobileMenuOpen}
+          appear={true}
         >
-          <nav className="flex items-center justify-between">
-            <a href="/" className="-m-1.5 p-1.5">
-              <span className="text-xl font-bold">Saturdays.io</span>
-            </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900"
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-in-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-in-out duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 z-50 bg-black/20 transition-opacity" />
+          </Transition.Child>
+
+          <Transition.Child
+            as={Fragment}
+            enter="transform transition ease-in-out duration-300"
+            enterFrom="-translate-y-full"
+            enterTo="translate-y-0"
+            leave="transform transition ease-in-out duration-300"
+            leaveFrom="translate-y-0"
+            leaveTo="-translate-y-full"
+          >
+            <DialogPanel 
+              ref={dialogRef}
+              onTransitionEnd={handleTransitionEnd}
+              className="fixed inset-x-0 top-0 z-50 w-screen transform overflow-y-auto bg-white px-6 py-6 transition-transform"
             >
-              <span className="sr-only">Close menu</span>
-              <X className="h-6 w-6" />
-            </button>
-          </nav>
-          <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
-            <div className="divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-              <div className="py-6">
-                <a
-                  href="/signin"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
-                >
-                  Client Login
+              <nav className="flex items-center justify-between">
+                <a href="/" className="-m-1.5 p-1.5">
+                  <span className="text-xl font-bold">Saturdays.io</span>
                 </a>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900"
+                >
+                  <span className="sr-only">Close menu</span>
+                  <X className="h-6 w-6" />
+                </button>
+              </nav>
+              <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
+                <div className="divide-y divide-gray-500/10">
+                  <div className="space-y-2 py-6">
+                    {navigation.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                  <div className="py-6">
+                    <a
+                      href="/signin"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                    >
+                      Client Login
+                    </a>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </DialogPanel>
+            </DialogPanel>
+          </Transition.Child>
+        </Transition>
       </Dialog>
     </header>
   )
