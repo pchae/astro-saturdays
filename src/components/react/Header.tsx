@@ -123,9 +123,9 @@ export default function Header() {
           ref={dialogRef}
           className="fixed inset-y-0 right-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 sm:ring-1 sm:ring-gray-900/10"
         >
-          <div className="flex items-center justify-between">
+          <nav className="flex items-center justify-between">
             <a href="/" className="-m-1.5 p-1.5">
-              <span className="text-xl font-bold no-underline">Saturdays.io</span>
+              <span className="text-xl font-bold">Saturdays.io</span>
             </a>
             <button
               type="button"
@@ -135,7 +135,7 @@ export default function Header() {
               <span className="sr-only">Close menu</span>
               <X className="h-6 w-6" />
             </button>
-          </div>
+          </nav>
           <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
             <div className="divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
