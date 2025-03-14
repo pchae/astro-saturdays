@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 
 import Header from '../components/react/Header.tsx'
+import Ethics from '../components/ethics.astro'
 import Contact from '../components/react/Contact.tsx'
 import Footer from '../components/react/Footer.tsx'
 ---
@@ -33,89 +34,7 @@ import Footer from '../components/react/Footer.tsx'
             </div>
         </section>
 
-        <section id="values">
-            <div class="w-full bg-orange-50 border-b border-blue-200">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 border-x border-indigo-200">
-                    <h2 class="text-2xl md:text-3xl lg:text-5xl font-bold text-center text-gray-900 mb-12">Our Values</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-                        <div id="leon-belt" class="flex flex-col gap-6 justify-center">
-                            <div class="rounded-lg overflow-hidden w-full h-full">
-                                <video 
-                                    src="/video/leon-belt.mp4"
-                                    class="w-full h-full object-cover"
-                                    autoplay
-                                    loop
-                                    muted
-                                    playsinline
-                                >
-                                </video>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <h3 class="text-3xl font-bold text-gray-900 mb-4">Be world-class</h3>
-                                <p class="text-xl text-pretty text-gray-600">
-                                    We aren't just talking about our skills and achievements, it's how we conduct ourselves too.
-                                </p>
-                            </div>
-                        </div>
-    
-                        <div id="rockstars" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
-                            <div class="flex flex-col justify-center">
-                                <h3 class="text-3xl font-bold text-gray-900 mb-4">No rockstars</h3>
-                                <p class="text-xl text-pretty text-gray-600">
-                                    You won't find any 10x developers, unicorns, or rockstars here and we're proud of that. We don't tolerate toxicity or narcissistic behaviour, period.
-                                </p>
-                            </div>
-                            <div class="rounded-lg overflow-hidden">
-                                <video 
-                                    src="/video/awkwafina.mp4"
-                                    class="w-full h-full object-cover"
-                                    autoplay
-                                    loop
-                                    muted
-                                    playsinline
-                                ></video>
-                            </div>
-                        </div>
-                        <div id="responsible" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
-                            <div class="rounded-lg overflow-hidden">
-                                <video 
-                                    src="/video/uncle-ben.mp4"
-                                    class="w-full h-full object-cover"
-                                    autoplay
-                                    loop
-                                    muted
-                                    playsinline
-                                ></video>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <h3 class="text-3xl font-bold text-gray-900 mb-4">Be accountable</h3>
-                                <p class="text-xl text-pretty text-gray-600">
-                                    We don't make excuses, and we're allergic to bullshitters because talk is cheap and actions speak louder than words. We get results every time because we actually know what we're doing and have successfully done it before.
-                                </p>
-                            </div>
-                        </div>
-                        <div id="" class="grid grid-cols-2 col-span-2 gap-8 justify-center">
-                            <div class="flex flex-col justify-center">
-                                <h3 class="text-3xl font-bold text-gray-900 mb-4">Be supportive</h3>
-                                <p class="text-xl text-pretty text-gray-600">
-                                    It isn't brilliant individual performances that make great teams, it's when talented individuals put their egos aside and work toward a common goal.
-                                </p>
-                            </div>
-                            <div class="rounded-lg overflow-hidden">
-                                <video 
-                                    src="/video/drake-apple.mp4"
-                                    class="w-full h-full object-cover"
-                                    autoplay
-                                    loop
-                                    muted
-                                    playsinline
-                                ></video>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <Ethics client:load />
     </main>
 
     <Contact client:load />
