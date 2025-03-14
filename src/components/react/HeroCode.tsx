@@ -3,7 +3,7 @@ import { Button } from '@headlessui/react'
 
 export default function HeroCode() {
   return (
-    <div className="bg-white">
+    <section className="border-y border-gray-200">
       <div className="relative isolate overflow-hidden bg-linear-to-b from-indigo-100/20">
         <div className="mx-auto max-w-7xl pt-10 pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40">
           <div className="px-6 lg:px-0 lg:pt-4">
@@ -91,6 +91,6 @@ export default function Example() {
         </div>
         <div className="absolute inset-x-0 bottom-0 -z-10 h-24 bg-linear-to-t from-white sm:h-32" />
       </div>
-    </div>
+    </section>
   )
 }
