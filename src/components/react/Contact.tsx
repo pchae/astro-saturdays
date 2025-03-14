@@ -19,7 +19,7 @@ export default function Contact() {
                   </radialGradient>
                 </defs>
               </svg>
-              <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
+              <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto py-12 md:py-16 lg:py-32 lg:text-left">
                 <h2 className="text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
                   Boost your productivity with by using our Design tools
                 </h2>
