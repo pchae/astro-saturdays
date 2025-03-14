@@ -3,14 +3,14 @@ import { Button } from '@headlessui/react'
 
 export default function HeroCode() {
   return (
-    <section className="border-y border-gray-200">
-      <div className="relative isolate overflow-hidden bg-linear-to-b from-indigo-100/20">
-        <div className="mx-auto max-w-7xl pt-10 pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40">
+    <section id="code">
+      <div className="relative isolate overflow-hidden bg-linear-to-b from-indigo-100/20 border-y border-blue-200">
+        <div className="mx-auto max-w-7xl pt-10 pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40 border-x border-blue-200">
           <div className="px-6 lg:px-0 lg:pt-4">
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
-                  <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-pretty red-to-blue">
+                  <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-pretty text-gray-900">
                     Supercharge your web apps
                   </h1>
                   <p className="mt-6 text-lg/8 text-gray-600">
@@ -28,13 +28,9 @@ export default function HeroCode() {
               </div>
             </div>
           </div>
-          <div className="mt-20 sm:mt-24 md:mx-auto md:max-w-2xl lg:mx-0 lg:mt-0 lg:w-screen">
-            <div
-              className="absolute inset-y-0 right-1/2 -z-10 -mr-10 w-[200%] skew-x-[-30deg] bg-white ring-1 shadow-xl shadow-indigo-600/10 ring-indigo-50 md:-mr-20 lg:-mr-36"
-              aria-hidden="true"
-            />
-            <div className="shadow-lg md:rounded-3xl">
-              <div className="bg-indigo-500 [clip-path:inset(0)] md:[clip-path:inset(0_round_var(--radius-3xl))]">
+          <div className="mt-20 sm:mt-24 md:mx-auto md:max-w-2xl lg:mx-0 lg:mt-0 lg:max-w-full">
+            <div className="shadow-lg md:rounded-2xl">
+              <div className="bg-indigo-500 [clip-path:inset(0)] md:[clip-path:inset(0_round_var(--radius-2xl))]">
                 <div
                   className="absolute -inset-y-px left-1/2 -z-10 ml-10 w-[200%] skew-x-[-30deg] bg-indigo-100 opacity-20 ring-1 ring-white ring-inset md:ml-20 lg:ml-36"
                   aria-hidden="true"
