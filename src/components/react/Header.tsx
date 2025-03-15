@@ -155,17 +155,17 @@ export default function Header() {
 
           <Transition.Child
             as={Fragment}
-            enter="transform transition ease-in-out duration-300"
-            enterFrom="-translate-y-full"
-            enterTo="translate-y-0"
-            leave="transform transition ease-in-out duration-300"
-            leaveFrom="translate-y-0"
-            leaveTo="-translate-y-full"
+            enter="transition-all ease-in-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-all ease-in-out duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
             <DialogPanel 
               ref={dialogRef}
               onTransitionEnd={handleTransitionEnd}
-              className="fixed inset-x-0 top-0 z-50 w-screen transform overflow-y-auto bg-white px-6 py-6 transition-transform"
+              className="fixed inset-x-0 top-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 transition-opacity"
             >
               <nav className="flex items-center justify-between">
                 <a href="/" className="-m-1.5 p-1.5">
