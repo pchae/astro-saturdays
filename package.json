@@ -22,9 +22,5 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwindcss": "4.0.12"
-  },
-  "overrides": {
-    "zwitch": "2.0.4",
-    "hast-util-raw": "9.1.0"
   }
 }
