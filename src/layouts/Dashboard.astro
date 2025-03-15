@@ -1,26 +1,32 @@
 ---
-import Layout from "./Layout.astro";
-import Header from "../components/react/Header.tsx";
+import '../assets/css/main.css'
 
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
   email?: string;
   user?: any;
 }
 
-const { title, email, user } = Astro.props;
+const { title, description, image, email, user } = Astro.props;
 ---
 
-<Layout title={title}>
-  <div class="min-h-full bg-black">    
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta property="og:image" content={image} />
+    <title>{title}</title>
+  </head>
+  <body class="min-h-screen">
+    <slot />
+  </body>
+</html>
 
-    <Header client:load />
-
-    <main class="pt-4 px-4">
-      <div class="mx-auto w-full">
-        <slot />
-      </div>
-    </main>
-
-  </div>
-</Layout> 
+<style>
+</style>
