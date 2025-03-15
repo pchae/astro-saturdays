@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "vercel-build": "rm -rf node_modules/.cache && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -17,11 +18,20 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "astro": "^5.5.2",
+    "hast-util-raw": "8.0.0",
     "lucide-react": "0.479.0",
     "motion": "12.4.10",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwindcss": "4.0.12",
-    "zwitch": "^2.0.4"
+    "zwitch": "2.0.4"
+  },
+  "resolutions": {
+    "zwitch": "2.0.4",
+    "hast-util-raw": "8.0.0"
+  },
+  "overrides": {
+    "zwitch": "2.0.4",
+    "hast-util-raw": "8.0.0"
   }
 }
