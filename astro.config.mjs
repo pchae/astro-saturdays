@@ -18,6 +18,12 @@ export default defineConfig({
     })
   ],
   vite: {
+    optimizeDeps: {
+      exclude: ['astro:*', '@astrojs/*']
+    },
+    ssr: {
+      noExternal: ['@astrojs/*']
+    },
     plugins: [
       tailwindcss()
     ]
