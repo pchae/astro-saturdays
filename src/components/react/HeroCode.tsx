@@ -1,4 +1,3 @@
-import { ChevronRight } from 'lucide-react'
 import { Button } from '@headlessui/react'
 
 export default function HeroCode() {
