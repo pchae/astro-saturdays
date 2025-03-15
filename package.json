@@ -18,7 +18,7 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "astro": "5.5.2",
-    "hast-util-raw": "8.0.0",
+    "hast-util-raw": "9.1.0",
     "lucide-react": "0.482.0",
     "motion": "12.5.0",
     "react": "19.0.0",
