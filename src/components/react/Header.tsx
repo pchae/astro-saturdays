@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { Button, Dialog, DialogPanel, Transition } from '@headlessui/react'
+import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
-import { Fragment } from 'react'
 
 interface NavigationItem {
   name: string;
@@ -15,15 +14,6 @@ const navigation: NavigationItem[] = [
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
-  const transitionStartTime = useRef<number>(0)
-
-  // Add transition timing logging
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      transitionStartTime.current = performance.now()
-      console.log('Menu opening started at:', transitionStartTime.current)
-    }
-  }, [mobileMenuOpen])
 
   // Control body scroll and prevent dragging when mobile menu is open
   useEffect(() => {
@@ -66,7 +56,6 @@ export default function Header() {
       // Apply additional styles to dialog if it exists
       if (dialogRef.current) {
         dialogRef.current.style.position = 'fixed'
-        // Don't set touchAction: none on the dialog itself to allow interaction
       }
     } else {
       // Restore original body styles
@@ -91,14 +80,6 @@ export default function Header() {
       document.removeEventListener('touchmove', preventTouchMove)
     }
   }, [mobileMenuOpen])
-
-  const handleTransitionEnd = () => {
-    if (dialogRef.current) {
-      const duration = performance.now() - transitionStartTime.current
-      console.log('Transition completed. Duration:', duration + 'ms')
-      console.log('Final transform:', window.getComputedStyle(dialogRef.current).transform)
-    }
-  }
 
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-white">
@@ -137,75 +118,48 @@ export default function Header() {
         as="div"
         className="lg:hidden"
       >
-        <Transition 
-          show={mobileMenuOpen}
-          appear={true}
+        <div className="fixed inset-0 z-50 bg-black/20" />
+        <DialogPanel 
+          ref={dialogRef}
+          className="fixed inset-x-0 top-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6"
         >
-          <Transition.Child
-            as={Fragment}
-            enter="transition-opacity ease-in-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity ease-in-out duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 z-50 bg-black/20 transition-opacity" />
-          </Transition.Child>
-
-          <Transition.Child
-            as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-all ease-in-out duration-300"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <DialogPanel 
-              ref={dialogRef}
-              onTransitionEnd={handleTransitionEnd}
-              className="fixed inset-x-0 top-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6 transition-opacity"
+          <nav className="flex items-center justify-between">
+            <a href="/" className="-m-1.5 p-1.5">
+              <span className="text-xl font-bold">Saturdays.io</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900"
             >
-              <nav className="flex items-center justify-between">
-                <a href="/" className="-m-1.5 p-1.5">
-                  <span className="text-xl font-bold">Saturdays.io</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700 hover:text-gray-900"
-                >
-                  <span className="sr-only">Close menu</span>
-                  <X className="h-6 w-6" />
-                </button>
-              </nav>
-              <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
-                <div className="divide-y divide-gray-500/10">
-                  <div className="space-y-2 py-6">
-                    {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
-                  <div className="py-6">
-                    <a
-                      href="/signin"
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
-                    >
-                      Client Login
-                    </a>
-                  </div>
-                </div>
+              <span className="sr-only">Close menu</span>
+              <X className="h-6 w-6" />
+            </button>
+          </nav>
+          <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
+            <div className="divide-y divide-gray-500/10">
+              <div className="space-y-2 py-6">
+                {navigation.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                  >
+                    {item.name}
+                  </a>
+                ))}
               </div>
-            </DialogPanel>
-          </Transition.Child>
-        </Transition>
+              <div className="py-6">
+                <a
+                  href="/signin"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                >
+                  Client Login
+                </a>
+              </div>
+            </div>
+          </div>
+        </DialogPanel>
       </Dialog>
     </header>
   )
