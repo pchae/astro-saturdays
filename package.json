@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "prebuild": "node -e \"console.log('Node Version:', process.version); console.log('Current Directory:', process.cwd()); console.log('Module Paths:', module.paths); try { console.log('Package.json type:', require('./package.json').type); console.log('Directory contents:', require('fs').readdirSync('./node_modules/zwitch')); } catch (e) { console.log('Error:', e.message); }\"",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -22,6 +23,10 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwindcss": "4.0.12"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31"
   },
   "overrides": {
     "zwitch": "2.0.4",
