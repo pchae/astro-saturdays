@@ -1,5 +1,6 @@
 ---
 import DashboardLayout from "../layouts/Dashboard.astro";
+import DashboardNav from "../components/DashboardNav.astro";
 import SettingsTabs from "../components/SettingsTabs.astro";
 import ProfileSettings from "../components/ProfileSettings.astro";
 import SecuritySettings from "../components/SecuritySettings.astro";
@@ -21,7 +22,10 @@ const activeTab = url.hash.substring(1) || 'profile';
 ---
 
 <DashboardLayout title="Settings - Saturdays.io" email={email} user={user}>
-  <section>
+
+  <DashboardNav />
+
+  <section class="p-4 bg-black">
     <h1 class="text-2xl font-bold text-white mb-8">Account Settings</h1>
     
     <!-- Tab navigation -->
