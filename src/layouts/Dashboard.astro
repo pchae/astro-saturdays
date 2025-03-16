@@ -23,7 +23,7 @@ const { title, description, image, email, user } = Astro.props;
     <meta property="og:image" content={image} />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen">
+  <body class="min-h-screen h-full bg-gray-500">
     <slot />
   </body>
 </html>
