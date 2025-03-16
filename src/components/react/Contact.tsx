@@ -21,7 +21,7 @@ export default function Contact() {
               </svg>
               <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto py-12 md:py-16 lg:py-32 lg:text-left">
                 <h2 className="text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
-                  Boost your productivity with by using our Design tools
+                  Boost your productivity by using our Design tools
                 </h2>
                 <p className="mt-6 text-lg leading-normal text-pretty text-gray-100">
                   Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis.
