@@ -19,14 +19,14 @@ const navigation = {
   
   export default function Footer() {
     return (
-        <footer id="footer" className="border-t border-gray-200">
+        <footer id="footer" className="bg-gray-800 border-t border-gray-50">
             <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
                 <div className="flex justify-center gap-x-6 md:order-2">
                     {navigation.social.map((item) => (
                     <a 
                       key={item.name} 
                       href={item.href} 
-                      className="text-gray-800 hover:text-blue-600"
+                      className="text-white hover:opacity-80"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -35,7 +35,7 @@ const navigation = {
                     </a>
                     ))}
                 </div>
-                <p className="mt-8 text-center text-sm/5 text-gray-800 md:order-1 md:mt-0">
+                <p className="mt-8 text-center text-sm/5 text-gray-100 md:order-1 md:mt-0">
                     &copy; 2016 - {currentYear} Saturdays.io Inc. All rights reserved.
                 </p>
             </div>

@@ -1,0 +1,84 @@
+---
+// Navigation data structure
+const navigation = [
+    {
+        id: '0',
+        title: 'Company',
+        links: [
+            { name: 'Home', to: '/' },
+            { name: 'About', to: '/about' },
+        ],
+    },
+    {
+        id: '1',
+        title: 'Solutions',
+        links: [
+            { name: 'Client Login', to: '/login' },
+            { name: 'Products', to: '/login' },
+        ],
+    },
+    {
+        id: '2',
+        title: 'Connect',
+        links: [
+            { name: 'LinkedIn', to: 'https://www.linkedin.com/company/saturdaysdotio/' },
+            { name: 'GitHub', to: 'https://github.com/saturdaysio' },
+        ],
+    },
+    {
+        id: '3',
+        title: 'Legal',
+        links: [
+            { name: 'Terms of Service', to: '/terms-of-service' },
+            { name: 'Privacy Policy', to: '/privacy-policy' },
+        ],
+    },
+];
+
+// Get current year for copyright
+const currentYear = new Date().getFullYear();
+
+// Copyright text
+const copyright = 'Saturdays.io Inc. All rights reserved.';
+---
+
+<footer class="bg-gray-900 border-t border-gray-400/20">
+    <nav aria-label="Footer" class="mx-auto max-w-(--breakpoint-xl) px-4 py-12 sm:px-6 sm:py-16">
+        <div class="footerGrid grid grid-cols-1 xs:grid-cols-2 md:grid-cols-6 gap-8">
+            <div id="logo" class="col-span-2 mb-8">
+                <a href="/" class="flex items-center space-x-3">
+                    <img class="h-8 w-8" src="/assets/icons/logo.svg" alt="Saturdays.io logo" width="32" height="32">
+                </a>
+            </div>
+
+            {navigation.map(item => (
+                <div class="footerCol w-full col-span-2 xs:col-span-1">
+                    <h2 class="text-sm font-semibold text-white uppercase pb-4">
+                        {item.title}
+                    </h2>
+                    <ul>
+                        {item.links.map((link, index) => (
+                            <li class="mb-4">
+                                <a href={link.to} class="text-md sm:text-base leading-6 no-underline text-gray-600 hover:text-white">
+                                    {link.name}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ))}
+        </div>
+
+        <hr class="mx-auto my-6 lg:my-8 border-gray-400/20">
+
+        <div id="copyright">
+            <span class="text-md sm:text-base leading-5 text-white">
+                © 2016 - {currentYear} {copyright}
+            </span>
+        </div>
+    </nav>
+</footer>
+
+<style>
+</style>
+    

@@ -3,8 +3,8 @@ import { Button } from "@headlessui/react";
 export default function Contact() {
     return (
       <section id="cta">
-        <div className="w-full bg-orange-50 border-y border-blue-200">
-          <div className="mx-auto max-w-7xl py-24 sm:px-4 bg-gray-50 border-x border-red-200">
+        <div className="w-full bg-slate-100 border-y border-blue-200">
+          <div className="mx-auto max-w-7xl py-24 sm:px-4 bg-gray-50 border-x border-blue-200">
             <div className="relative isolate overflow-hidden bg-gray-900 px-6 shadow-2xl sm:rounded-lg sm:px-16 lg:flex lg:gap-x-20 lg:px-24">
               <svg
                 viewBox="0 0 1024 1024"
