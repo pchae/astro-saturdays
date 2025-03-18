@@ -1,39 +1,41 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Contact from '../components/react/Contact.tsx';
-import Header from '../components/react/Header.tsx';
-import HeroCode from '../components/react/HeroCode.tsx';
+import Contact from '../components/react/Contact';
+import Header from '../components/react/Header';
+import Hero from '../components/Hero.astro';
+import ClientList from '../components/ClientList.astro';
+import HeroCode from '../components/react/HeroCode';
 import Stats from '../components/Stats.astro';
-import Footer from '../components/react/Footer.tsx';
+import Footer from '../components/react/Footer';
 
+// Ensure we have a valid path
+const currentPath = Astro.url.pathname || '/';
 ---
+
 <Layout title="Saturdays.io - Design Studio">
 
-	<Header client:load />
+	<Header client:load currentPath={currentPath} />
 
 	<main>
-		<section id="hero">
-			<div class="w-full bg-gray-50 border-y border-indigo-200">
-				<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 bg-gray-100 border-x border-indigo-200">
-					<h1 class="text-3xl md:text-4xl lg:text-6xl text-pretty font-bold tracking-tight leading-tight text-center text-gray-900">
-						Saturdays is a design studio
-					</h1>
-					<p class="text-xl lg:text-3xl text-center text-gray-700 mt-4">
-						We create software at the intersection of design and technology
-					</p>
-				</div>
-			</div>
-		</section>
+		<Hero
+			heading="We bridge the gap between design and technology"
+			subline="We're a digital studio that focuses on the Design, Development, and Strategy of digital products"
+		/>
 
 		<section id="info">
 			<div class="w-full bg-gray-50 border-y border-indigo-200">
-				<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 bg-white border-x border-indigo-200">
-					<h2 class="text-2xl md:text-3xl lg:text-5xl leading-normal font-bold text-center text-gray-800 mb-8">
+				<div class="mx-auto max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8 py-24 bg-white border-x border-indigo-200">
+					<h2 class="text-2xl md:text-3xl lg:text-6xl leading-normal font-bold text-center text-gray-800">
 						We're a digital studio that focuses on the Design, Development, and Strategy of digital products.
 					</h2>
 				</div>
 			</div>
 		</section>
+
+		<ClientList
+			logoSize={48}
+			class="my-12"
+		/>
 
 		<Stats />
 
