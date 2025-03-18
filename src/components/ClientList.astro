@@ -172,7 +172,7 @@ const globalColorStyle = monochrome ?
     } : {};
 ---
 
-<section class:list={[className]}>
+<section id="clients" class:list={[className]}>
     <div class="w-full border-y border-blue-200">
         <div class="mx-auto max-w-7xl space-y-8 px-4 md:px-8 py-16 md:py-20 lg:py-24 border-x border-red-200">
             <div>
@@ -180,7 +180,7 @@ const globalColorStyle = monochrome ?
                     {heading}
                 </h2>
             </div>
-            <div class={`relative flex flex-wrap justify-center items-center gap-8 overflow-hidden p-8 ${bgColor}`} style={globalColorStyle}>
+            <div class={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center items-center gap-8 overflow-hidden p-8 ${bgColor}`} style={globalColorStyle}>
                 {logos.map(logo => {
                     // Individual logo color styles (only applied if monochrome is false)
                     const logoStyle = !monochrome && (logo.fill || logo.stroke || logo.opacity !== undefined) ? {
