@@ -30,7 +30,6 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
-  }
 
   .dark {
     --background: 222.2 84% 4.9%;
@@ -71,9 +70,7 @@
   }
   
   /* Navigation links - no underline and different colors */
-  nav a, header a {
-    @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
-  }
+
   
   /* Footer links - more subtle styling */
   footer a {
@@ -102,6 +99,34 @@
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1600px;
   --breakpoint-3xl: 1920px;
+
+
+  /* Custom Font Sizes */
+    /* NOTES: March 18, 2025 */
+    /* REDUCE VARIATIONS IN FONT SIZES */
+    
+    --font-size-xs: 0.75rem;     /* 12px */
+    --font-size-sm: 0.875rem;    /* 14px */
+    --font-size-base: 1rem;      /* 16px */
+    --font-size-lg: 1.125rem;    /* 18px */
+    --font-size-xl: 1.25rem;     /* 20px */
+    --font-size-2xl: 1.5rem;     /* 24px */
+    --font-size-3xl: 1.875rem;   /* 30px */
+    --font-size-4xl: 2.25rem;    /* 36px */
+    --font-size-5xl: 3rem;       /* 48px */
+    --font-size-6xl: 3.75rem;    /* 60px */
+    --font-size-7xl: 4.5rem;     /* 72px */
+    --font-size-8xl: 6rem;       /* 96px */
+    --font-size-9xl: 8rem;       /* 128px */
+
+    /* Line Heights - keep these for reference but they won't be automatically applied */
+    --line-height-none: 1;
+    --line-height-tight: 1.25;
+    --line-height-snug: 1.375;
+    --line-height-normal: 1.5;
+    --line-height-relaxed: 1.75;
+    --line-height-loose: 2;
+  }
 
   --color-white: #ffffff;
   --color-black: #000000;
@@ -319,4 +344,73 @@ p, ul {
   --ui-border-accented: var(--ui-color-neutral-700);
   /* Inverted border color */
   --ui-border-inverted: var(--color-white);
+}
+
+/* Define text size utilities */
+@layer utilities {
+  .text-xs {
+    font-size: var(--font-size-xs);
+  }
+  
+  .text-sm {
+    font-size: var(--font-size-sm);
+  }
+  
+  .text-base {
+    font-size: var(--font-size-base);
+  }
+  
+  .text-lg {
+    font-size: var(--font-size-lg);
+  }
+  
+  .text-xl {
+    font-size: var(--font-size-xl);
+  }
+  
+  .text-2xl {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .text-3xl {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .text-4xl {
+    font-size: var(--font-size-4xl);
+  }
+  
+  .text-5xl {
+    font-size: var(--font-size-5xl);
+  }
+  
+  .text-6xl {
+    font-size: var(--font-size-6xl);
+  }
+}
+
+/* Add validation logging */
+@layer utilities {
+  /* Add a debug class to check text sizes */
+  .debug-text {
+    &::after {
+      content: attr(class);
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      font-size: 12px;
+      color: red;
+      background: white;
+      padding: 2px 4px;
+      border: 1px solid red;
+      display: none;
+    }
+  }
+}
+
+/* Only show debug info in development */
+@media screen and (min-width: 768px) {
+  .debug .debug-text::after {
+    display: block;
+  }
 }
