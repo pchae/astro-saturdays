@@ -29,7 +29,7 @@ export default function Contact() {
                 <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                   <Button
                     as="a"
-                    href="/"
+                    href="mailto:hello@saturdays.io"
                     className="rounded-sm bg-white px-4 py-3 text-sm leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     Get in touch
