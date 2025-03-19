@@ -1,6 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
+
+interface HeaderProps {
+  currentPath?: string;
+}
 
 interface NavigationItem {
   name: string;
@@ -11,9 +15,33 @@ const navigation: NavigationItem[] = [
   { name: 'About', href: '/about' },
 ]
 
-export default function Header() {
+const navLinkStyles = "text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600";
+
+export default function Header({ currentPath = '/' }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  // Add path validation
+  const validatedPath = useMemo(() => {
+    if (!currentPath || typeof currentPath !== 'string') {
+      console.warn('Invalid currentPath provided:', currentPath);
+      return '/';
+    }
+    return currentPath;
+  }, [currentPath]);
+
+  // Inline isActivePath logic
+  const isActivePath = useCallback((href: string) => {
+    try {
+      if (href === '/' && validatedPath === '/') return true;
+      if (href !== '/' && validatedPath.startsWith(href)) return true;
+      return false;
+    } catch (error) {
+      console.warn('Error checking active path:', error);
+      return false;
+    }
+  }, [validatedPath]);
 
   // Control body scroll and prevent dragging when mobile menu is open
   useEffect(() => {
@@ -81,11 +109,15 @@ export default function Header() {
     }
   }, [mobileMenuOpen])
 
+
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-white">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-        <a href="/" className="-m-1.5 p-1.5">
-          <span className="text-xl font-bold">Saturdays.io</span>
+        <a 
+          href="/" 
+          className="text-xl font-bold no-underline -m-1.5 p-1.5"
+        >
+          Saturdays.io
         </a>
         <div className="flex lg:hidden">
           <button
@@ -99,14 +131,18 @@ export default function Header() {
         </div>
         <div className="hidden items-center lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-sm/6 font-bold">
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-base font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
+            >
               {item.name}
             </a>
           ))}
           <Button
             as="a"
             href="/signin"
-            className="text-sm font-bold text-white bg-gray-800 hover:bg-blue-600 px-4 py-2 rounded-md"
+            className="text-sm font-bold no-underline px-4 py-2 rounded-md transition-colors text-white bg-gray-800 hover:bg-blue-600"
           >
             Client Login
           </Button>
@@ -124,7 +160,7 @@ export default function Header() {
           className="fixed inset-x-0 top-0 z-50 w-screen overflow-y-auto bg-white px-6 py-6"
         >
           <nav className="flex items-center justify-between">
-            <a href="/" className="-m-1.5 p-1.5">
+            <a href="/" className="no-underline-m-1.5 p-1.5">
               <span className="text-xl font-bold">Saturdays.io</span>
             </a>
             <button
@@ -143,7 +179,7 @@ export default function Header() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                    className="text-3xl font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
                   >
                     {item.name}
                   </a>
@@ -152,7 +188,7 @@ export default function Header() {
               <div className="py-6">
                 <a
                   href="/signin"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-4xl/loose font-bold no-underline hover:bg-gray-50"
+                  className="text-3xl font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
                 >
                   Client Login
                 </a>
