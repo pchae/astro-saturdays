@@ -113,7 +113,7 @@ export default function Example() {
                 </div>
               </TransitionChild>
               {/* Sidebar component, swap this element with another sidebar if you like */}
-              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-blue-600 px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
                   <img
                     alt="Saturdays.io"
@@ -132,7 +132,7 @@ export default function Example() {
                               className={classNames(
                                 item.current
                                   ? 'bg-indigo-700 text-white'
-                                  : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
+                                  : 'text-indigo-200 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                               )}
                             >
@@ -158,8 +158,8 @@ export default function Example() {
                               href={team.href}
                               className={classNames(
                                 team.current
-                                  ? 'bg-indigo-700 text-white'
-                                  : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
+                                  ? 'bg-gray-800 text-white'
+                                  : 'text-indigo-200 hover:bg-gray-800 hover:text-white',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                               )}
                             >
@@ -194,7 +194,7 @@ export default function Example() {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img
                 alt="Saturdays.io"
@@ -212,7 +212,7 @@ export default function Example() {
                           href={item.href}
                           className={classNames(
                             item.current
-                              ? 'bg-indigo-700 text-white'
+                              ? 'bg-gray-800 text-white'
                               : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                           )}
@@ -239,8 +239,8 @@ export default function Example() {
                           href={team.href}
                           className={classNames(
                             team.current
-                              ? 'bg-indigo-700 text-white'
-                              : 'text-indigo-200 hover:bg-indigo-700 hover:text-white',
+                              ? 'bg-gray-800 text-white'
+                              : 'text-indigo-200 hover:bg-gray-800 hover:text-white',
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                           )}
                         >
@@ -256,7 +256,7 @@ export default function Example() {
                 <li className="mt-auto">
                   <a
                     href="/settings"
-                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-indigo-200 hover:bg-gray-800 hover:text-white"
                   >
                     <Cog6ToothIcon
                       aria-hidden="true"
