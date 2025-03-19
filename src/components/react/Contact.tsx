@@ -20,8 +20,8 @@ export default function Contact() {
                 </defs>
               </svg>
               <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto py-12 md:py-16 lg:py-32 lg:text-left">
-                <h2 className="text-3xl font-bold tracking-tight text-balance text-white sm:text-4xl">
-                  Boost your productivity by using our Design tools
+                <h2 className="text-3xl font-bold tracking-tight leading-tight text-balance text-white sm:text-4xl">
+                  Add a force multiplier to your product design
                 </h2>
                 <p className="mt-6 text-lg leading-normal text-pretty text-gray-100">
                   Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis.
@@ -39,10 +39,10 @@ export default function Contact() {
               <div className="relative mt-16 h-80 lg:mt-8">
                 <img
                   alt="Design system screenshot"
-                  src="../src/assets/images/assets_5.webp"
+                  src="/images/assets_5.webp"
                   width={1500}
                   height={1088}
-                  className=" top-0 rounded-md"
+                  className="top-0 rounded-md"
                 />
               </div>
             </div>
