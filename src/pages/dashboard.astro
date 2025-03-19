@@ -2,9 +2,10 @@
 import DashboardLayout from "../layouts/Dashboard.astro";
 import DashboardHeader from "../components/DashboardHeader.astro";
 import DashboardNav from "../components/DashboardNav.astro";
+import SideBarLayout from "../components/react/SideBarLayout";
 import StatCard from "../components/StatCard.astro";
 import FighterSection from "../components/FighterSection.astro";
-import { checkAuth } from "../lib/auth.ts";
+import { checkAuth } from "../lib/auth";
 
 // Use the auth middleware
 export const prerender = false;
@@ -32,6 +33,8 @@ const ufcFighters = [
 ---
 
 <DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
+  <SideBarLayout />
+
   <DashboardNav />
 
   <section class="p-4 bg-black">
