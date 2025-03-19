@@ -39,7 +39,7 @@ export default function Contact() {
               <div className="relative mt-16 h-80 lg:mt-8">
                 <img
                   alt="Design system screenshot"
-                  src="../src/assets/assets_5.webp"
+                  src="../src/assets/images/assets_5.webp"
                   width={1500}
                   height={1088}
                   className=" top-0 rounded-md"
