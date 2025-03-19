@@ -6,10 +6,6 @@ interface Logo {
     alt: string;
     width: string;
     height: string;
-    // Allow per-logo color customization
-    fill?: string;     // For filled SVG elements
-    stroke?: string;   // For outlined SVG elements
-    opacity?: number;  // For transparency control
 }
 
 // Define component props with TypeScript
@@ -20,25 +16,13 @@ interface Props {
     logos?: Logo[];
     // Additional CSS classes for the component
     class?: string;
-    // Global logo color
-    logoColor?: string;
-    // Global stroke color for the logos
-    logoStrokeColor?: string;
-    // Global fill opacity
-    logoOpacity?: number;
-    // Background color class
-    bgColor?: string;
     // Logo size (width and height in pixels)
     logoSize?: number;
-    // Logo container background
-    logoContainerClass?: string;
-    // Monochrome mode - forces all logos to use the same color scheme
-    monochrome?: boolean;
 }
 
 // Destructure props with default values
 const {
-    heading = "We've crafted meaningful digital experiences for brands around the world",
+    heading = "We've crafted successful digital experiences for brands around the world",
     logos = [
         {
             id: '0',
@@ -154,22 +138,8 @@ const {
         },
     ],
     class: className = '',
-    logoColor = 'currentColor', // Default to inherit from text color
-    logoStrokeColor = '',       // Default to none
-    logoOpacity = 1,            // Default to fully opaque
-    bgColor = '',
     logoSize = 36,
-    logoContainerClass = '',
-    monochrome = false,
 } = Astro.props;
-
-// CSS variables for global color control
-const globalColorStyle = monochrome ? 
-    { 
-        '--logo-color': logoColor, 
-        '--logo-stroke': logoStrokeColor,
-        '--logo-opacity': logoOpacity
-    } : {};
 ---
 
 <section id="clients" class:list={[className]}>
@@ -180,30 +150,21 @@ const globalColorStyle = monochrome ?
                     {heading}
                 </h2>
             </div>
-            <div class={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center items-center gap-8 overflow-hidden p-8 ${bgColor}`} style={globalColorStyle}>
-                {logos.map(logo => {
-                    // Individual logo color styles (only applied if monochrome is false)
-                    const logoStyle = !monochrome && (logo.fill || logo.stroke || logo.opacity !== undefined) ? {
-                        '--logo-color': logo.fill || logoColor,
-                        '--logo-stroke': logo.stroke || logoStrokeColor,
-                        '--logo-opacity': logo.opacity !== undefined ? logo.opacity : logoOpacity
-                    } : {};
-                    
-                    return (
-                        <div class={`logo ${logoContainerClass}`} style={!monochrome ? logoStyle : {}}>
-                            <figure>
-                                <img 
-                                    class={`w-${logoSize} h-${logoSize} ${monochrome ? 'svg-monochrome' : ''}`} 
-                                    src={logo.src} 
-                                    alt={logo.alt} 
-                                    loading="lazy" 
-                                    width={logoSize * 4} 
-                                    height={logoSize * 4}
-                                >
-                            </figure>
-                        </div>
-                    );
-                })}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-center items-center gap-8 overflow-hidden p-8">
+                {logos.map(logo => (
+                    <div class="logo">
+                        <figure>
+                            <img 
+                                class={`w-[${logoSize}px] h-[${logoSize}px]`}
+                                src={logo.src} 
+                                alt={logo.alt} 
+                                loading="lazy" 
+                                width={logoSize * 4} 
+                                height={logoSize * 4}
+                            />
+                        </figure>
+                    </div>
+                ))}
             </div>
         </div>
     </div>
@@ -221,20 +182,5 @@ const globalColorStyle = monochrome ?
         .logo {
             padding: 0 1rem;
         }
-    }
-    
-    /* Apply colors to SVGs when in monochrome mode */
-    .svg-monochrome {
-        filter: opacity(var(--logo-opacity, 1));
-    }
-    
-    /* For more advanced color control, we use a combination of CSS variables and filters */
-    :global(.svg-monochrome svg path),
-    :global(.svg-monochrome svg rect),
-    :global(.svg-monochrome svg circle),
-    :global(.svg-monochrome svg polygon) {
-        fill: var(--logo-color, currentColor) !important;
-        stroke: var(--logo-stroke, transparent) !important;
-        opacity: var(--logo-opacity, 1) !important;
     }
 </style>
