@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -31,17 +31,12 @@ const navigation = [
   { name: 'Projects', href: '/dashboard', icon: FolderIcon, current: false },
   { name: 'Calendar', href: '/dashboard', icon: CalendarIcon, current: false },
   { name: 'Documents', href: '/dashboard', icon: DocumentDuplicateIcon, current: false },
-  { name: 'Documents', href: '/dashboard', icon: DocumentDuplicateIcon, current: false },
+  { name: 'Cloud Drive', href: '/dashboard', icon: DocumentDuplicateIcon, current: false },
   { name: 'Reports', href: '/dashboard', icon: ChartPieIcon, current: false },
 ]
 const teams = [
-  { id: 1, name: 'Heroicons', href: '/', initial: 'H', current: false },
+  { id: 1, name: 'Saturdays.io lab', href: '/', initial: 'S', current: true },
   { id: 2, name: 'Tailwind Labs', href: '/', initial: 'T', current: false },
-  { id: 3, name: 'Workcation', href: '/#', initial: 'W', current: false },
-]
-const userNavigation = [
-  { name: 'Your profile', href: '/settings#profile' },
-  { name: 'Sign out', href: '/' },
 ]
 
 function classNames(...classes: string[]) {
@@ -50,6 +45,36 @@ function classNames(...classes: string[]) {
 
 export default function Example() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  useEffect(() => {
+    console.log('Sidebar state changed:', {
+      isOpen: sidebarOpen,
+      timestamp: new Date().toISOString()
+    });
+  }, [sidebarOpen]);
+
+  const handleSidebarToggle = () => {
+    console.log('Toggle button clicked', {
+      currentState: sidebarOpen,
+      timestamp: new Date().toISOString()
+    });
+    setSidebarOpen(prev => {
+      console.log('Setting new state to:', !prev);
+      return !prev;
+    });
+  };
+
+  const dialogRenderLog = useCallback(() => {
+    console.log('Dialog rendering:', {
+      isOpen: sidebarOpen,
+      dialogExists: !!document.querySelector('[role="dialog"]'),
+      timestamp: new Date().toISOString()
+    });
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    dialogRenderLog();
+  }, [sidebarOpen, dialogRenderLog]);
 
   return (
     <>
@@ -62,7 +87,13 @@ export default function Example() {
         ```
       */}
       <div>
-        <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+        <Dialog 
+          open={sidebarOpen} 
+          onClose={setSidebarOpen} 
+          className="relative z-50 lg:hidden"
+          onTransitionStart={() => console.log('Dialog transition starting')}
+          onTransitionEnd={() => console.log('Dialog transition complete')}
+        >
           <DialogBackdrop
             transition
             className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
@@ -85,8 +116,8 @@ export default function Example() {
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
                 <div className="flex h-16 shrink-0 items-center">
                   <img
-                    alt="Your Company"
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white"
+                    alt="Saturdays.io"
+                    src="/favicon.svg"
                     className="h-8 w-auto"
                   />
                 </div>
@@ -166,8 +197,8 @@ export default function Example() {
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <img
-                alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white"
+                alt="Saturdays.io"
+                src="favicon.svg"
                 className="h-8 w-auto"
               />
             </div>
@@ -241,7 +272,11 @@ export default function Example() {
 
         <div className="lg:pl-72">
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8">
-            <button type="button" onClick={() => setSidebarOpen(true)} className="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+            <button 
+              type="button" 
+              onClick={handleSidebarToggle} 
+              className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+            >
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon aria-hidden="true" className="size-6" />
             </button>
