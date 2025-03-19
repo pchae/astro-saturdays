@@ -31,361 +31,122 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Navigation links - no underline and different colors */
+    nav a, header a {
+      @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
+    }
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    .dark {
+      --background: 222.2 84% 4.9%;
+      --foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+      --card: 222.2 84% 4.9%;
+      --card-foreground: 210 40% 98%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+      --popover: 222.2 84% 4.9%;
+      --popover-foreground: 210 40% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+      --primary: 217.2 91.2% 59.8%;
+      --primary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+      --secondary: 217.2 32.6% 17.5%;
+      --secondary-foreground: 210 40% 98%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+      --muted: 217.2 32.6% 17.5%;
+      --muted-foreground: 215 20.2% 65.1%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+      --accent: 217.2 32.6% 17.5%;
+      --accent-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-  }
+      --destructive: 0 62.8% 30.6%;
+      --destructive-foreground: 210 40% 98%;
 
-  /* Default link styles */
-  a {
-    @apply text-blue-600 hover:text-blue-800 underline underline-offset-2;
-    transition-property: color;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-  }
-  
-  /* Navigation links - no underline and different colors */
+      --border: 217.2 32.6% 17.5%;
+      --input: 217.2 32.6% 17.5%;
+      --ring: 224.3 76.3% 48%;
+    }
 
-  
-  /* Footer links - more subtle styling */
-  footer a {
-    @apply text-gray-600 hover:text-blue-600 underline-offset-4;
-  }
-  
-  /* Card or content links - slightly different styling */
-  .card a, article a, .content a {
-    @apply text-blue-600 hover:text-blue-800 font-medium underline decoration-blue-300 hover:decoration-blue-700 underline-offset-2;
-  }
-
-  /* Button links - no underline and button-like appearance */
-  a.btn, .btn-link {
-    @apply inline-block px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 no-underline font-medium;
-  }
-}
-
-@theme {
-  --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Merriweather', serif; /* TODO: Add Lora to replace Merriweather - March 11, 2025 */
-
-  --breakpoint-xs: 400px;
-  --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1600px;
-  --breakpoint-3xl: 1920px;
-
-
-  /* Custom Font Sizes */
-    /* NOTES: March 18, 2025 */
-    /* REDUCE VARIATIONS IN FONT SIZES */
+    /* Default link styles */
+    a {
+      @apply text-blue-600 hover:text-blue-800 underline underline-offset-2;
+      transition-property: color;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
     
-    --font-size-xs: 0.75rem;     /* 12px */
-    --font-size-sm: 0.875rem;    /* 14px */
-    --font-size-base: 1rem;      /* 16px */
-    --font-size-lg: 1.125rem;    /* 18px */
-    --font-size-xl: 1.25rem;     /* 20px */
-    --font-size-2xl: 1.5rem;     /* 24px */
-    --font-size-3xl: 1.875rem;   /* 30px */
-    --font-size-4xl: 2.25rem;    /* 36px */
-    --font-size-5xl: 3rem;       /* 48px */
-    --font-size-6xl: 3.75rem;    /* 60px */
-    --font-size-7xl: 4.5rem;     /* 72px */
-    --font-size-8xl: 6rem;       /* 96px */
-    --font-size-9xl: 8rem;       /* 128px */
+    /* Footer links - more subtle styling */
+    footer a {
+      @apply text-gray-600 hover:text-blue-600 underline-offset-4;
+    }
+    
+    /* Card or content links - slightly different styling */
+    .card a, article a, .content a {
+      @apply text-blue-600 hover:text-blue-800 font-medium underline decoration-blue-300 hover:decoration-blue-700 underline-offset-2;
+    }
 
-    /* Line Heights - keep these for reference but they won't be automatically applied */
-    --line-height-none: 1;
-    --line-height-tight: 1.25;
-    --line-height-snug: 1.375;
-    --line-height-normal: 1.5;
-    --line-height-relaxed: 1.75;
-    --line-height-loose: 2;
+    /* Button links - no underline and button-like appearance */
+    a.btn, .btn-link {
+      @apply inline-block px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 no-underline font-medium;
+    }
+
+    /* Core text sizes using modular scale (1.25) */
+    --font-size-xs: 0.75rem;      /* 12px */
+    --font-size-sm: 0.875rem;     /* 14px */
+    --font-size-base: 1rem;       /* 16px */
+    --font-size-lg: 1.125rem;     /* 18px */
+    --font-size-xl: 1.25rem;      /* 20px */
+    --font-size-2xl: 1.5rem;      /* 24px */
+    --font-size-3xl: 1.875rem;    /* 30px */
+    --font-size-4xl: 2.25rem;     /* 36px */
+    --font-size-5xl: 3rem;        /* 48px */
+    --font-size-6xl: 4rem;        /* 64px */
+
+    /* Font families */
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Merriweather', Georgia, serif;
+    --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
   }
-
-  --color-white: #ffffff;
-  --color-black: #000000;
-
-  --color-gray-100: #f5f5f5;
-  --color-gray-200: #eeeeee;
-  --color-gray-300: #e0e0e0;
-  --color-gray-400: #bdbdbd;
-  --color-gray-500: #9e9e9e;
-  --color-gray-600: #757575;
-  --color-gray-700: #616161;
-  --color-gray-800: #424242;
-  --color-gray-900: #212121;
-
-  --color-green-50: #effdf5;
-  --color-green-100: #84f4a0;
-  --color-green-200: #b3f5d1;
-  --color-green-300: #75edae;
-  --color-green-400: #00dc82;
-  --color-green-500: #00c16a;
-  --color-green-600: #00a155;
-  --color-green-700: #007f45;
-  --color-green-800: #016538;
-  --color-green-900: #0a5331;
-
-  --color-blue-50: #eff6ff;
-  --color-blue-100: #c7e0ff;
-  --color-blue-200: #94c1ff;
-  --color-blue-300: #60a1ff;
-  --color-blue-400: #3b82f6;
-  --color-blue-500: #2563eb;
-  --color-blue-600: #1d4ed8;
-  --color-blue-700: #1e40af;
-  --color-blue-800: #1e3a8a;
-  --color-blue-900: #172554;
-
-  --color-red-50: #fdf2f8;
-  --color-red-100: #f9a8d4;
-  --color-red-200: #f472b6;
-  --color-red-300: #ec4899;
-  --color-red-400: #db2777;
-  --color-red-500: #be185d;
-  --color-red-600: #9d174d;
-  --color-red-700: #831843;
-  --color-red-800: #631b37;
-  --color-red-900: #4a1f2d;
-
-  --color-orange-50: #fff7ed;
-  --color-orange-100: #ffedd5;
-  --color-orange-200: #fed7aa;
-  --color-orange-300: #fdba74;
-  --color-orange-400: #fb923c;
-  --color-orange-500: #f97316;
-  --color-orange-600: #ea580c;
-  --color-orange-700: #c2410c;
-  --color-orange-800: #9a3412;
-  --color-orange-900: #7c2d12;
-
-  --color-emerald-50: #ecfdf5;
-  --color-emerald-100: #a2f2ca;
-  --color-emerald-200: #50e7a4;
-  --color-emerald-300: #2dd39a;
-  --color-emerald-400: #15b789;
-  --color-emerald-500: #009473;
-  --color-emerald-600: #00775c;
-  --color-emerald-700: #005d47;
-  --color-emerald-800: #004739;
-  --color-emerald-900: #00372d;
-
-  --ui-primary: var(--color-blue-500);
-  --ui-primary-hover: var(--color-blue-600);
-  --ui-primary-active: var(--color-blue-700);
-  --ui-primary-focus: var(--color-blue-800);
-  --ui-primary-focus-ring: var(--color-blue-900);
-
-  --ui-secondary: var(--color-green-500);
-  --ui-secondary-hover: var(--color-green-600);
-  --ui-secondary-active: var(--color-green-700);
-  --ui-secondary-focus: var(--color-green-800);
-  --ui-secondary-focus-ring: var(--color-green-900);
-
-  --ui-tertiary: var(--color-red-500);
-  --ui-tertiary-hover: var(--color-red-600);
-  --ui-tertiary-active: var(--color-red-700);
-  --ui-tertiary-focus: var(--color-red-800);
-  --ui-tertiary-focus-ring: var(--color-red-900);
-
-  --ui-background: var(--color-black);
-  --ui-foreground: var(--color-black);
-  --ui-muted: var(--color-gray-100);
-  --ui-muted-hover: var(--color-gray-200);
-  --ui-muted-active: var(--color-gray-300);
-  --ui-muted-focus: var(--color-gray-400);
-  --ui-muted-focus-ring: var(--color-gray-500);
-
-  --ui-border: var(--color-gray-200);
-  --ui-border-hover: var(--color-gray-300);
-  --ui-border-active: var(--color-gray-400);
-  --ui-border-focus: var(--color-gray-500);
-  --ui-border-focus-ring: var(--color-gray-600);
-
-  --ui-success: var(--color-green-500);
-  --ui-success-hover: var(--color-green-600);
-  --ui-success-active: var(--color-green-700);
-  --ui-success-focus: var(--color-green-800);
-  --ui-success-focus-ring: var(--color-green-900);
-
-  --ui-warning: var(--color-yellow-500);
-  --ui-warning-hover: var(--color-yellow-600);
-  --ui-warning-active: var(--color-yellow-700);
-  --ui-warning-focus: var(--color-yellow-800);
-  --ui-warning-focus-ring: var(--color-yellow-900);
-
-  --ui-error: var(--color-red-500);
-  --ui-error-hover: var(--color-red-600);
-  --ui-error-active: var(--color-red-700);
-  --ui-error-focus: var(--color-red-800);
-  --ui-error-focus-ring: var(--color-red-900);
-
-  --ui-info: var(--color-blue-500);
-  --ui-info-hover: var(--color-blue-600);
-  --ui-info-active: var(--color-blue-700);
-  --ui-info-focus: var(--color-blue-800);
-  --ui-info-focus-ring: var(--color-blue-900);  
 }
 
-/* Tailwind Typography Overrides */
-/*
-.text-cat {
-  @apply text-white;
-}
-/*
-.text-purple-pink {
-  @apply red-to-blue;
-}
-*/
-/*
-p, ul {
-	@apply text-gray-200;
-
-  a {
-    @apply text-green-400 underline underline-offset-2;
-  }
-
-}
-*/
-
-
-/* Gradients */
-
-.red-to-blue {
-  -webkit-text-fill-color: transparent;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  background: -webkit-linear-gradient(-135deg, rgba(248, 12, 128, 1), rgba(60, 120, 244, 1));
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.pink-to-peach {
-  -webkit-text-fill-color: transparent;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  background: -webkit-linear-gradient(-135deg, rgba(255, 104, 104, 1), rgba(232, 72, 180, 1));
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.orange-to-yellow {
-  -webkit-text-fill-color: transparent;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  background: -webkit-linear-gradient(-120deg, rgba(255, 104, 104, 1), rgba(255, 244, 88, 1));
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.lime-to-aqua {
-  -webkit-text-fill-color: transparent;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  background: -webkit-linear-gradient(-135deg, rgba(0, 255, 156, 1), rgba(0, 204, 255, 1));
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-:root {
-  /* Least prominent text */
-  --ui-text-dimmed: var(--ui-color-neutral-500);
-  /* Slightly muted text */
-  --ui-text-muted: var(--ui-color-neutral-400);
-  /* Moderately prominent text */
-  --ui-text-toned: var(--ui-color-neutral-300);
-  /* Default text color */
-  --ui-text: var(--ui-color-neutral-200);
-  /* Most prominent text */
-  --ui-text-highlighted: var(--color-white);
-
-  /* Main background color */
-  --ui-bg: var(--color-black);
-  /* Subtle background */
-  --ui-bg-muted: var(--ui-color-neutral-800);
-  /* Slightly elevated background */
-  --ui-bg-elevated: var(--ui-color-neutral-800);
-  /* More prominent background */
-  --ui-bg-accented: var(--ui-color-neutral-700);
-  /* Inverted background color */
-  --ui-bg-inverted: var(--color-white);
-
-  /* Default border color */
-  --ui-border: var(--ui-color-neutral-800);
-  /* Subtle border */
-  --ui-border-muted: var(--ui-color-neutral-700);
-  /* More prominent border */
-  --ui-border-accented: var(--ui-color-neutral-700);
-  /* Inverted border color */
-  --ui-border-inverted: var(--color-white);
-}
-
-/* Define text size utilities */
 @layer utilities {
-  .text-xs {
-    font-size: var(--font-size-xs);
+  /* Keep only the font family utilities */
+  .font-sans {
+    font-family: var(--font-sans);
   }
   
-  .text-sm {
-    font-size: var(--font-size-sm);
+  .font-serif {
+    font-family: var(--font-serif);
   }
   
-  .text-base {
-    font-size: var(--font-size-base);
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Keep component classes for semantic usage */
+@layer components {
+  .heading-1 {
+    @apply text-4xl font-sans font-bold;
   }
   
-  .text-lg {
-    font-size: var(--font-size-lg);
+  .heading-2 {
+    @apply text-3xl font-sans font-semibold;
   }
   
-  .text-xl {
-    font-size: var(--font-size-xl);
+  .heading-3 {
+    @apply text-2xl font-sans font-semibold;
   }
   
-  .text-2xl {
-    font-size: var(--font-size-2xl);
+  .body-large {
+    @apply text-lg font-sans;
   }
   
-  .text-3xl {
-    font-size: var(--font-size-3xl);
+  .body-base {
+    @apply text-base font-sans;
   }
   
-  .text-4xl {
-    font-size: var(--font-size-4xl);
-  }
-  
-  .text-5xl {
-    font-size: var(--font-size-5xl);
-  }
-  
-  .text-6xl {
-    font-size: var(--font-size-6xl);
+  .body-small {
+    @apply text-sm font-sans;
   }
 }
 
@@ -412,5 +173,50 @@ p, ul {
 @media screen and (min-width: 768px) {
   .debug .debug-text::after {
     display: block;
+  }
+}
+
+@layer theme {
+  :root {
+    
+    /* Font families */
+    --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-family-serif: 'Merriweather', 'Times New Roman', serif;
+    --font-family-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+}
+
+/* Define text utilities with both size and default line height */
+@layer utilities {
+  .text-xs {
+    font-size: var(--font-size-xs);
+  }
+  
+  .text-sm {
+    font-size: var(--font-size-sm);
+  }
+  
+  .text-base {
+    font-size: var(--font-size-md);
+  }
+  
+  .text-lg {
+    font-size: var(--font-size-lg);
+  }
+  
+  .text-xl {
+    font-size: var(--font-size-xl);
+  }
+  
+  .text-2xl {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .text-3xl {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .text-4xl {
+    font-size: var(--font-size-4xl);
   }
 }
