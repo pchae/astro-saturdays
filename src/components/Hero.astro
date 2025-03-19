@@ -6,17 +6,11 @@ interface Props {
   heading: string;
   /* Optional subline text to display below heading */
   subline?: string;
-  /* Optional heading text color, defaults to gray-900 */
-  headingColor?: string;
-  /* Optional subline text color, defaults to gray-700 */
-  sublineColor?: string;
 }
 
 const {
   heading = "We bridge the gap between design and technology",
   subline,
-  headingColor = "text-gray-900",
-  sublineColor = "text-gray-700"
 } = Astro.props;
 ---
 
@@ -24,11 +18,11 @@ const {
     <div class="w-full min-h-5/6 bg-slate-500 border-y border-blue-200">
         <div class="mx-auto max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8 py-24 bg-slate-200">
             <div class="py-12 border-1 border-red-200">
-                <h1 class={`text-3xl md:text-4xl lg:text-6xl leading-tight text-pretty font-bold tracking-tight text-center ${headingColor}`}>
+                <h1 class="text-3xl md:text-4xl lg:text-6xl leading-tight text-pretty font-bold tracking-tight text-center">
                     {heading}
                 </h1>
                 {subline && (
-                    <p class={`mt-6 text-xl md:text-2xl lg:text-3xl leading-normal text-pretty text-center ${sublineColor} max-w-4xl mx-auto`}>
+                    <p class="mt-6 text-xl md:text-2xl lg:text-3xl leading-normal text-pretty text-center mx-auto">
                         {subline}
                     </p>
                 )}
