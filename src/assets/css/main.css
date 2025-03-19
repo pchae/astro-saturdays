@@ -36,35 +36,6 @@
       @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
     }
 
-    .dark {
-      --background: 222.2 84% 4.9%;
-      --foreground: 210 40% 98%;
-
-      --card: 222.2 84% 4.9%;
-      --card-foreground: 210 40% 98%;
-
-      --popover: 222.2 84% 4.9%;
-      --popover-foreground: 210 40% 98%;
-
-      --primary: 217.2 91.2% 59.8%;
-      --primary-foreground: 222.2 47.4% 11.2%;
-
-      --secondary: 217.2 32.6% 17.5%;
-      --secondary-foreground: 210 40% 98%;
-
-      --muted: 217.2 32.6% 17.5%;
-      --muted-foreground: 215 20.2% 65.1%;
-
-      --accent: 217.2 32.6% 17.5%;
-      --accent-foreground: 210 40% 98%;
-
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 210 40% 98%;
-
-      --border: 217.2 32.6% 17.5%;
-      --input: 217.2 32.6% 17.5%;
-      --ring: 224.3 76.3% 48%;
-    }
 
     /* Default link styles */
     a {
@@ -88,18 +59,6 @@
     a.btn, .btn-link {
       @apply inline-block px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 no-underline font-medium;
     }
-
-    /* Core text sizes using modular scale (1.25) */
-    --font-size-xs: 0.75rem;      /* 12px */
-    --font-size-sm: 0.875rem;     /* 14px */
-    --font-size-base: 1rem;       /* 16px */
-    --font-size-lg: 1.125rem;     /* 18px */
-    --font-size-xl: 1.25rem;      /* 20px */
-    --font-size-2xl: 1.5rem;      /* 24px */
-    --font-size-3xl: 1.875rem;    /* 30px */
-    --font-size-4xl: 2.25rem;     /* 36px */
-    --font-size-5xl: 3rem;        /* 48px */
-    --font-size-6xl: 4rem;        /* 64px */
 
     /* Font families */
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -183,40 +142,5 @@
     --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-family-serif: 'Merriweather', 'Times New Roman', serif;
     --font-family-mono: ui-monospace, 'SF Mono', Menlo, monospace;
-  }
-}
-
-/* Define text utilities with both size and default line height */
-@layer utilities {
-  .text-xs {
-    font-size: var(--font-size-xs);
-  }
-  
-  .text-sm {
-    font-size: var(--font-size-sm);
-  }
-  
-  .text-base {
-    font-size: var(--font-size-md);
-  }
-  
-  .text-lg {
-    font-size: var(--font-size-lg);
-  }
-  
-  .text-xl {
-    font-size: var(--font-size-xl);
-  }
-  
-  .text-2xl {
-    font-size: var(--font-size-2xl);
-  }
-  
-  .text-3xl {
-    font-size: var(--font-size-3xl);
-  }
-  
-  .text-4xl {
-    font-size: var(--font-size-4xl);
   }
 }
