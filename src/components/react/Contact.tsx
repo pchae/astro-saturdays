@@ -23,13 +23,15 @@ export default function Contact() {
                 <h2 className="text-3xl font-bold tracking-tight leading-tight text-balance text-white sm:text-4xl">
                   Add a force multiplier to your product design
                 </h2>
-                <p className="mt-6 text-lg leading-normal text-pretty text-gray-100">
-                  Ac euismod vel sit maecenas id pellentesque eu sed consectetur. Malesuada adipiscing sagittis.
+                <p className="mt-6 text-lg leading-normal text-pretty text-gray-200">
+                  Scale your capabilities with our Design Systems, functional prototypes, and usability testing.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                   <Button
                     as="a"
                     href="mailto:hello@saturdays.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="rounded-sm bg-white px-4 py-3 text-sm leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     Get in touch
