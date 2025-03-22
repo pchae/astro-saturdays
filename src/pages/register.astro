@@ -6,67 +6,73 @@ export const prerender = false;
 ---
 
 <Layout title="Register | Saturdays.io">
-  <Header client:load />
 
-    <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 class="mt-10 text-center text-2xl lg:text-4xl font-bold tracking-tight text-gray-900">
-                Sign up for an account
-            </h2>
-        </div>
+    <Header client:load />
 
-        <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form action="/api/auth/register" method="POST" class="space-y-6">
-                <div>
-                    <label for="email" class="block text-sm/6 font-medium text-gray-900">
-                        Email address
-                    </label>
-                    <div class="mt-2">
-                        <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        autocomplete="email"
-                        class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
-                        />
-                    </div>
-                </div>
+    <main class="flex min-h-svh w-full flex-1 flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md border border-gray-200 rounded-lg p-4 shadow-xl shadow-red-100/50">
+            <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h2 class="mt-10 text-2xl lg:text-4xl font-bold tracking-tight text-gray-900">
+                    Sign up
+                </h2>
+                <p class="mt-2 text-base leading-normal text-gray-600">
+                    Enter your email below to create an account
+                </p>
+            </div>
 
-                <div>
-                    <div class="flex items-center justify-between">
-                        <label for="password" class="block text-sm/6 font-medium text-gray-900">
-                        Password
+            <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form action="/api/auth/register" method="POST" class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm/6 font-medium text-gray-900">
+                            Email address
                         </label>
-                    </div>
-                    <div class="mt-2">
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
+                        <div class="mt-2">
+                            <input
+                            id="email"
+                            name="email"
+                            type="email"
                             required
-                            autocomplete="current-password"
+                            autocomplete="email"
                             class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
-                        />
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <button
-                        type="submit"
-                        class="flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-                    >
-                        Sign up
-                    </button>
-                </div>
-            </form>
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <label for="password" class="block text-sm/6 font-medium text-gray-900">
+                            Password
+                            </label>
+                        </div>
+                        <div class="mt-2">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                required
+                                autocomplete="current-password"
+                                class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
+                            />
+                        </div>
+                    </div>
 
-            <p class="mt-10 text-center text-sm/6 text-gray-500">
-                Already a member?{' '}
-                <a href="/signin" class="font-semibold text-blue-600 hover:text-blue-500">
-                Signin
-                </a>
-            </p>
+                    <div>
+                        <button
+                            type="submit"
+                            class="flex w-full justify-center rounded-md bg-blue-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                        >
+                            Sign up
+                        </button>
+                    </div>
+                </form>
+
+                <p class="mt-8 text-center text-base text-gray-700 pb-4">
+                    Already have an account?{' '}
+                    <a href="/signin" class="font-semibold text-blue-600 hover:text-blue-500">
+                    Sign in
+                    </a>
+                </p>
+            </div>
         </div>
-    </div>
+    </main>
 </Layout>
