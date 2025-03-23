@@ -8,19 +8,36 @@ function logInitContext() {
     context: import.meta.env.SSR ? 'server' : 'client',
     mode: import.meta.env.MODE,
     isProd: import.meta.env.PROD,
-    isDev: import.meta.env.DEV
+    isDev: import.meta.env.DEV,
+    // Log all available environment variables (only in development)
+    env: import.meta.env.DEV ? import.meta.env : undefined
   });
 }
 
-function logEnvStatus(supabaseUrl: string | undefined, supabaseAnonKey: string | undefined) {
+function validateEnvironmentVariables(supabaseUrl: string | undefined, supabaseAnonKey: string | undefined): void {
+  const missingVars = [];
+  if (!supabaseUrl) missingVars.push('PUBLIC_SUPABASE_URL');
+  if (!supabaseAnonKey) missingVars.push('PUBLIC_SUPABASE_ANON_KEY');
+
   console.log("[Supabase] Environment variables status:", {
     hasUrl: !!supabaseUrl,
     hasKey: !!supabaseAnonKey,
     url: supabaseUrl ? "present" : "missing",
     key: supabaseAnonKey ? "present" : "missing",
     urlPrefix: supabaseUrl?.substring(0, 10),
-    keyPrefix: supabaseAnonKey?.substring(0, 10)
+    keyPrefix: supabaseAnonKey?.substring(0, 10),
+    processEnvKeys: Object.keys(process.env).filter(key => key.startsWith('PUBLIC_')),
+    importMetaEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('PUBLIC_'))
   });
+
+  if (missingVars.length > 0) {
+    throw new Error(
+      `Missing required Supabase environment variables: ${missingVars.join(', ')}\n` +
+      `Please ensure these variables are set in your Vercel project settings.\n` +
+      `Available process.env keys: ${Object.keys(process.env).filter(key => key.startsWith('PUBLIC_')).join(', ')}\n` +
+      `Available import.meta.env keys: ${Object.keys(import.meta.env).filter(key => key.startsWith('PUBLIC_')).join(', ')}`
+    );
+  }
 }
 
 export async function getSupabaseClient(): Promise<SupabaseClient> {
@@ -35,14 +52,10 @@ export async function getSupabaseClient(): Promise<SupabaseClient> {
   const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
   logInitContext();
-  logEnvStatus(supabaseUrl, supabaseAnonKey);
+  validateEnvironmentVariables(supabaseUrl, supabaseAnonKey);
 
   try {
-    if (!supabaseUrl || !supabaseAnonKey) {
-      throw new Error("Missing Supabase environment variables");
-    }
-
-    const client = createClient(supabaseUrl, supabaseAnonKey, {
+    const client = createClient(supabaseUrl!, supabaseAnonKey!, {
       auth: {
         autoRefreshToken: true,
         persistSession: true,
@@ -76,12 +89,14 @@ export async function getSupabaseClient(): Promise<SupabaseClient> {
       error,
       errorName: error.name,
       errorMessage: error.message,
-      errorStack: error.stack
+      errorStack: error.stack,
+      context: import.meta.env.SSR ? 'server' : 'client',
+      mode: import.meta.env.MODE,
+      isProd: import.meta.env.PROD,
+      isDev: import.meta.env.DEV
     });
     
-    throw new Error(
-      `Supabase client initialization failed: ${error.message}\nContext: ${import.meta.env.SSR ? 'server' : 'client'}`
-    );
+    throw error;
   }
 }
 
