@@ -8,12 +8,6 @@ export const profileFormSchema = z.object({
   bio: optionalString(textFieldSchema({ max: 500 })),
   avatarUrl: urlSchema,
   visibility: visibilitySchema,
-  socialLinks: z.object({
-    twitter: urlSchema,
-    github: urlSchema,
-    linkedin: urlSchema,
-    website: urlSchema,
-  }).partial(),
   preferences: z.object({
     emailNotifications: z.boolean().default(true),
     marketingEmails: z.boolean().default(false),
