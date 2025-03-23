@@ -1,7 +1,7 @@
 // With `output: 'static'` configured:
 // export const prerender = false;
 import type { APIRoute } from "astro";
-import { supabase } from "../../../lib/supabase";
+import { getSupabaseClient } from "../../../lib/supabase";
 
 // Disable static optimization for API routes
 export const prerender = false;
@@ -23,6 +23,9 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       console.error("[Auth API] Missing credentials");
       return new Response("Email and password are required", { status: 400 });
     }
+
+    // Initialize Supabase client
+    const supabase = await getSupabaseClient();
 
     // Debug Supabase client
     console.log("[Auth API] Supabase client status:", {
