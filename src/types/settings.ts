@@ -1,3 +1,11 @@
+import type {
+  ProfileFormData,
+  SecurityFormData,
+  NotificationFormData,
+  PrivacyFormData,
+  AppearanceFormData,
+} from '@/lib/schemas';
+
 export enum NotificationFrequency {
   DAILY = 'daily',
   WEEKLY = 'weekly',
@@ -22,40 +30,15 @@ export interface PrivacySettings {
 }
 
 export interface SettingsFormData {
-  // Profile settings
-  fullName: string;
-  email: string;
-  bio: string;
-
-  // Notification settings
-  emailNotifications: boolean;
-  pushNotifications: boolean;
-  weeklyDigest: boolean;
-  marketingEmails: boolean;
-
-  // Privacy settings
-  isPublic: boolean;
-  showEmail: boolean;
-  showLocation: boolean;
-  allowIndexing: boolean;
-  dataCollection: boolean;
-
-  // Security settings
-  currentPassword?: string;
-  newPassword?: string;
-  confirmPassword?: string;
-  twoFactorEnabled: boolean;
-  recoveryEmail: string;
-
-  // Appearance settings
-  theme: 'light' | 'dark' | 'system';
-  fontSize: 'small' | 'medium' | 'large';
-  reducedMotion: boolean;
-  highContrast: boolean;
+  profile?: Partial<ProfileFormData>;
+  security?: Partial<SecurityFormData>;
+  notifications?: Partial<NotificationFormData>;
+  privacy?: Partial<PrivacyFormData>;
+  appearance?: Partial<AppearanceFormData>;
 }
 
-export type SettingsApiResponse = {
+export interface SettingsApiResponse {
   success: boolean;
   data?: SettingsFormData;
   error?: string;
-}; 
+} 
