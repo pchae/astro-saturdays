@@ -1,10 +1,18 @@
 import type {
   ProfileFormData,
+} from '@/lib/schemas/settings/profile';
+import type {
   SecurityFormData,
+} from '@/lib/schemas/settings/security';
+import type {
   NotificationFormData,
+} from '@/lib/schemas/settings/notifications';
+import type {
   PrivacyFormData,
+} from '@/lib/schemas/settings/privacy';
+import type {
   AppearanceFormData,
-} from '@/lib/schemas/settings';
+} from '@/lib/schemas/settings/appearance';
 
 interface SettingsData {
   profile?: ProfileFormData;

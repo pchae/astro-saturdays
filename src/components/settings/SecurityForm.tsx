@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { useSecurityForm } from './useSettingsForm';
 import { useUser } from '@/lib/hooks/useUser';
-import type { SecurityFormData } from '@/lib/schemas/settings';
+import type { SecurityFormData } from '@/lib/schemas/settings/security';
 
 interface SecurityFormProps {
   initialData?: Partial<SecurityFormData>;
