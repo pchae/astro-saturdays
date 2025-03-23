@@ -1,76 +1,59 @@
 // With `output: 'static'` configured:
 // export const prerender = false;
 import type { APIRoute } from "astro";
-import { getSupabaseClient } from "../../../lib/supabase";
+import { supabase } from "../../../lib/supabase";
 
 // Disable static optimization for API routes
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
-  console.log("[Auth API] Starting signin request");
-  
   try {
     const formData = await request.formData();
     const email = formData.get("email")?.toString();
     const password = formData.get("password")?.toString();
 
-    console.log("[Auth API] Validating credentials:", { 
-      hasEmail: !!email, 
-      hasPassword: !!password 
-    });
-
     if (!email || !password) {
-      console.error("[Auth API] Missing credentials");
       return new Response("Email and password are required", { status: 400 });
     }
 
-    // Initialize Supabase client
-    const supabase = await getSupabaseClient();
-
-    // Debug Supabase client
-    console.log("[Auth API] Supabase client status:", {
-      hasAuth: !!supabase.auth,
-      hasSignInMethod: !!supabase.auth?.signInWithPassword,
-      authMethods: Object.keys(supabase.auth || {}),
-      isProxy: supabase.constructor.name === 'Object',
-      envUrl: !!import.meta.env.PUBLIC_SUPABASE_URL,
-      envKey: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-      context: import.meta.env.SSR ? 'server' : 'client'
-    });
-
-    console.log("[Auth API] Attempting Supabase signin");
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      console.error("[Auth API] Supabase signin error:", error);
-      return new Response(error.message, { status: 401 });
+      return new Response(error.message, { status: 400 });
     }
 
-    console.log("[Auth API] Signin successful, setting cookies");
-    const { access_token, refresh_token } = data.session;
-    
-    // Set cookies with Supabase-compatible settings
+    if (!data?.session) {
+      return new Response("Authentication failed - no session created", { status: 400 });
+    }
+
+    const { session } = data;
     const cookieOptions = {
       path: "/",
-      secure: import.meta.env.PROD, // Secure in production only
+      secure: import.meta.env.PROD,
       httpOnly: true,
       sameSite: "lax" as const,
-      maxAge: 60 * 60 * 24 * 7 // 1 week
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+      expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000)
     };
 
-    cookies.set("sb-access-token", access_token, cookieOptions);
-    cookies.set("sb-refresh-token", refresh_token, cookieOptions);
+    // Set auth cookies
+    cookies.set("sb-access-token", session.access_token, cookieOptions);
+    cookies.set("sb-refresh-token", session.refresh_token, cookieOptions);
     
-    console.log("[Auth API] Cookies set, redirecting to dashboard");
+    // Set session data
+    const sessionStr = JSON.stringify({
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      user: session.user,
+      expires_at: session.expires_at
+    });
+    cookies.set("sb-auth", encodeURIComponent(sessionStr), cookieOptions);
+
     return redirect("/dashboard");
-  } catch (error) {
-    console.error("[Auth API] Unexpected error:", error);
-    return new Response(
-      error instanceof Error ? error.message : "Internal Server Error", 
-      { status: 500 }
-    );
+  } catch (error: any) {
+    return new Response("An unexpected error occurred", { status: 500 });
   }
 };
