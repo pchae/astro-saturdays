@@ -1,10 +1,9 @@
 ---
 import DashboardLayout from "../layouts/Dashboard.astro";
-import DashboardHeader from "../components/DashboardHeader.astro";
-import DashboardNav from "../components/DashboardNav.astro";
-import SideBarLayout from "../components/react/SideBarLayout";
-import StatCard from "../components/StatCard.astro";
-import FighterSection from "../components/FighterSection.astro";
+import DashboardHeader from "../components/dashboard/DashboardHeader.astro";
+import DashboardNav from "../components/dashboard/DashboardNav.astro";
+import { StatCard } from "../components/ui/stat-card";
+import { FighterSection } from "../components/dashboard/fighter-section";
 import { checkAuth } from "../lib/auth";
 
 // Use the auth middleware
@@ -33,23 +32,26 @@ const ufcFighters = [
 ---
 
 <DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
-  <SideBarLayout />
-
   <DashboardNav />
 
   <section class="p-4 bg-black">
     <DashboardHeader />
 
     <!-- Stats -->
-    <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-8 gap-0">
+    <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-8 gap-4">
       {stats.map(stat => (
-        <StatCard stat={stat} />
+        <StatCard
+          client:load
+          name={stat.name}
+          value={stat.value}
+          unit={stat.unit}
+        />
       ))}
     </dl>
 
     <!-- Fighter sections -->
     <div class="pt-8">
-      <FighterSection title="UFC Fighters" fighters={ufcFighters} />
+      <FighterSection client:load title="UFC Fighters" fighters={ufcFighters} />
     </div>
   </section>
 </DashboardLayout>
