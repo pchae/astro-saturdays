@@ -28,7 +28,11 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     console.log("[Auth API] Supabase client status:", {
       hasAuth: !!supabase.auth,
       hasSignInMethod: !!supabase.auth?.signInWithPassword,
-      authMethods: Object.keys(supabase.auth || {})
+      authMethods: Object.keys(supabase.auth || {}),
+      isProxy: supabase.constructor.name === 'Object',
+      envUrl: !!import.meta.env.PUBLIC_SUPABASE_URL,
+      envKey: !!import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+      context: import.meta.env.SSR ? 'server' : 'client'
     });
 
     console.log("[Auth API] Attempting Supabase signin");
