@@ -4,7 +4,7 @@ import type {
   NotificationFormData,
   PrivacyFormData,
   AppearanceFormData,
-} from '@/lib/schemas';
+} from '@/lib/schemas/settings';
 
 export enum NotificationFrequency {
   DAILY = 'daily',
@@ -30,11 +30,11 @@ export interface PrivacySettings {
 }
 
 export interface SettingsFormData {
-  profile?: Partial<ProfileFormData>;
-  security?: Partial<SecurityFormData>;
-  notifications?: Partial<NotificationFormData>;
-  privacy?: Partial<PrivacyFormData>;
-  appearance?: Partial<AppearanceFormData>;
+  profile?: ProfileFormData;
+  security?: SecurityFormData;
+  notifications?: NotificationFormData;
+  privacy?: PrivacyFormData;
+  appearance?: AppearanceFormData;
 }
 
 export interface SettingsApiResponse {
