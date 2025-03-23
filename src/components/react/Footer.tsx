@@ -19,7 +19,7 @@ const navigation = {
   
   export default function Footer() {
     return (
-        <footer id="footer" className="bg-gray-800 border-t border-gray-50">
+        <footer id="footer" className="bg-gray-900 border-t border-gray-50">
             <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
                 <div className="flex justify-center gap-x-6 md:order-2">
                     {navigation.social.map((item) => (

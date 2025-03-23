@@ -23,8 +23,8 @@ export default function Contact() {
                 <h2 className="text-3xl font-bold tracking-tight leading-tight text-balance text-white sm:text-4xl">
                   Add a force multiplier to your product design
                 </h2>
-                <p className="mt-6 text-lg leading-normal text-pretty text-gray-200">
-                  Scale your capabilities with our Design Systems, functional prototypes, and usability testing.
+                <p className="mt-6 text-lg leading-normal text-pretty text-gray-300">
+                  Scale your capabilities with our Design systems and functional prototypes to achieve product market fit.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                   <Button
@@ -38,13 +38,13 @@ export default function Contact() {
                   </Button>
                 </div>
               </div>
-              <div className="relative mt-16 h-80 lg:mt-8">
+              <div className="relative my-auto">
                 <img
                   alt="Design system screenshot"
-                  src="/images/assets_5.webp"
-                  width={1500}
-                  height={1088}
-                  className="top-0 rounded-md"
+                  src="/img/0e33919ac2ff1ecaf5c2e46a967d0a9888eed786-1608x1206.avif"
+                  width={1606}
+                  height={1206}
+                  className=" rounded-md"
                 />
               </div>
             </div>
