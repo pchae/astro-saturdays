@@ -1,55 +1,131 @@
-import type { SettingsFormData, SettingsApiResponse } from '@/types/settings';
+import type {
+  ProfileFormData,
+  SecurityFormData,
+  NotificationFormData,
+  PrivacyFormData,
+  AppearanceFormData,
+} from "../schemas"
+import { supabase } from "../supabase"
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-const SETTINGS_ENDPOINT = `${API_BASE}/api/settings`;
+// Server-side Supabase functions
+export async function updateProfile(userId: string, data: Partial<ProfileFormData>) {
+  const { error } = await supabase
+    .from("user_profiles")
+    .update({
+      full_name: data.fullName,
+      bio: data.bio,
+      avatar_url: data.avatarUrl,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
 
-export class SettingsApiError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
-    this.name = 'SettingsApiError';
-  }
+  if (error) throw error
+  return { success: true }
 }
 
-export const settingsApi = {
-  async fetch(): Promise<SettingsFormData> {
-    const response = await fetch(SETTINGS_ENDPOINT);
-    
-    if (!response.ok) {
-      throw new SettingsApiError(
-        response.status,
-        'Failed to fetch settings'
-      );
-    }
+// Security Settings
+export async function updateSecurity(userId: string, data: Partial<SecurityFormData>) {
+  const { error } = await supabase
+    .from("user_security")
+    .update({
+      two_factor_enabled: data.twoFactorEnabled,
+      recovery_email: data.recoveryEmail,
+      security_questions: data.securityQuestions,
+      session_management: data.sessionManagement,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
 
-    const data: SettingsApiResponse = await response.json();
-    if (!data.success || !data.data) {
-      throw new SettingsApiError(500, data.error || 'Unknown error');
-    }
+  if (error) throw error
+  return { success: true }
+}
 
-    return data.data;
-  },
+// Notification Settings
+export async function updateNotifications(userId: string, data: Partial<NotificationFormData>) {
+  const { error } = await supabase
+    .from("user_notifications")
+    .update({
+      preferences: data.preferences,
+      global_settings: data.globalSettings,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
 
-  async update(settings: Partial<SettingsFormData>): Promise<SettingsFormData> {
-    const response = await fetch(SETTINGS_ENDPOINT, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
+  if (error) throw error
+  return { success: true }
+}
+
+// Privacy Settings
+export async function updatePrivacy(userId: string, data: Partial<PrivacyFormData>) {
+  const { error } = await supabase
+    .from("user_settings")
+    .update({
+      privacy: {
+        profileVisibility: data.profileVisibility,
+        activityVisibility: data.activityVisibility,
+        dataSharing: data.dataSharing,
+        contentPreferences: data.contentPreferences,
+        searchVisibility: data.searchVisibility,
       },
-      body: JSON.stringify(settings),
-    });
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
 
-    if (!response.ok) {
-      throw new SettingsApiError(
-        response.status,
-        'Failed to update settings'
-      );
-    }
+  if (error) throw error
+  return { success: true }
+}
 
-    const data: SettingsApiResponse = await response.json();
-    if (!data.success || !data.data) {
-      throw new SettingsApiError(500, data.error || 'Unknown error');
-    }
+// Appearance Settings
+export async function updateAppearance(userId: string, data: Partial<AppearanceFormData>) {
+  const { error } = await supabase
+    .from("user_settings")
+    .update({
+      theme: data.theme,
+      language: data.language,
+      accessibility: data.accessibility,
+      layout: data.layout,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId)
 
-    return data.data;
-  },
-}; 
+  if (error) throw error
+  return { success: true }
+}
+
+// Fetch all settings for a user
+export async function fetchUserSettings(userId: string) {
+  const { data: profile, error: profileError } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("id", userId)
+    .single()
+
+  const { data: settings, error: settingsError } = await supabase
+    .from("user_settings")
+    .select("*")
+    .eq("id", userId)
+    .single()
+
+  const { data: notifications, error: notificationsError } = await supabase
+    .from("user_notifications")
+    .select("*")
+    .eq("id", userId)
+    .single()
+
+  const { data: security, error: securityError } = await supabase
+    .from("user_security")
+    .select("*")
+    .eq("id", userId)
+    .single()
+
+  if (profileError || settingsError || notificationsError || securityError) {
+    throw new Error("Failed to fetch user settings")
+  }
+
+  return {
+    profile,
+    settings,
+    notifications,
+    security,
+  }
+} 
