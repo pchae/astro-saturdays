@@ -4,25 +4,124 @@ import { toast } from 'sonner';
 import { useUser } from '@/lib/hooks/useUser';
 import {
   profileFormSchema,
-  securityFormSchema,
-  notificationFormSchema,
-  privacyFormSchema,
-  appearanceFormSchema,
   type ProfileFormData,
-  type SecurityFormData,
-  type NotificationFormData,
-  type PrivacyFormData,
-  type AppearanceFormData,
-} from '@/lib/schemas';
+} from '@/lib/schemas/settings/profile';
 import {
-  updateProfile,
-  updateSecurity,
-  updateNotifications,
-  updatePrivacy,
-  updateAppearance,
-  fetchUserSettings,
-} from '@/lib/api/settings';
+  securityFormSchema,
+  type SecurityFormData,
+} from '@/lib/schemas/settings/security';
+import {
+  notificationFormSchema,
+  type NotificationFormData,
+} from '@/lib/schemas/settings/notifications';
+import {
+  privacyFormSchema,
+  type PrivacyFormData,
+} from '@/lib/schemas/settings/privacy';
+import {
+  appearanceFormSchema,
+  type AppearanceFormData,
+} from '@/lib/schemas/settings/appearance';
 import { settingsApi } from '@/lib/api/client';
+
+const defaultProfileData: ProfileFormData = {
+  fullName: '',
+  email: '',
+  bio: '',
+  avatarUrl: '',
+  visibility: 'public',
+  preferences: {
+    emailNotifications: true,
+    marketingEmails: false,
+  },
+};
+
+const defaultSecurityData: SecurityFormData = {
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: '',
+  twoFactorEnabled: false,
+  sessionManagement: {
+    rememberMe: true,
+    sessionTimeout: 30,
+    allowMultipleSessions: false,
+  },
+};
+
+const defaultNotificationData: NotificationFormData = {
+  preferences: {},
+  globalSettings: {
+    doNotDisturb: {
+      enabled: false,
+      startTime: '22:00',
+      endTime: '07:00',
+      timezone: 'UTC',
+    },
+    pauseAll: false,
+    digestEmail: {
+      enabled: true,
+      frequency: 'daily',
+      time: '09:00',
+    },
+  },
+};
+
+const defaultPrivacyData: PrivacyFormData = {
+  profileVisibility: 'public',
+  activityVisibility: {
+    likes: 'public',
+    comments: 'public',
+    followers: 'public',
+    following: 'public',
+  },
+  dataSharing: {
+    allowDataCollection: true,
+    dataUsageLevel: 'functional',
+    shareWithPartners: false,
+    personalizedAds: false,
+  },
+  contentPreferences: {
+    showSensitiveContent: false,
+    contentFilters: [],
+    ageRestriction: true,
+  },
+  searchVisibility: {
+    allowProfileInSearch: true,
+    allowEmailSearch: false,
+    allowPhoneSearch: false,
+  },
+  blockList: [],
+  cookiePreferences: {
+    functional: true,
+    essential: true,
+    analytics: false,
+    advertising: false,
+    thirdParty: false,
+  },
+};
+
+const defaultAppearanceData: AppearanceFormData = {
+  layout: {
+    density: 'comfortable',
+    sidebarPosition: 'left',
+    showAvatars: true,
+    enableAnimations: true,
+  },
+  theme: 'system',
+  language: 'en',
+  accessibility: {
+    colorScheme: 'default',
+    reduceMotion: false,
+    highContrast: false,
+    fontSize: 'base',
+  },
+  dateTimeFormat: {
+    timeZone: 'UTC',
+    dateFormat: 'MM/DD/YYYY',
+    timeFormat: '12h',
+    firstDayOfWeek: 'monday',
+  },
+};
 
 // Profile Form Hook
 export function useProfileForm(initialData?: Partial<ProfileFormData>) {
@@ -30,6 +129,7 @@ export function useProfileForm(initialData?: Partial<ProfileFormData>) {
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
+      ...defaultProfileData,
       ...initialData,
     },
   });
@@ -58,6 +158,7 @@ export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
   const form = useForm<SecurityFormData>({
     resolver: zodResolver(securityFormSchema),
     defaultValues: {
+      ...defaultSecurityData,
       ...initialData,
     },
   });
@@ -86,6 +187,7 @@ export function useNotificationsForm(initialData?: Partial<NotificationFormData>
   const form = useForm<NotificationFormData>({
     resolver: zodResolver(notificationFormSchema),
     defaultValues: {
+      ...defaultNotificationData,
       ...initialData,
     },
   });
@@ -94,10 +196,10 @@ export function useNotificationsForm(initialData?: Partial<NotificationFormData>
     try {
       if (!user?.id) throw new Error("User not found");
       await settingsApi.update({ notifications: data });
-      toast.success("Notification preferences updated successfully");
+      toast.success("Notification settings updated successfully");
     } catch (error) {
-      console.error("Failed to update notification preferences:", error);
-      toast.error("Failed to update notification preferences");
+      console.error("Failed to update notification settings:", error);
+      toast.error("Failed to update notification settings");
     }
   };
 
@@ -114,6 +216,7 @@ export function usePrivacyForm(initialData?: Partial<PrivacyFormData>) {
   const form = useForm<PrivacyFormData>({
     resolver: zodResolver(privacyFormSchema),
     defaultValues: {
+      ...defaultPrivacyData,
       ...initialData,
     },
   });
@@ -142,6 +245,7 @@ export function useAppearanceForm(initialData?: Partial<AppearanceFormData>) {
   const form = useForm<AppearanceFormData>({
     resolver: zodResolver(appearanceFormSchema),
     defaultValues: {
+      ...defaultAppearanceData,
       ...initialData,
     },
   });

@@ -9,7 +9,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useProfileForm } from './useSettingsForm';
-import type { ProfileFormData } from '@/lib/schemas';
+import type { ProfileFormData } from '@/lib/schemas/settings/profile';
 
 interface ProfileFormProps {
   initialData?: Partial<ProfileFormData>;
@@ -81,7 +81,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                       />
                     </FormControl>
                     <FormDescription>
-                      Brief description for your profile. Maximum 500 characters.
+                      Brief description for your profile.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -111,18 +111,18 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Profile Visibility</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select visibility" />
                         </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="public">Public</SelectItem>
-                        <SelectItem value="private">Private</SelectItem>
-                        <SelectItem value="followers">Followers Only</SelectItem>
-                      </SelectContent>
-                    </Select>
+                        <SelectContent>
+                          <SelectItem value="public">Public</SelectItem>
+                          <SelectItem value="private">Private</SelectItem>
+                          <SelectItem value="followers">Followers Only</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                     <FormDescription>
                       Control who can see your profile.
                     </FormDescription>
@@ -132,68 +132,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               />
             </div>
 
-            {/* Social Links */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Social Links</h3>
-              
-              <FormField
-                control={form.control}
-                name="socialLinks.twitter"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Twitter</FormLabel>
-                    <FormControl>
-                      <Input type="url" placeholder="https://twitter.com/username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="socialLinks.github"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>GitHub</FormLabel>
-                    <FormControl>
-                      <Input type="url" placeholder="https://github.com/username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="socialLinks.linkedin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>LinkedIn</FormLabel>
-                    <FormControl>
-                      <Input type="url" placeholder="https://linkedin.com/in/username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="socialLinks.website"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Personal Website</FormLabel>
-                    <FormControl>
-                      <Input type="url" placeholder="https://your-website.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            {/* Preferences */}
+            {/* Email Preferences */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">Email Preferences</h3>
               
@@ -205,7 +144,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                     <div className="space-y-0.5">
                       <FormLabel className="text-base">Email Notifications</FormLabel>
                       <FormDescription>
-                        Receive email notifications about activity.
+                        Receive email notifications about your account activity.
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -239,14 +178,12 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                 )}
               />
             </div>
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Saving..." : "Save changes"}
-              </Button>
-            </div>
           </CardContent>
         </Card>
+
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Saving...' : 'Save changes'}
+        </Button>
       </form>
     </Form>
   );

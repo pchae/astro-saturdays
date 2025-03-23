@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useNotificationsForm } from './useSettingsForm';
-import type { NotificationFormData } from '@/lib/schemas';
+import type { NotificationFormData } from '@/lib/schemas/settings';
 
 interface NotificationsFormProps {
   initialData?: Partial<NotificationFormData>;
