@@ -8,12 +8,37 @@ import { checkAuth } from "../lib/auth";
 
 // Use the auth middleware
 export const prerender = false;
-const authResult = await checkAuth(Astro);
-if (authResult.redirect) return authResult.redirect;
 
-// Get user data from session
-const user = authResult.session?.data?.user;
-const email = user?.email;
+console.log("[Dashboard] Page load started");
+
+// Log all request headers for debugging
+const headers = Object.fromEntries(
+  Array.from(Astro.request.headers.entries())
+);
+console.log("[Dashboard] All request headers:", headers);
+
+// Log cookie details
+const cookieHeader = Astro.request.headers.get('cookie');
+console.log("[Dashboard] Raw cookie header:", cookieHeader);
+
+console.log("[Dashboard] Individual cookies:", {
+  access: {
+    value: Astro.cookies.get("sb-access-token")?.value,
+    length: Astro.cookies.get("sb-access-token")?.value?.length
+  },
+  refresh: {
+    value: Astro.cookies.get("sb-refresh-token")?.value,
+    length: Astro.cookies.get("sb-refresh-token")?.value?.length
+  },
+  session: {
+    value: Astro.cookies.get("sb-auth")?.value?.slice(0, 50) + "...",
+    length: Astro.cookies.get("sb-auth")?.value?.length
+  }
+});
+
+// Initialize variables
+let user;
+let email;
 
 // Dashboard data
 const stats = [
@@ -29,6 +54,37 @@ const ufcFighters = [
   { id: '2', name: 'Alex Pereira', organization: 'UFC', image: '/pfp/4705658.png' },
   { id: '3', name: 'Alexander Volkanovski', organization: 'UFC', image: '/pfp/3949584.png' },
 ];
+
+console.log("[Dashboard] Starting auth check");
+try {
+  const authResult = await checkAuth(Astro);
+  console.log("[Dashboard] Auth check completed:", {
+    hasSession: !!authResult.session,
+    hasRedirect: !!authResult.redirect,
+    sessionData: authResult.session ? {
+      hasUser: !!authResult.session.user,
+      userEmail: authResult.session.user?.email,
+      expiresAt: authResult.session.expires_at
+    } : null
+  });
+
+  if (authResult.redirect) {
+    console.log("[Dashboard] Auth check failed, redirecting to signin");
+    return authResult.redirect;
+  }
+
+  // Get user data from session
+  user = authResult.session?.data?.user;
+  email = user?.email;
+
+  console.log("[Dashboard] Auth successful, rendering page");
+} catch (error) {
+  console.error("[Dashboard] Error during auth check:", {
+    message: error.message,
+    stack: error.stack?.split('\n')[0]
+  });
+  return Astro.redirect("/signin");
+}
 ---
 
 <DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
