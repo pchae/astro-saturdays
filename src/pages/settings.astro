@@ -1,47 +1,26 @@
 ---
 import DashboardLayout from "../layouts/Dashboard.astro";
-import DashboardNav from "../components/dashboard/DashboardNav.astro";
-import SettingsTabs from "../components/SettingsTabs.astro";
-import ProfileSettings from "../components/ProfileSettings.astro";
-import SecuritySettings from "../components/SecuritySettings.astro";
-import NotificationSettings from "../components/NotificationSettings.astro";
+import { SettingsTabs } from "../components/settings/SettingsTabs";
 import { checkAuth } from "../lib/auth";
 
-// Use the auth middleware
+// Check authentication
 export const prerender = false;
 const authResult = await checkAuth(Astro);
 if (authResult.redirect) return authResult.redirect;
 
-// Get user data from session
+// Get user data for layout
 const user = authResult.session?.data?.user;
-const email = user?.email;
+if (!user) {
+  return Astro.redirect("/signin");
+}
 
-// Get active tab from URL hash or default to profile
-const url = new URL(Astro.request.url);
-const activeTab = url.hash.substring(1) || 'profile';
+// Get the active tab from URL hash or default to 'profile'
+const hash = Astro.url.hash.slice(1) || 'profile';
 ---
 
-<DashboardLayout title="Settings - Saturdays.io" email={email} user={user}>
-
-  <DashboardNav />
-
-  <section class="p-4 bg-black">
-    <h1 class="text-2xl font-bold text-white mb-8">Account Settings</h1>
-    
-    <!-- Tab navigation -->
-    <SettingsTabs activeTab={activeTab} />
-    
-    <!-- Tab content -->
-    <div data-tab-content="profile" class={activeTab !== 'profile' ? 'hidden' : ''}>
-      <ProfileSettings user={user} />
-    </div>
-    
-    <div data-tab-content="security" class={activeTab !== 'security' ? 'hidden' : ''}>
-      <SecuritySettings user={user} />
-    </div>
-    
-    <div data-tab-content="notifications" class={activeTab !== 'notifications' ? 'hidden' : ''}>
-      <NotificationSettings user={user} />
-    </div>
-  </section>
+<DashboardLayout title="Settings - Saturdays.io" email={user.email} user={user}>
+  <div class="container py-10">
+    <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
+    <SettingsTabs client:load defaultTab={hash} />
+  </div>
 </DashboardLayout>
