@@ -1,100 +1,47 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { updateUserProfile } from '@/lib/api/user';
-import type { SettingsFormData } from '@/types/settings';
-import * as z from 'zod';
+import { useUser } from '@/lib/hooks/useUser';
+import {
+  profileFormSchema,
+  securityFormSchema,
+  notificationFormSchema,
+  privacyFormSchema,
+  appearanceFormSchema,
+  type ProfileFormData,
+  type SecurityFormData,
+  type NotificationFormData,
+  type PrivacyFormData,
+  type AppearanceFormData,
+} from '@/lib/schemas';
+import {
+  updateProfile,
+  updateSecurity,
+  updateNotifications,
+  updatePrivacy,
+  updateAppearance,
+  fetchUserSettings,
+} from '@/lib/api/settings';
+import { settingsApi } from '@/lib/api/client';
 
-const settingsFormSchema = z.object({
-  // Profile settings
-  fullName: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  bio: z.string().max(160, 'Bio must be less than 160 characters').optional(),
-
-  // Notification settings
-  emailNotifications: z.boolean(),
-  pushNotifications: z.boolean(),
-  weeklyDigest: z.boolean(),
-  marketingEmails: z.boolean(),
-
-  // Privacy settings
-  isPublic: z.boolean(),
-  showEmail: z.boolean(),
-  showLocation: z.boolean(),
-  allowIndexing: z.boolean(),
-  dataCollection: z.boolean(),
-
-  // Security settings
-  currentPassword: z.string().optional(),
-  newPassword: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .optional(),
-  confirmPassword: z.string().optional(),
-  twoFactorEnabled: z.boolean(),
-  recoveryEmail: z.string().email('Invalid recovery email'),
-
-  // Appearance settings
-  theme: z.enum(['light', 'dark', 'system']),
-  fontSize: z.enum(['small', 'medium', 'large']),
-  reducedMotion: z.boolean(),
-  highContrast: z.boolean(),
-}).refine((data) => {
-  if (data.newPassword && !data.currentPassword) {
-    return false;
-  }
-  if (data.newPassword !== data.confirmPassword) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Passwords don't match or current password is required",
-  path: ['confirmPassword'],
-});
-
-const defaultValues: SettingsFormData = {
-  fullName: '',
-  email: '',
-  bio: '',
-  emailNotifications: true,
-  pushNotifications: true,
-  weeklyDigest: true,
-  marketingEmails: false,
-  isPublic: false,
-  showEmail: false,
-  showLocation: false,
-  allowIndexing: true,
-  dataCollection: true,
-  twoFactorEnabled: false,
-  recoveryEmail: '',
-  theme: 'system',
-  fontSize: 'medium',
-  reducedMotion: false,
-  highContrast: false,
-};
-
-export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
-  const form = useForm<SettingsFormData>({
-    resolver: zodResolver(settingsFormSchema),
+// Profile Form Hook
+export function useProfileForm(initialData?: Partial<ProfileFormData>) {
+  const { user } = useUser();
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      ...defaultValues,
       ...initialData,
     },
   });
 
-  const onSubmit = async (data: SettingsFormData) => {
+  const onSubmit = async (data: ProfileFormData) => {
     try {
-      await updateUserProfile({
-        full_name: data.fullName,
-        email: data.email,
-        bio: data.bio || '',
-      });
-      
-      // Here you would typically update other settings in their respective tables
-      // For now, we'll just show a success message
-      toast.success('Settings updated successfully');
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update({ profile: data });
+      toast.success("Profile updated successfully");
     } catch (error) {
-      console.error('Failed to update settings:', error);
-      toast.error('Failed to update settings. Please try again.');
+      console.error("Failed to update profile:", error);
+      toast.error("Failed to update profile");
     }
   };
 
@@ -102,5 +49,131 @@ export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
     form,
     onSubmit: form.handleSubmit(onSubmit),
     isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Security Form Hook
+export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
+  const { user } = useUser();
+  const form = useForm<SecurityFormData>({
+    resolver: zodResolver(securityFormSchema),
+    defaultValues: {
+      ...initialData,
+    },
+  });
+
+  const onSubmit = async (data: SecurityFormData) => {
+    try {
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update({ security: data });
+      toast.success("Security settings updated successfully");
+    } catch (error) {
+      console.error("Failed to update security settings:", error);
+      toast.error("Failed to update security settings");
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Notifications Form Hook
+export function useNotificationsForm(initialData?: Partial<NotificationFormData>) {
+  const { user } = useUser();
+  const form = useForm<NotificationFormData>({
+    resolver: zodResolver(notificationFormSchema),
+    defaultValues: {
+      ...initialData,
+    },
+  });
+
+  const onSubmit = async (data: NotificationFormData) => {
+    try {
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update({ notifications: data });
+      toast.success("Notification preferences updated successfully");
+    } catch (error) {
+      console.error("Failed to update notification preferences:", error);
+      toast.error("Failed to update notification preferences");
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Privacy Form Hook
+export function usePrivacyForm(initialData?: Partial<PrivacyFormData>) {
+  const { user } = useUser();
+  const form = useForm<PrivacyFormData>({
+    resolver: zodResolver(privacyFormSchema),
+    defaultValues: {
+      ...initialData,
+    },
+  });
+
+  const onSubmit = async (data: PrivacyFormData) => {
+    try {
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update({ privacy: data });
+      toast.success("Privacy settings updated successfully");
+    } catch (error) {
+      console.error("Failed to update privacy settings:", error);
+      toast.error("Failed to update privacy settings");
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Appearance Form Hook
+export function useAppearanceForm(initialData?: Partial<AppearanceFormData>) {
+  const { user } = useUser();
+  const form = useForm<AppearanceFormData>({
+    resolver: zodResolver(appearanceFormSchema),
+    defaultValues: {
+      ...initialData,
+    },
+  });
+
+  const onSubmit = async (data: AppearanceFormData) => {
+    try {
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update({ appearance: data });
+      toast.success("Appearance settings updated successfully");
+    } catch (error) {
+      console.error("Failed to update appearance settings:", error);
+      toast.error("Failed to update appearance settings");
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Hook to fetch all settings
+export function useSettings() {
+  const { user } = useUser();
+
+  const fetchSettings = async () => {
+    if (!user?.id) throw new Error("User not found");
+    return await settingsApi.fetch();
+  };
+
+  return {
+    fetchSettings,
   };
 } 
