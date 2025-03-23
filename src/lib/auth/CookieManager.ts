@@ -43,6 +43,18 @@ export class AuthCookieManager {
   }
 
   /**
+   * Validate session data structure
+   */
+  private validateSessionData(data: any): data is SessionData {
+    if (!data || typeof data !== 'object') return false;
+    if (!data.user || typeof data.user !== 'object') return false;
+    if (!data.tokens || typeof data.tokens !== 'object') return false;
+    if (typeof data.expiresAt !== 'number') return false;
+    if (!data.tokens.accessToken || !data.tokens.refreshToken) return false;
+    return true;
+  }
+
+  /**
    * Get auth tokens from cookies
    */
   getAuthTokens(): CookieResult<AuthTokens> {
@@ -105,7 +117,23 @@ export class AuthCookieManager {
         return { data: null, error: null };
       }
 
-      const sessionData = JSON.parse(decodeURIComponent(sessionCookie)) as SessionData;
+      let sessionData: any;
+      try {
+        sessionData = JSON.parse(decodeURIComponent(sessionCookie));
+      } catch (e) {
+        return {
+          data: null,
+          error: new Error('Failed to parse session data: Invalid format')
+        };
+      }
+
+      if (!this.validateSessionData(sessionData)) {
+        return {
+          data: null,
+          error: new Error('Invalid session data structure')
+        };
+      }
+
       return { data: sessionData, error: null };
     } catch (error) {
       return {
@@ -120,14 +148,28 @@ export class AuthCookieManager {
    */
   setSessionData(data: SessionData): CookieResult<void> {
     try {
+      if (!this.validateSessionData(data)) {
+        return {
+          data: null,
+          error: new Error('Invalid session data structure')
+        };
+      }
+
       const options = { ...AuthCookieManager.DEFAULT_OPTIONS, ...this.options };
-      const encodedSession = encodeURIComponent(JSON.stringify(data));
       
-      this.cookies.set(
-        AuthCookieManager.COOKIE_NAMES.SESSION, 
-        encodedSession, 
-        options
-      );
+      try {
+        const sessionStr = JSON.stringify(data);
+        this.cookies.set(
+          AuthCookieManager.COOKIE_NAMES.SESSION, 
+          sessionStr, 
+          options
+        );
+      } catch (e) {
+        return {
+          data: null,
+          error: new Error('Failed to serialize session data')
+        };
+      }
 
       return { data: null, error: null };
     } catch (error) {

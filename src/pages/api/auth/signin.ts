@@ -117,10 +117,31 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     });
 
     logApiResponse(200)
-    return redirect("/dashboard");
+    return new Response(
+      JSON.stringify({
+        success: true,
+        redirect: "/dashboard"
+      }),
+      { 
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   } catch (error: any) {
     console.error("[API Error]", error);
     logApiResponse(500)
-    return new Response("An unexpected error occurred", { status: 500 });
+    return new Response(
+      JSON.stringify({
+        error: "An unexpected error occurred"
+      }), 
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
   }
 };
