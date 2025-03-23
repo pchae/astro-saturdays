@@ -1,5 +1,6 @@
 import { supabase } from "./supabase";
 import type { AstroGlobal } from 'astro';
+import { AuthCookieManager } from "./auth/CookieManager";
 
 interface AuthResult {
   session: any | null;
@@ -13,24 +14,17 @@ interface SessionData {
   expires_at: number;
 }
 
-const getCookieOptions = (Astro: AstroGlobal) => {
-  const options = {
-    path: "/",
-    secure: import.meta.env.PROD || Astro.url.protocol === 'https:',
-    httpOnly: true,
-    sameSite: "lax" as const,
-    maxAge: 60 * 60 * 24 * 7 // 1 week
-  };
+const SESSION_STATES = {
+  init: 0,
+  refresh: 0,
+  expired: 0,
+  error: 0
+}
 
-  console.log("[Cookie Pattern] Cookie options consistency check", {
-    source: "auth.ts",
-    options,
-    url: Astro.url.pathname,
-    environment: import.meta.env.MODE
-  });
-
-  return options;
-};
+function logSessionState(state: keyof typeof SESSION_STATES) {
+  SESSION_STATES[state]++
+  console.log(`[Session Stats] States:`, SESSION_STATES)
+}
 
 /**
  * Middleware function to check authentication status
@@ -38,29 +32,30 @@ const getCookieOptions = (Astro: AstroGlobal) => {
  * @returns Session data and redirect if needed
  */
 export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
+  logSessionState('init')
   console.log("[Auth Pattern] Starting auth check", {
     url: Astro.url.pathname,
     timestamp: new Date().toISOString()
   });
 
   try {
-    const accessToken = Astro.cookies.get("sb-access-token");
-    const refreshToken = Astro.cookies.get("sb-refresh-token");
-    const sessionCookie = Astro.cookies.get("sb-auth");
+    const cookieManager = new AuthCookieManager(Astro);
+    const { data: tokens, error: tokenError } = cookieManager.getAuthTokens();
+    const { data: sessionData, error: sessionError } = cookieManager.getSessionData();
 
     console.log("[Cookie Pattern] Auth check cookie state", {
-      hasAccessToken: !!accessToken?.value,
-      hasRefreshToken: !!refreshToken?.value,
-      hasSessionCookie: !!sessionCookie?.value,
+      hasAccessToken: !!tokens?.accessToken,
+      hasRefreshToken: !!tokens?.refreshToken,
+      hasSessionCookie: !!sessionData,
       url: Astro.url.pathname
     });
 
     // If no tokens or session, redirect to signin
-    if (!accessToken?.value || !refreshToken?.value || !sessionCookie?.value) {
+    if (!tokens?.accessToken || !tokens?.refreshToken || !sessionData) {
       console.log("[Auth Pattern] Missing required cookies", {
-        missingAccessToken: !accessToken?.value,
-        missingRefreshToken: !refreshToken?.value,
-        missingSessionCookie: !sessionCookie?.value
+        missingAccessToken: !tokens?.accessToken,
+        missingRefreshToken: !tokens?.refreshToken,
+        missingSessionData: !sessionData
       });
       return {
         session: null,
@@ -69,24 +64,21 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
     }
 
     try {
-      // Parse session data
-      const sessionData = JSON.parse(decodeURIComponent(sessionCookie.value));
-
       console.log("[Auth Pattern] Session state check", {
-        hasExpiry: !!sessionData.expires_at,
-        isExpired: Date.now() > sessionData.expires_at * 1000,
-        timeToExpiry: sessionData.expires_at * 1000 - Date.now()
+        hasExpiry: !!sessionData.expiresAt,
+        isExpired: Date.now() > sessionData.expiresAt * 1000,
+        timeToExpiry: sessionData.expiresAt * 1000 - Date.now()
       });
 
       // Check if session is expired
-      if (Date.now() > sessionData.expires_at * 1000) {
+      if (Date.now() > sessionData.expiresAt * 1000) {
         console.log("[Auth Pattern] Attempting session refresh", {
           timestamp: new Date().toISOString()
         });
 
         // Try to refresh the session
         const { data, error } = await supabase.auth.refreshSession({
-          refresh_token: refreshToken.value
+          refresh_token: tokens.refreshToken
         });
 
         if (error || !data.session) {
@@ -94,7 +86,12 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
             error: error?.message,
             hasSession: !!data?.session
           });
-          clearAuthCookies(Astro);
+          
+          const { error: clearError } = cookieManager.clearAuthCookies();
+          if (clearError) {
+            console.error("[Auth Pattern] Failed to clear cookies during refresh", clearError);
+          }
+          
           return {
             session: null,
             redirect: Astro.redirect("/signin")
@@ -105,8 +102,38 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
           newExpiryTime: data.session.expires_at
         });
 
-        // Update cookies with new session data
-        updateAuthCookies(Astro, data.session);
+        // Update auth tokens
+        const tokenResult = cookieManager.setAuthTokens({
+          accessToken: data.session.access_token,
+          refreshToken: data.session.refresh_token
+        });
+
+        if (tokenResult.error) {
+          console.error("[Auth Pattern] Failed to update tokens after refresh", tokenResult.error);
+          return {
+            session: null,
+            redirect: Astro.redirect("/signin")
+          };
+        }
+
+        // Update session data
+        const sessionResult = cookieManager.setSessionData({
+          user: data.session.user,
+          tokens: {
+            accessToken: data.session.access_token,
+            refreshToken: data.session.refresh_token
+          },
+          expiresAt: data.session.expires_at ?? Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) // Default to 1 week if not provided
+        });
+
+        if (sessionResult.error) {
+          console.error("[Auth Pattern] Failed to update session after refresh", sessionResult.error);
+          return {
+            session: null,
+            redirect: Astro.redirect("/signin")
+          };
+        }
+
         return {
           session: {
             data: {
@@ -124,15 +151,20 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
 
       // Set the session
       const { data: sessionResult, error: sessionError } = await supabase.auth.setSession({
-        access_token: accessToken.value,
-        refresh_token: refreshToken.value
+        access_token: tokens.accessToken,
+        refresh_token: tokens.refreshToken
       });
 
       if (sessionError) {
         console.log("[Auth Pattern] Session set failed", {
           error: sessionError.message
         });
-        clearAuthCookies(Astro);
+        
+        const { error: clearError } = cookieManager.clearAuthCookies();
+        if (clearError) {
+          console.error("[Auth Pattern] Failed to clear cookies after session error", clearError);
+        }
+        
         return {
           session: null,
           redirect: Astro.redirect("/signin")
@@ -158,7 +190,12 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
         type: error instanceof Error ? error.name : typeof error,
         message: error instanceof Error ? error.message : 'Unknown error'
       });
-      clearAuthCookies(Astro);
+      
+      const { error: clearError } = cookieManager.clearAuthCookies();
+      if (clearError) {
+        console.error("[Auth Pattern] Failed to clear cookies after error", clearError);
+      }
+      
       return {
         session: null,
         redirect: Astro.redirect("/signin")
@@ -169,7 +206,18 @@ export async function checkAuth(Astro: AstroGlobal): Promise<AuthResult> {
       type: error instanceof Error ? error.name : typeof error,
       message: error instanceof Error ? error.message : 'Unknown error'
     });
-    clearAuthCookies(Astro);
+    
+    // Try to clear cookies even in case of fatal error
+    try {
+      const cookieManager = new AuthCookieManager(Astro);
+      const { error: clearError } = cookieManager.clearAuthCookies();
+      if (clearError) {
+        console.error("[Auth Pattern] Failed to clear cookies after fatal error", clearError);
+      }
+    } catch (e) {
+      console.error("[Auth Pattern] Failed to create cookie manager after fatal error", e);
+    }
+    
     return {
       session: null,
       redirect: Astro.redirect("/signin")
@@ -185,6 +233,9 @@ function clearAuthCookies(Astro: AstroGlobal) {
   Astro.cookies.delete("sb-access-token", cookieOptions);
   Astro.cookies.delete("sb-refresh-token", cookieOptions);
   Astro.cookies.delete("sb-auth", cookieOptions);
+  logCookieOp('delete')
+  logCookieOp('delete')
+  logCookieOp('delete')
 }
 
 function updateAuthCookies(Astro: AstroGlobal, session: any) {
@@ -213,6 +264,9 @@ function updateAuthCookies(Astro: AstroGlobal, session: any) {
   Astro.cookies.set("sb-access-token", session.access_token, cookieOptions);
   Astro.cookies.set("sb-refresh-token", session.refresh_token, cookieOptions);
   Astro.cookies.set("sb-auth", encodedSession, cookieOptions);
+  logCookieOp('set')
+  logCookieOp('set')
+  logCookieOp('set')
 
   console.log("[Cookie Pattern] Cookies updated successfully", {
     cookieCount: 3,
