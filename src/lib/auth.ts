@@ -229,20 +229,19 @@ function clearAuthCookies(Astro: AstroGlobal) {
   console.log("[Cookie Pattern] Clearing auth cookies", {
     url: Astro.url.pathname
   });
-  const cookieOptions = getCookieOptions(Astro);
-  Astro.cookies.delete("sb-access-token", cookieOptions);
-  Astro.cookies.delete("sb-refresh-token", cookieOptions);
-  Astro.cookies.delete("sb-auth", cookieOptions);
-  logCookieOp('delete')
-  logCookieOp('delete')
-  logCookieOp('delete')
+  
+  const cookieManager = new AuthCookieManager(Astro);
+  const { error } = cookieManager.clearAuthCookies();
+  
+  if (error) {
+    console.error("[Cookie Pattern] Failed to clear cookies", error);
+  }
 }
 
 function updateAuthCookies(Astro: AstroGlobal, session: any) {
   console.log("[Cookie Pattern] Updating auth cookies", {
     url: Astro.url.pathname
   });
-  const cookieOptions = getCookieOptions(Astro);
 
   if (!session?.access_token || !session?.refresh_token) {
     console.log("[Cookie Pattern] Invalid session for cookie update", {
@@ -252,24 +251,33 @@ function updateAuthCookies(Astro: AstroGlobal, session: any) {
     throw new Error("Invalid session for cookie update");
   }
 
-  const sessionStr = JSON.stringify({
-    access_token: session.access_token,
-    refresh_token: session.refresh_token,
+  const cookieManager = new AuthCookieManager(Astro);
+  
+  // Update auth tokens
+  const tokenResult = cookieManager.setAuthTokens({
+    accessToken: session.access_token,
+    refreshToken: session.refresh_token
+  });
+
+  if (tokenResult.error) {
+    console.error("[Cookie Pattern] Failed to update auth tokens", tokenResult.error);
+    return;
+  }
+
+  // Update session data
+  const sessionResult = cookieManager.setSessionData({
     user: session.user,
-    expires_at: session.expires_at
+    tokens: {
+      accessToken: session.access_token,
+      refreshToken: session.refresh_token
+    },
+    expiresAt: session.expires_at ?? Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) // Default to 1 week
   });
 
-  const encodedSession = encodeURIComponent(sessionStr);
+  if (sessionResult.error) {
+    console.error("[Cookie Pattern] Failed to update session data", sessionResult.error);
+    return;
+  }
 
-  Astro.cookies.set("sb-access-token", session.access_token, cookieOptions);
-  Astro.cookies.set("sb-refresh-token", session.refresh_token, cookieOptions);
-  Astro.cookies.set("sb-auth", encodedSession, cookieOptions);
-  logCookieOp('set')
-  logCookieOp('set')
-  logCookieOp('set')
-
-  console.log("[Cookie Pattern] Cookies updated successfully", {
-    cookieCount: 3,
-    sessionDataSize: sessionStr.length
-  });
+  console.log("[Cookie Pattern] Cookies updated successfully");
 } 
