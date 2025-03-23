@@ -63,25 +63,19 @@ export async function getSupabaseClient(): Promise<SupabaseClient> {
       }
     });
 
-    // Test the client initialization
-    const { data: { user }, error: testError } = await client.auth.getUser();
-    
+    // Verify auth methods are available
     console.log("[Supabase] Client initialization result:", {
-      hasError: !!testError,
-      errorMessage: testError?.message,
-      hasUser: !!user,
       hasAuth: !!client.auth,
       authMethods: Object.keys(client.auth || {}),
       hasSignInWithPassword: !!client.auth?.signInWithPassword,
       clientType: client.constructor.name
     });
 
-    if (testError) {
-      console.error("[Supabase] Client test failed:", testError);
-      throw testError;
+    if (!client.auth?.signInWithPassword) {
+      throw new Error("Supabase client initialized but auth.signInWithPassword is not available");
     }
 
-    console.log("[Supabase] Client initialized and tested successfully");
+    console.log("[Supabase] Client initialized successfully");
     supabaseInstance = client;
     return client;
   } catch (error: any) {
