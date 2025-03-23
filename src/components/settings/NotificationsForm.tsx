@@ -284,14 +284,14 @@ export function NotificationsForm({ initialData }: NotificationsFormProps) {
                 )}
               </div>
             ))}
+
+            <div className="flex justify-start">
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Saving..." : "Save changes"}
+              </Button>
+            </div>
           </CardContent>
         </Card>
-
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save changes"}
-          </Button>
-        </div>
       </form>
     </Form>
   );

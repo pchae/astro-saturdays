@@ -222,7 +222,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
               />
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-start">
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Saving..." : "Save changes"}
               </Button>

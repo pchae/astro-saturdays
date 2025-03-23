@@ -6,8 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { useProfileForm } from './useSettingsForm';
 import type { ProfileFormData } from '@/lib/schemas/settings/profile';
 
@@ -25,7 +23,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
           <CardHeader>
             <CardTitle>Profile Information</CardTitle>
             <CardDescription>
-              Update your profile information and preferences
+              Update your profile information
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -104,86 +102,14 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="visibility"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile Visibility</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select visibility" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="public">Public</SelectItem>
-                          <SelectItem value="private">Private</SelectItem>
-                          <SelectItem value="followers">Followers Only</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormDescription>
-                      Control who can see your profile.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
-            {/* Email Preferences */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Email Preferences</h3>
-              
-              <FormField
-                control={form.control}
-                name="preferences.emailNotifications"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Email Notifications</FormLabel>
-                      <FormDescription>
-                        Receive email notifications about your account activity.
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Saving...' : 'Save changes'}
+            </Button>
 
-              <FormField
-                control={form.control}
-                name="preferences.marketingEmails"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Marketing Emails</FormLabel>
-                      <FormDescription>
-                        Receive emails about new features and updates.
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
           </CardContent>
         </Card>
-
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Saving...' : 'Save changes'}
-        </Button>
       </form>
     </Form>
   );

@@ -29,11 +29,6 @@ const defaultProfileData: ProfileFormData = {
   email: '',
   bio: '',
   avatarUrl: '',
-  visibility: 'public',
-  preferences: {
-    emailNotifications: true,
-    marketingEmails: false,
-  },
 };
 
 const defaultSecurityData: SecurityFormData = {
