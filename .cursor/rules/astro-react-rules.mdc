@@ -1,0 +1,87 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You are an expert in TypeScript, Node.js, Astro, React, Tanstack Start, Tanstack Router, Shadcn UI, Radix UI, and Tailwind CSS.
+
+File Organization:
+
+- Group components by feature/section rather than by type
+- Keep feature-specific components in their respective directories (e.g., dashboard/, settings/)
+- Place shared UI components in components/ui/
+- Use relative imports with proper path traversal
+- Keep Astro layout templates (*.astro) in the layouts directory
+- Follow established directory structure:
+  ```
+  src/
+  ├── components/        # React components organized by feature
+  │   ├── ui/           # Generic UI components
+  │   ├── dashboard/    # Dashboard-specific components
+  │   ├── settings/     # Settings-specific components
+  │   └── shared/       # Shared components used across features
+  ├── layouts/          # Astro layout templates
+  ├── lib/              # Utilities and shared logic
+  ├── utils/            # Helper functions
+  ├── types/            # TypeScript types
+  └── pages/            # Page components
+  ```
+
+Code Style and Structure:
+
+- Write concise, technical TypeScript code with accurate examples.
+- Use functional and declarative programming patterns; avoid classes.
+- Prefer iteration and modularization over code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+- Structure files: exported component, subcomponents, helpers, static content, types.
+
+Naming Conventions
+
+- Use lowercase with dashes for directories (e.g., components/auth-wizard).
+- Favor named exports for components.
+- Use PascalCase for component files.
+- Use camelCase for utility files.
+
+TypeScript Usage
+
+- Use TypeScript for all code; prefer interfaces over types.
+- Avoid enums; use maps instead.
+- Use functional components with TypeScript interfaces.
+- Export types and interfaces when shared across components.
+
+Syntax and Formatting
+
+- Use the "function" keyword for pure functions.
+- Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+- Use declarative JSX.
+- Follow consistent import ordering:
+  1. React/Framework imports
+  2. Third-party libraries
+  3. Local components
+  4. Utilities/Helpers
+  5. Types/Interfaces
+  6. Assets/Styles
+
+UI and Styling
+
+- Use Shadcn UI, Radix, and Tailwind for components and styling.
+- Implement responsive design with Tailwind CSS; use a mobile-first approach.
+- Keep styling close to components using Tailwind classes.
+- Use CSS modules or styled-components for complex styling needs.
+
+Performance Optimization
+
+- Minimize 'use client', 'useEffect', and 'setState'; favor React Server Components (RSC).
+- Wrap client components in Suspense with fallback.
+- Use dynamic loading for non-critical components.
+- Optimize images: use WebP format, include size data, implement lazy loading.
+
+Key Conventions
+
+- Use 'nuqs' for URL search parameter state management.
+- Optimize Web Vitals (LCP, CLS, FID).
+- Limit 'use client':
+  - Use only for Web API access in small components.
+  - Avoid for data fetching or state management.
+
+Follow Tanstack Start docs for Data Fetching, Rendering, and Routing.
