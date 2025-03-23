@@ -90,8 +90,8 @@
 ### 3.1 Form Components
 - [x] Profile Form
   - [x] Basic information section
-  - [x] Social links section
-  - [x] Email preferences section
+  - [x] Professional information section
+  - [x] Preferences section
   
 - [x] Security Form
   - [x] Password change section
@@ -104,7 +104,6 @@
   - [ ] In-app notifications
   
 - [ ] Privacy Form
-  - [ ] Profile visibility
   - [ ] Data sharing preferences
   - [ ] Cookie settings
   
@@ -204,6 +203,87 @@
 - [ ] Add proper form reset handling
 - [ ] Optimize validation performance
 - [ ] Implement field-level updates
+
+## 9. Settings Schema Fields
+
+### 9.1 Profile Schema
+- Basic Information
+  - [ ] Full Name (string, required)
+  - [ ] Email (string, required, email format)
+  - [ ] Bio (string, optional, max 500 chars)
+  - [ ] Avatar URL (string, optional)
+  - [ ] Username (string, required, alphanumeric)
+
+- Professional Information
+  - [ ] Job Title (string, optional)
+  - [ ] Company (string, optional)
+  - [ ] Website (string, optional, URL format)
+  - [ ] Location (string, optional)
+
+- Preferences
+  - [ ] Timezone (string, required)
+  - [ ] Language (string, required)
+  - [ ] Date Format (string, required)
+  - [ ] Time Format (24h/12h, required)
+
+### 9.2 Security Schema
+- Password Management
+  - [ ] Current Password (string, required)
+  - [ ] New Password (string, required, min 8 chars)
+  - [ ] Confirm Password (string, required, must match)
+  - [ ] Password Last Changed (date, readonly)
+
+- Two-Factor Authentication
+  - [ ] 2FA Enabled (boolean)
+  - [ ] 2FA Method (enum: app/sms/email)
+  - [ ] Backup Codes (string[], readonly)
+  - [ ] Recovery Email (string, email format)
+
+- Session Management
+  - [ ] Active Sessions (array)
+    - Device Name (string)
+    - IP Address (string)
+    - Last Active (date)
+    - Location (string)
+  - [ ] Remember Me Duration (number, days)
+
+- Security Log
+  - [ ] Login History (array)
+    - Timestamp (date)
+    - IP Address (string)
+    - Device Info (string)
+    - Success/Failure (boolean)
+
+### 9.3 Notifications Schema
+- Email Notifications
+  - [ ] Marketing Updates (boolean)
+  - [ ] Security Alerts (boolean)
+  - [ ] Product Updates (boolean)
+  - [ ] Newsletter (boolean)
+  - [ ] Email Format (enum: html/text)
+
+- Push Notifications
+  - [ ] Browser Notifications (boolean)
+  - [ ] Mobile Notifications (boolean)
+  - [ ] Desktop Notifications (boolean)
+  - [ ] Quiet Hours
+    - Start Time (time)
+    - End Time (time)
+    - Timezone (string)
+
+- In-App Notifications
+  - [ ] Mentions (boolean)
+  - [ ] Comments (boolean)
+  - [ ] Updates (boolean)
+  - [ ] Direct Messages (boolean)
+
+- Notification Preferences
+  - [ ] Frequency (enum: immediate/daily/weekly)
+  - [ ] Digest Time (time, for daily/weekly)
+  - [ ] Minimum Priority (enum: low/medium/high)
+  - [ ] Sound Enabled (boolean)
+
+Note: This schema is editable and can be modified based on specific requirements. Each field should be implemented with appropriate Zod validators and TypeScript types.
 
 ## Implementation Sequence
 
