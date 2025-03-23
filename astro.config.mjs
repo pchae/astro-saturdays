@@ -9,8 +9,7 @@ import vercelServerless from '@astrojs/vercel/serverless';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: vercel({
-  }),
+  adapter: vercel(),
   integrations: [
     react({
       include: ['**/react/*'],
@@ -20,6 +19,21 @@ export default defineConfig({
     plugins: [
       react(),
       tailwindcss()
-    ]
+    ],
+    define: {
+      // Expose env variables to client-side code
+      'import.meta.env.PUBLIC_SUPABASE_URL': 
+        JSON.stringify(process.env.PUBLIC_SUPABASE_URL),
+      'import.meta.env.PUBLIC_SUPABASE_ANON_KEY': 
+        JSON.stringify(process.env.PUBLIC_SUPABASE_ANON_KEY),
+      'import.meta.env.PUBLIC_API_URL':
+        JSON.stringify(process.env.PUBLIC_API_URL)
+    },
+    // Add environment variables to server-side code
+    envPrefix: ['PUBLIC_'],
+    // Ensure environment variables are loaded early
+    optimizeDeps: {
+      include: ['@supabase/supabase-js']
+    }
   }
 });
