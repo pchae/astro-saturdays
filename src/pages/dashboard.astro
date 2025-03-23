@@ -5,6 +5,7 @@ import DashboardNav from "../components/dashboard/DashboardNav.astro";
 import { StatCard } from "../components/ui/stat-card";
 import { FighterSection } from "../components/dashboard/fighter-section";
 import { checkAuth } from "../lib/auth";
+import { AuthCookieManager } from "../lib/auth/CookieManager";
 
 // Use the auth middleware
 export const prerender = false;
@@ -21,19 +22,24 @@ console.log("[Dashboard] All request headers:", headers);
 const cookieHeader = Astro.request.headers.get('cookie');
 console.log("[Dashboard] Raw cookie header:", cookieHeader);
 
-console.log("[Dashboard] Individual cookies:", {
-  access: {
-    value: Astro.cookies.get("sb-access-token")?.value,
-    length: Astro.cookies.get("sb-access-token")?.value?.length
-  },
-  refresh: {
-    value: Astro.cookies.get("sb-refresh-token")?.value,
-    length: Astro.cookies.get("sb-refresh-token")?.value?.length
-  },
-  session: {
-    value: Astro.cookies.get("sb-auth")?.value?.slice(0, 50) + "...",
-    length: Astro.cookies.get("sb-auth")?.value?.length
-  }
+const cookieManager = new AuthCookieManager(Astro);
+const { data: tokens } = cookieManager.getAuthTokens();
+const { data: sessionData } = cookieManager.getSessionData();
+
+console.log("[Dashboard] Auth cookie state:", {
+  hasTokens: !!tokens,
+  hasSession: !!sessionData,
+  tokenDetails: tokens ? {
+    hasAccessToken: !!tokens.accessToken,
+    accessTokenLength: tokens.accessToken?.length,
+    hasRefreshToken: !!tokens.refreshToken,
+    refreshTokenLength: tokens.refreshToken?.length,
+  } : null,
+  sessionDetails: sessionData ? {
+    hasUser: !!sessionData.user,
+    userEmail: sessionData.user?.email,
+    expiresAt: sessionData.expiresAt
+  } : null
 });
 
 // Initialize variables
