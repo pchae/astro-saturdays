@@ -24,6 +24,13 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       return new Response("Email and password are required", { status: 400 });
     }
 
+    // Debug Supabase client
+    console.log("[Auth API] Supabase client status:", {
+      hasAuth: !!supabase.auth,
+      hasSignInMethod: !!supabase.auth?.signInWithPassword,
+      authMethods: Object.keys(supabase.auth || {})
+    });
+
     console.log("[Auth API] Attempting Supabase signin");
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

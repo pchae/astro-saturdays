@@ -10,6 +10,10 @@ console.log("[Supabase] Environment variables status:", {
   hasUrl: !!supabaseUrl,
   hasKey: !!supabaseAnonKey,
   url: supabaseUrl ? "present" : "missing",
+  key: supabaseAnonKey ? "present" : "missing",
+  envMode: import.meta.env.MODE,
+  isProd: import.meta.env.PROD,
+  isDev: import.meta.env.DEV
 });
 
 // Initialize Supabase client
@@ -27,8 +31,20 @@ try {
       detectSessionInUrl: true
     }
   });
+
+  // Test the client initialization
+  const { data: { user }, error: testError } = await supabase.auth.getUser();
+  if (testError) {
+    console.error("[Supabase] Client test failed:", testError);
+  } else {
+    console.log("[Supabase] Client initialized and tested successfully");
+  }
   
-  console.log("[Supabase] Client initialized successfully");
+  console.log("[Supabase] Client initialized with config:", {
+    hasAuth: !!supabase.auth,
+    authMethods: Object.keys(supabase.auth || {}),
+    hasSignInWithPassword: !!supabase.auth?.signInWithPassword
+  });
 } catch (error) {
   console.error("[Supabase] Error initializing client:", error);
   
@@ -37,7 +53,7 @@ try {
     get(_target, prop) {
       return () => {
         throw new Error(
-          `Supabase client not properly initialized. Failed to access: ${String(prop)}`
+          `Supabase client not properly initialized. Failed to access: ${String(prop)}\nCheck environment variables and client initialization.`
         );
       };
     },
