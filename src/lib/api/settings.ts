@@ -1,10 +1,8 @@
 import type {
   ProfileFormData,
   SecurityFormData,
-  NotificationFormData,
-  PrivacyFormData,
-  AppearanceFormData,
-} from "../schemas"
+  NotificationFormData
+} from '@/lib/schemas/settings';
 import { supabase } from "../supabase"
 
 // Server-side Supabase functions
@@ -12,10 +10,10 @@ export async function updateProfile(userId: string, data: Partial<ProfileFormDat
   const { error } = await supabase
     .from("user_profiles")
     .update({
-      full_name: data.fullName,
+      fullName: data.fullName,
       bio: data.bio,
-      avatar_url: data.avatarUrl,
-      updated_at: new Date().toISOString(),
+      avatarUrl: data.avatarUrl,
+      updatedAt: new Date().toISOString(),
     })
     .eq("id", userId)
 
@@ -28,11 +26,12 @@ export async function updateSecurity(userId: string, data: Partial<SecurityFormD
   const { error } = await supabase
     .from("user_security")
     .update({
-      two_factor_enabled: data.twoFactorEnabled,
-      recovery_email: data.recoveryEmail,
-      security_questions: data.securityQuestions,
-      session_management: data.sessionManagement,
-      updated_at: new Date().toISOString(),
+      currentPassword: data.currentPassword,
+      twoFactorEnabled: data.twoFactorEnabled,
+      recoveryEmail: data.recoveryEmail,
+      securityQuestions: data.securityQuestions,
+      sessionManagement: data.sessionManagement,
+      updatedAt: new Date().toISOString(),
     })
     .eq("id", userId)
 
@@ -46,45 +45,7 @@ export async function updateNotifications(userId: string, data: Partial<Notifica
     .from("user_notifications")
     .update({
       preferences: data.preferences,
-      global_settings: data.globalSettings,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId)
-
-  if (error) throw error
-  return { success: true }
-}
-
-// Privacy Settings
-export async function updatePrivacy(userId: string, data: Partial<PrivacyFormData>) {
-  const { error } = await supabase
-    .from("user_settings")
-    .update({
-      privacy: {
-        profileVisibility: data.profileVisibility,
-        activityVisibility: data.activityVisibility,
-        dataSharing: data.dataSharing,
-        contentPreferences: data.contentPreferences,
-        searchVisibility: data.searchVisibility,
-      },
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId)
-
-  if (error) throw error
-  return { success: true }
-}
-
-// Appearance Settings
-export async function updateAppearance(userId: string, data: Partial<AppearanceFormData>) {
-  const { error } = await supabase
-    .from("user_settings")
-    .update({
-      theme: data.theme,
-      language: data.language,
-      accessibility: data.accessibility,
-      layout: data.layout,
-      updated_at: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .eq("id", userId)
 

@@ -11,9 +11,6 @@ if (authResult.redirect) return authResult.redirect;
 
 // Get user data for layout
 const user = authResult.session?.data?.user;
-if (!user) {
-  return Astro.redirect("/signin");
-}
 
 // Get the active tab from URL hash or default to 'profile'
 const hash = Astro.url.hash.slice(1) || 'profile';
