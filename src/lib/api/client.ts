@@ -1,25 +1,19 @@
 import type {
   ProfileFormData,
-} from '@/lib/schemas/settings/profile';
-import type {
   SecurityFormData,
-} from '@/lib/schemas/settings/security';
-import type {
-  NotificationFormData,
-} from '@/lib/schemas/settings/notifications';
-import type {
-  PrivacyFormData,
-} from '@/lib/schemas/settings/privacy';
-import type {
-  AppearanceFormData,
-} from '@/lib/schemas/settings/appearance';
+  NotificationFormData
+} from '@/lib/schemas/settings';
 
-interface SettingsData {
+export interface SettingsData {
   profile?: ProfileFormData;
   security?: SecurityFormData;
   notifications?: NotificationFormData;
-  privacy?: PrivacyFormData;
-  appearance?: AppearanceFormData;
+}
+
+export interface SettingsUpdateData {
+  profile?: ProfileFormData;
+  security?: SecurityFormData;
+  notifications?: NotificationFormData;
 }
 
 interface ApiResponse<T> {
