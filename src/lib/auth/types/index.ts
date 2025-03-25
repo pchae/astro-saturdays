@@ -27,4 +27,41 @@ export type AstroContext = { cookies: AstroGlobal['cookies'] } | AstroGlobal;
 export interface CookieResult<T> {
   data: T | null;
   error: Error | null;
-} 
+}
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  GUEST = 'guest'
+}
+
+export interface AuthError {
+  code: string;
+  message: string;
+  status: number;
+}
+
+export interface AuthSession {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+  user: AuthUser;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  role: UserRole;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AuthResponse = {
+  success: boolean;
+  data?: {
+    session: AuthSession | null;
+    user: AuthUser | null;
+  };
+  error?: AuthError;
+}; 
