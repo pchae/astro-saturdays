@@ -7,8 +7,6 @@ import type { SettingsFormData } from '@/types/settings';
 import { profileFormSchema, type ProfileFormData } from '@/lib/schemas/settings/profile';
 import { securityFormSchema, type SecurityFormData } from '@/lib/schemas/settings/security';
 import { notificationFormSchema, type NotificationFormData } from '@/lib/schemas/settings/notifications';
-import { privacyFormSchema, type PrivacyFormData } from '@/lib/schemas/settings/privacy';
-import { appearanceFormSchema, type AppearanceFormData } from '@/lib/schemas/settings/appearance';
 import { settingsApi } from '@/lib/api/client';
 
 const defaultProfileData: ProfileFormData = {
@@ -32,78 +30,8 @@ const defaultSecurityData: SecurityFormData = {
 
 const defaultNotificationData: NotificationFormData = {
   preferences: {},
-  globalSettings: {
-    doNotDisturb: {
-      enabled: false,
-      startTime: '22:00',
-      endTime: '07:00',
-      timezone: 'UTC',
-    },
-    pauseAll: false,
-    digestEmail: {
-      enabled: true,
-      frequency: 'daily',
-      time: '09:00',
-    },
-  },
 };
 
-const defaultPrivacyData: PrivacyFormData = {
-  profileVisibility: 'public',
-  activityVisibility: {
-    likes: 'public',
-    comments: 'public',
-    followers: 'public',
-    following: 'public',
-  },
-  dataSharing: {
-    allowDataCollection: true,
-    dataUsageLevel: 'functional',
-    shareWithPartners: false,
-    personalizedAds: false,
-  },
-  contentPreferences: {
-    showSensitiveContent: false,
-    contentFilters: [],
-    ageRestriction: true,
-  },
-  searchVisibility: {
-    allowProfileInSearch: true,
-    allowEmailSearch: false,
-    allowPhoneSearch: false,
-  },
-  blockList: [],
-  cookiePreferences: {
-    functional: true,
-    essential: true,
-    analytics: false,
-    advertising: false,
-    thirdParty: false,
-  },
-};
-
-const defaultAppearanceData: AppearanceFormData = {
-  layout: {
-    density: 'comfortable',
-    sidebarPosition: 'left',
-    showAvatars: true,
-    enableAnimations: true,
-  },
-  theme: 'system',
-  language: 'en',
-  accessibility: {
-    colorScheme: 'default',
-    reduceMotion: false,
-    highContrast: false,
-    fontSize: 'base',
-  },
-  dateTimeFormat: {
-    timeZone: 'UTC',
-    dateFormat: 'MM/DD/YYYY',
-    timeFormat: '12h',
-    firstDayOfWeek: 'monday',
-  },
-};
 
 // Profile Form Hook
 export function useProfileForm(initialData?: Partial<ProfileFormData>) {
@@ -192,63 +120,6 @@ export function useNotificationsForm(initialData?: Partial<NotificationFormData>
   };
 }
 
-// Privacy Form Hook
-export function usePrivacyForm(initialData?: Partial<PrivacyFormData>) {
-  const { user } = useUser();
-  const form = useForm<PrivacyFormData>({
-    resolver: zodResolver(privacyFormSchema),
-    defaultValues: {
-      ...defaultPrivacyData,
-      ...initialData,
-    },
-  });
-
-  const onSubmit = async (data: PrivacyFormData) => {
-    try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update({ privacy: data });
-      toast.success("Privacy settings updated successfully");
-    } catch (error) {
-      console.error("Failed to update privacy settings:", error);
-      toast.error("Failed to update privacy settings");
-    }
-  };
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
-  };
-}
-
-// Appearance Form Hook
-export function useAppearanceForm(initialData?: Partial<AppearanceFormData>) {
-  const { user } = useUser();
-  const form = useForm<AppearanceFormData>({
-    resolver: zodResolver(appearanceFormSchema),
-    defaultValues: {
-      ...defaultAppearanceData,
-      ...initialData,
-    },
-  });
-
-  const onSubmit = async (data: AppearanceFormData) => {
-    try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update({ appearance: data });
-      toast.success("Appearance settings updated successfully");
-    } catch (error) {
-      console.error("Failed to update appearance settings:", error);
-      toast.error("Failed to update appearance settings");
-    }
-  };
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
-  };
-}
 
 // Combined Settings Form Hook
 export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
@@ -258,15 +129,11 @@ export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
       profile: profileFormSchema,
       security: securityFormSchema,
       notifications: notificationFormSchema,
-      privacy: privacyFormSchema,
-      appearance: appearanceFormSchema,
     })),
     defaultValues: {
       profile: { ...defaultProfileData, ...initialData?.profile },
       security: { ...defaultSecurityData, ...initialData?.security },
       notifications: { ...defaultNotificationData, ...initialData?.notifications },
-      privacy: { ...defaultPrivacyData, ...initialData?.privacy },
-      appearance: { ...defaultAppearanceData, ...initialData?.appearance },
     },
   });
 
