@@ -8,7 +8,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useNotificationsForm } from './useSettingsForm';
+import { useNotificationForm } from './useSettingsForm';
 import type { NotificationFormData } from '@/lib/schemas/settings/notifications';
 
 interface NotificationsFormProps {
@@ -20,7 +20,7 @@ const NOTIFICATION_CHANNELS = ['email', 'push', 'in_app', 'sms'] as const;
 // const NOTIFICATION_FREQUENCIES = ['immediately', 'daily', 'weekly', 'never'] as const;
 
 export function NotificationsForm({ initialData }: NotificationsFormProps) {
-  const { form, onSubmit, isLoading } = useNotificationsForm(initialData);
+  const { form, onSubmit, isLoading } = useNotificationForm(initialData);
 
   return (
     <Form {...form}>

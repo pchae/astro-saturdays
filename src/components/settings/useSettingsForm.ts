@@ -4,16 +4,21 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
 import type { SettingsFormData } from '@/types/settings';
-import { profileFormSchema, type ProfileFormData } from '@/lib/schemas/settings/profile';
-import { securityFormSchema, type SecurityFormData } from '@/lib/schemas/settings/security';
-import { notificationFormSchema, type NotificationFormData } from '@/lib/schemas/settings/notifications';
+import type { ProfileFormData } from '@/lib/schemas/settings/profile';
+import { profileFormSchema } from '@/lib/schemas/settings/profile';
+import type { SecurityFormData } from '@/lib/schemas/settings/security';
+import { securityFormSchema } from '@/lib/schemas/settings/security';
+import type { NotificationFormData } from '@/lib/schemas/settings/notifications';
+import { notificationFormSchema } from '@/lib/schemas/settings/notifications';
 import { settingsApi } from '@/lib/api/client';
+import { updateProfile, updateSecurity, updateNotifications } from '@/lib/api/settings';
 
+// Default form data
 const defaultProfileData: ProfileFormData = {
   fullName: '',
   email: '',
   bio: '',
-  avatarUrl: '',
+  avatarUrl: ''
 };
 
 const defaultSecurityData: SecurityFormData = {
@@ -24,14 +29,39 @@ const defaultSecurityData: SecurityFormData = {
   sessionManagement: {
     rememberMe: true,
     sessionTimeout: 30,
-    allowMultipleSessions: false,
-  },
+    allowMultipleSessions: true
+  }
 };
 
 const defaultNotificationData: NotificationFormData = {
-  preferences: {},
+  preferences: {
+    security: {
+      enabled: true,
+      channels: ['email'],
+      frequency: 'immediately'
+    },
+    account: {
+      enabled: true,
+      channels: ['email'],
+      frequency: 'immediately'
+    },
+    updates: {
+      enabled: true,
+      channels: ['email'],
+      frequency: 'weekly'
+    },
+    marketing: {
+      enabled: false,
+      channels: ['email'],
+      frequency: 'never'
+    },
+    social: {
+      enabled: true,
+      channels: ['in_app', 'email'],
+      frequency: 'daily'
+    }
+  }
 };
-
 
 // Profile Form Hook
 export function useProfileForm(initialData?: Partial<ProfileFormData>) {
@@ -46,12 +76,11 @@ export function useProfileForm(initialData?: Partial<ProfileFormData>) {
 
   const onSubmit = async (data: ProfileFormData) => {
     try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update({ profile: data });
-      toast.success("Profile updated successfully");
+      await updateProfile('current-user', data);
+      return { success: true };
     } catch (error) {
-      console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile");
+      console.error('Failed to update profile:', error);
+      return { success: false, error };
     }
   };
 
@@ -75,12 +104,11 @@ export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
 
   const onSubmit = async (data: SecurityFormData) => {
     try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update({ security: data });
-      toast.success("Security settings updated successfully");
+      await updateSecurity('current-user', data);
+      return { success: true };
     } catch (error) {
-      console.error("Failed to update security settings:", error);
-      toast.error("Failed to update security settings");
+      console.error('Failed to update security settings:', error);
+      return { success: false, error };
     }
   };
 
@@ -91,8 +119,8 @@ export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
   };
 }
 
-// Notifications Form Hook
-export function useNotificationsForm(initialData?: Partial<NotificationFormData>) {
+// Notification Form Hook
+export function useNotificationForm(initialData?: Partial<NotificationFormData>) {
   const { user } = useUser();
   const form = useForm<NotificationFormData>({
     resolver: zodResolver(notificationFormSchema),
@@ -104,12 +132,11 @@ export function useNotificationsForm(initialData?: Partial<NotificationFormData>
 
   const onSubmit = async (data: NotificationFormData) => {
     try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update({ notifications: data });
-      toast.success("Notification settings updated successfully");
+      await updateNotifications('current-user', data);
+      return { success: true };
     } catch (error) {
-      console.error("Failed to update notification settings:", error);
-      toast.error("Failed to update notification settings");
+      console.error('Failed to update notification settings:', error);
+      return { success: false, error };
     }
   };
 
@@ -120,38 +147,16 @@ export function useNotificationsForm(initialData?: Partial<NotificationFormData>
   };
 }
 
-
 // Combined Settings Form Hook
-export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
-  const { user } = useUser();
-  const form = useForm<SettingsFormData>({
-    resolver: zodResolver(z.object({
-      profile: profileFormSchema,
-      security: securityFormSchema,
-      notifications: notificationFormSchema,
-    })),
-    defaultValues: {
-      profile: { ...defaultProfileData, ...initialData?.profile },
-      security: { ...defaultSecurityData, ...initialData?.security },
-      notifications: { ...defaultNotificationData, ...initialData?.notifications },
-    },
-  });
-
-  const onSubmit = async (data: SettingsFormData) => {
-    try {
-      if (!user?.id) throw new Error("User not found");
-      await settingsApi.update(data);
-      toast.success("Settings updated successfully");
-    } catch (error) {
-      console.error("Failed to update settings:", error);
-      toast.error("Failed to update settings");
-    }
-  };
+export function useSettingsForm() {
+  const profileForm = useProfileForm();
+  const securityForm = useSecurityForm();
+  const notificationForm = useNotificationForm();
 
   return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
+    profileForm,
+    securityForm,
+    notificationForm
   };
 }
 
