@@ -1,10 +1,5 @@
-import { UserRole } from '../types';
-
-interface RoutePermission {
-  resource: string;
-  action: 'read' | 'write' | 'admin';
-  roles?: UserRole[];
-}
+import { UserRole } from '@/types/auth';
+import type { RoutePermission } from '@/types/auth';
 
 export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
   '/dashboard': {
@@ -29,17 +24,16 @@ export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
   }
 };
 
+// Public routes that don't require authentication
 export const PUBLIC_ROUTES = [
-  '/',
   '/signin',
   '/signup',
   '/forgot-password',
   '/reset-password',
   '/verify-email',
+  '/',
   '/about',
-  '/contact',
-  '/privacy',
-  '/terms'
+  '/contact'
 ];
 
 export function isPublicRoute(path: string): boolean {
