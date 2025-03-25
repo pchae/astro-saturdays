@@ -1,37 +1,42 @@
-// Base schemas
+// Base schemas and utilities
 export * from "./base/common"
 export * from "./base/validation"
 
-// Settings schemas
-export * from "./settings/profile"
-export * from "./settings/security"
-export * from "./settings/notifications"
+// Profile schemas and types
+export * from "./forms/profile/schema"
+export * from "./forms/profile/types"
 
-// Re-export commonly used types
-import type { ProfileFormData } from "./settings/profile"
-import type { SecurityFormData, PasswordChangeData, TwoFactorSettingsData } from "./settings/security"
-import type { NotificationFormData, CategoryUpdateData, GlobalSettingsData as NotificationGlobalSettings } from "./settings/notifications"
+// Security schemas and types
+export * from "./forms/security/schema"
+export * from "./forms/security/types"
 
-export type {
-  // Profile types
-  ProfileFormData,
-  
-  // Security types
-  SecurityFormData,
-  PasswordChangeData,
-  TwoFactorSettingsData,
-  
-  // Notification types
-  NotificationFormData,
-  CategoryUpdateData,
-  NotificationGlobalSettings,
-  
-  // Privacy types
-}
+// Notification schemas and types
+export * from "./forms/notifications/schema"
+export * from "./forms/notifications/types"
 
-// Combined settings type for the entire settings page
+// Combined types for settings
+import type { ProfileFormData } from "./forms/profile/types"
+import type { SecuritySettings } from "./forms/security/types"
+import type { NotificationSettings } from "./forms/notifications/types"
+
+/**
+ * Combined type for all user settings
+ */
 export type UserSettings = {
   profile: ProfileFormData
-  security: SecurityFormData
-  notifications: NotificationFormData
+  security: SecuritySettings
+  notifications: NotificationSettings
+}
+
+/**
+ * Type for settings section identifiers
+ */
+export type SettingsSection = keyof UserSettings
+
+/**
+ * Type for form validation errors
+ */
+export type ValidationError = {
+  path: string[]
+  message: string
 } 
