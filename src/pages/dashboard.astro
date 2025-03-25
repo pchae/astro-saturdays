@@ -96,11 +96,11 @@ try {
 <DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
   <DashboardNav />
 
-  <section class="p-4 bg-black">
+  <section class="p-4 gap-y-2 bg-black">
     <DashboardHeader />
 
     <!-- Stats -->
-    <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-8 gap-4">
+    <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
       {stats.map(stat => (
         <StatCard
           client:load

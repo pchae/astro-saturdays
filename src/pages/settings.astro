@@ -1,6 +1,7 @@
 ---
 import DashboardLayout from "../layouts/Dashboard.astro";
 import { SettingsTabs } from "../components/settings/SettingsTabs";
+import DashboardNav from "../components/dashboard/DashboardNav.astro";
 import { checkAuth } from "../lib/auth";
 
 // Check authentication
@@ -19,7 +20,8 @@ const hash = Astro.url.hash.slice(1) || 'profile';
 ---
 
 <DashboardLayout title="Settings - Saturdays.io" email={user.email} user={user}>
-  <div class="container py-10">
+  <DashboardNav />
+  <div class="container p-4">
     <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
     <SettingsTabs client:load defaultTab={hash} />
   </div>
