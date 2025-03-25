@@ -25,6 +25,7 @@ export function SettingsForm({ initialData }: SettingsFormProps) {
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
           </TabsList>
+
           <div className="mt-6">
             <TabsContent value="profile">
               <ProfileForm />
