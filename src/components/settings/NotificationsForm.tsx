@@ -58,52 +58,6 @@ export function NotificationsForm({ initialData }: NotificationsFormProps) {
                     </FormItem>
                   )}
                 />
-
-                {form.watch(`preferences.${category}.enabled`) && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name={`preferences.${category}.channels`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Notification Channels</FormLabel>
-                          <div className="grid grid-cols-2 gap-4">
-                            {NOTIFICATION_CHANNELS.map((channel) => (
-                              <FormField
-                                key={channel}
-                                control={form.control}
-                                name={`preferences.${category}.channels`}
-                                render={({ field }) => (
-                                  <FormItem
-                                    key={channel}
-                                    className="flex flex-row items-center space-x-3 space-y-0"
-                                  >
-                                    <FormControl>
-                                      <Checkbox
-                                        checked={field.value?.includes(channel)}
-                                        onCheckedChange={(checked) => {
-                                          const currentValue = field.value || [];
-                                          const newValue = checked
-                                            ? [...currentValue, channel]
-                                            : currentValue.filter((c) => c !== channel);
-                                          field.onChange(newValue);
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormLabel className="capitalize">
-                                      {channel.replace('_', ' ')}
-                                    </FormLabel>
-                                  </FormItem>
-                                )}
-                              />
-                            ))}
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
               </div>
             ))}
 
