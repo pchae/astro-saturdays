@@ -1,76 +1,15 @@
 import type { MiddlewareHandler } from 'astro';
 import { defineMiddleware } from 'astro/middleware';
 import { createClient } from '@supabase/supabase-js';
-import { UserRole } from '@/lib/auth/types';
+import { UserRole } from '@/types/auth';
+import type { RoutePermission } from '@/types/auth';
 import { PROTECTED_ROUTES, isPublicRoute } from '@/lib/auth/utils/routes';
-import { AuthErrors } from '@/lib/auth/utils/errors';
-
-// Define route permission interface locally
-interface RoutePermission {
-  resource: string;
-  action: 'read' | 'write' | 'admin';
-  roles?: UserRole[];
-}
-
-// Create a separate Supabase client for validation
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false
-    }
-  }
-);
-
-// Role hierarchy for permissions
-const ROLE_LEVELS: Record<UserRole, number> = {
-  [UserRole.ADMIN]: 3,
-  [UserRole.USER]: 2,
-  [UserRole.GUEST]: 1
-};
-
-// Action hierarchy for permissions
-const ACTION_LEVELS: Record<string, number> = {
-  'admin': 3,
-  'write': 2,
-  'read': 1
-};
-
-// Helper function for auth redirects
-function handleAuthRedirect(context: any, path: string) {
-  const { url, redirect } = context;
-  
-  // Don't add returnTo if we're already at signin
-  if (path === '/signin' && !url.pathname.includes('/signin')) {
-    // Only add returnTo for non-auth paths
-    return redirect(`/signin?returnTo=${encodeURIComponent(url.pathname)}`);
-  }
-  
-  // Regular redirect for other cases
-  return redirect(path);
-}
-
-// Helper to get route permissions
-function getRoutePermission(pathname: string): RoutePermission | null {
-  // First try exact match
-  if (pathname in PROTECTED_ROUTES) {
-    return PROTECTED_ROUTES[pathname];
-  }
-
-  // Then try matching by prefix
-  const matchingRoute = Object.keys(PROTECTED_ROUTES)
-    .find(route => pathname.startsWith(route));
-
-  return matchingRoute ? PROTECTED_ROUTES[matchingRoute] : null;
-}
+import { AuthErrors } from '@/lib/errors/auth';
 
 // Helper to check if role has required permission level
-function hasPermission(userRole: string, permission: RoutePermission): boolean {
-  if (!permission.roles) {
-    return true; // If no roles specified, allow access
+function hasPermission(userRole: string | undefined, permission: RoutePermission): boolean {
+  if (!permission.roles || !userRole) {
+    return false; // If no roles specified or no user role, deny access
   }
   
   // Convert string role to UserRole enum
@@ -120,69 +59,34 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
   });
 
   try {
-    // Directly validate with Supabase to ensure session is valid
-    const accessToken = cookies.get('sb-access-token')?.value;
-    const refreshToken = cookies.get('sb-refresh-token')?.value;
-
-    if (accessToken && refreshToken) {
-      console.log('[Auth Debug] Double-checking tokens with Supabase');
-      try {
-        const { data, error } = await supabase.auth.getUser(accessToken);
-        
-        console.log('[Auth Debug] Supabase getUser result:', {
-          hasData: !!data,
-          hasError: !!error,
-          errorMessage: error?.message,
-          user: data?.user ? {
-            id: data.user.id,
-            role: data.user.role
-          } : null
-        });
-
-        if (error || !data.user) {
-          console.log('[Auth Debug] Supabase getUser failed, invalidating session');
-          cookies.delete('sb-access-token', { path: '/' });
-          cookies.delete('sb-refresh-token', { path: '/' });
-          locals.metrics.operations++;
-          return handleAuthRedirect(context, '/signin');
+    // Create a new Supabase client for this request
+    const client = createClient(
+      import.meta.env.PUBLIC_SUPABASE_URL,
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+          detectSessionInUrl: false
         }
-      } catch (err) {
-        console.error('[Auth Debug] Supabase getUser threw exception:', err);
-        cookies.delete('sb-access-token', { path: '/' });
-        cookies.delete('sb-refresh-token', { path: '/' });
-        locals.metrics.operations++;
-        return handleAuthRedirect(context, '/signin');
       }
+    );
+
+    // Validate the session
+    const { data: { user }, error } = await client.auth.getUser();
+
+    if (error || !user) {
+      console.log('[Auth Debug] Supabase getUser failed, invalidating session');
+      cookies.delete('sb-access-token', { path: '/' });
+      cookies.delete('sb-refresh-token', { path: '/' });
+      locals.metrics.operations++;
+      throw AuthErrors.unauthorized();
     }
 
-    // DEBUG: Check exact session state
-    if (!locals.session) {
-      console.log('[Auth Debug] Session object is completely missing');
-      locals.metrics.operations++;
-      return handleAuthRedirect(context, '/signin');
-    }
-    
-    if (!locals.session.isValid) {
-      console.log('[Auth Debug] Session is not valid:', {
-        expiresAt: locals.session.expiresAt,
-        currentTime: Date.now(),
-        diff: locals.session.expiresAt - Date.now(),
-        expiresAtFormatted: new Date(locals.session.expiresAt).toISOString()
-      });
-      locals.metrics.operations++;
-      return handleAuthRedirect(context, '/signin');
-    }
-    
-    if (!locals.user) {
-      console.log('[Auth Debug] User object is missing despite valid session');
-      locals.metrics.operations++;
-      return handleAuthRedirect(context, '/signin');
-    }
-    
     // Check route permissions
-    const routePermission = getRoutePermission(url.pathname);
+    const routePermission = PROTECTED_ROUTES[url.pathname];
     if (routePermission) {
-      const hasRequiredPermission = hasPermission(locals.user.role, routePermission);
+      const hasRequiredPermission = hasPermission(user.role, routePermission);
       if (!hasRequiredPermission) {
         locals.metrics.operations++;
         throw AuthErrors.forbidden();
@@ -199,6 +103,6 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
     });
     
     locals.metrics.operations++;
-    return handleAuthRedirect(context, '/signin');
+    return Response.redirect(new URL('/signin', url), 302);
   }
 }) satisfies MiddlewareHandler; 

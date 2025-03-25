@@ -2,7 +2,9 @@
 // export const prerender = false;
 import type { APIRoute } from "astro";
 import { AuthService } from '@/lib/auth/services';
-import { AuthErrors } from '@/lib/auth/utils';
+import { AuthErrors } from '@/lib/errors/auth';
+import { supabase } from '@/lib/supabase/client';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 // Disable static optimization for API routes
 export const prerender = false;
@@ -21,9 +23,9 @@ function logApiResponse(status: number) {
   console.log(`[API Stats] Response patterns:`, API_STATS)
 }
 
-export const POST: APIRoute = async ({ request, cookies, redirect }) => {
+export const POST: APIRoute = async (context) => {
   try {
-    const body = await request.json();
+    const body = await context.request.json();
     const { email, password } = body;
 
     if (!email || !password) {
@@ -36,34 +38,64 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       );
     }
 
-    const supabase = await AuthService.createSupabaseClient({ cookies, redirect } as any);
+    // Create server client for cookie handling
+    const serverClient = createServerClient(
+      import.meta.env.PUBLIC_SUPABASE_URL,
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          get: (key: string) => context.cookies.get(key)?.value,
+          set: (key: string, value: string, options: CookieOptions) => {
+            context.cookies.set(key, value, {
+              ...options,
+              path: '/',
+            });
+          },
+          remove: (key: string, options: CookieOptions) => {
+            context.cookies.delete(key, {
+              ...options,
+              path: '/',
+            });
+          },
+        },
+      }
+    );
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // Sign in with server client to handle cookies
+    const { data, error } = await serverClient.auth.signInWithPassword({
       email,
-      password,
+      password
     });
 
     if (error) {
-      logApiResponse(400)
+      logApiResponse(400);
       console.log("[Auth Pattern] Auth error handling", {
-        type: error.name,
-        status: error.status,
-        message: error.message
+        error: error.message
       });
       return new Response(
         JSON.stringify({
-          error: error.message,
+          error: error.message || "Authentication failed",
         }),
         { status: 400 }
       );
     }
 
-    // No need to manually set cookies - Supabase SSR client handles this
-    logApiResponse(200)
+    if (!data?.session) {
+      logApiResponse(500);
+      return new Response(
+        JSON.stringify({
+          error: "Failed to establish session",
+        }),
+        { status: 500 }
+      );
+    }
+
+    logApiResponse(200);
     return new Response(
       JSON.stringify({
         success: true,
-        redirect: "/dashboard"
+        redirect: "/dashboard",
+        user: data.user
       }),
       { 
         status: 200,
@@ -74,7 +106,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     );
   } catch (error: any) {
     console.error("[API Error]", error);
-    logApiResponse(500)
+    logApiResponse(500);
     return new Response(
       JSON.stringify({
         error: "An unexpected error occurred"
