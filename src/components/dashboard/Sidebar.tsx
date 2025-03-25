@@ -28,9 +28,9 @@ const navigation = [
 
 export function Sidebar({ className, currentPath = '', user, ...props }: SidebarProps) {
   return (
-    <div className={cn("flex h-screen flex-col border-r bg-background", className)} {...props}>
+    <div className={cn("flex h-screen flex-col border-r border-blue-500 bg-background", className)} {...props}>
       {/* Logo */}
-      <div className="px-6 py-5 border-b">
+      <div className="px-6 py-5 border-0 border-red-100">
         <a href="/dashboard" className="flex items-center no-underline">
           <span className="text-xl font-bold">Saturdays.io</span>
         </a>
@@ -47,7 +47,7 @@ export function Sidebar({ className, currentPath = '', user, ...props }: Sidebar
               className={cn(
                 "flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
                 isActive
-                  ? "bg-green-500/50 text-white"
+                  ? "bg-gray-500/50 text-white"
                   : "text-gray-400 hover:bg-primary/5"
               )}
             >
@@ -59,7 +59,7 @@ export function Sidebar({ className, currentPath = '', user, ...props }: Sidebar
       </nav>
 
       {/* User Profile Section */}
-      <div className="px-6 py-4 border-t border-gray-50">
+      <div className="px-6 py-4 border-t border-blue-500">
         <div className="flex items-center">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-white" />
