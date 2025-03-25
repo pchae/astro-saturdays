@@ -4,8 +4,7 @@ import DashboardHeader from "../components/dashboard/DashboardHeader.astro";
 import DashboardNav from "../components/dashboard/DashboardNav.astro";
 import { StatCard } from "../components/ui/stat-card";
 import { FighterSection } from "../components/dashboard/fighter-section";
-import { checkAuth } from "../lib/auth";
-import { AuthCookieManager } from "../lib/auth/CookieManager";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 // Use the auth middleware
 export const prerender = false;
@@ -22,29 +21,40 @@ console.log("[Dashboard] All request headers:", headers);
 const cookieHeader = Astro.request.headers.get('cookie');
 console.log("[Dashboard] Raw cookie header:", cookieHeader);
 
-const cookieManager = new AuthCookieManager(Astro);
-const { data: tokens } = cookieManager.getAuthTokens();
-const { data: sessionData } = cookieManager.getSessionData();
+// Create server-side Supabase client with cookie handling
+const supabase = createServerClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  {
+    cookies: {
+      get: (key: string) => Astro.cookies.get(key)?.value,
+      set: (key: string, value: string, options: CookieOptions) => {
+        Astro.cookies.set(key, value, {
+          ...options,
+          path: '/',
+        });
+      },
+      remove: (key: string, options: CookieOptions) => {
+        Astro.cookies.delete(key, {
+          ...options,
+          path: '/',
+        });
+      },
+    },
+  }
+);
 
-console.log("[Dashboard] Auth cookie state:", {
-  hasTokens: !!tokens,
-  hasSession: !!sessionData,
-  tokenDetails: tokens ? {
-    hasAccessToken: !!tokens.accessToken,
-    accessTokenLength: tokens.accessToken?.length,
-    hasRefreshToken: !!tokens.refreshToken,
-    refreshTokenLength: tokens.refreshToken?.length,
-  } : null,
-  sessionDetails: sessionData ? {
-    hasUser: !!sessionData.user,
-    userEmail: sessionData.user?.email,
-    expiresAt: sessionData.expiresAt
+// Get session
+const { data: { session } } = await supabase.auth.getSession();
+
+console.log("[Dashboard] Auth session state:", {
+  hasSession: !!session,
+  sessionDetails: session ? {
+    hasUser: !!session.user,
+    userEmail: session.user?.email,
+    expiresAt: session.expires_at
   } : null
 });
-
-// Initialize variables
-let user;
-let email;
 
 // Dashboard data
 const stats = [
@@ -63,25 +73,14 @@ const ufcFighters = [
 
 console.log("[Dashboard] Starting auth check");
 try {
-  const authResult = await checkAuth(Astro);
-  console.log("[Dashboard] Auth check completed:", {
-    hasSession: !!authResult.session,
-    hasRedirect: !!authResult.redirect,
-    sessionData: authResult.session ? {
-      hasUser: !!authResult.session.user,
-      userEmail: authResult.session.user?.email,
-      expiresAt: authResult.session.expires_at
-    } : null
-  });
-
-  if (authResult.redirect) {
-    console.log("[Dashboard] Auth check failed, redirecting to signin");
-    return authResult.redirect;
+  if (!session) {
+    console.log("[Dashboard] No session found, redirecting to signin");
+    return Astro.redirect("/signin");
   }
 
   // Get user data from session
-  user = authResult.session?.data?.user;
-  email = user?.email;
+  const user = session.user;
+  const email = user?.email;
 
   console.log("[Dashboard] Auth successful, rendering page");
 } catch (error) {
@@ -93,7 +92,7 @@ try {
 }
 ---
 
-<DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
+<DashboardLayout title="Dashboard - Saturdays.io" email={session.user.email} user={session.user}>
   <DashboardNav />
 
   <section class="p-4 gap-y-2 bg-black">

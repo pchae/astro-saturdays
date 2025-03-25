@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/react/Header";
-import { AuthCookieManager } from "../lib/auth/CookieManager";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export const prerender = false;
 const { cookies, redirect } = Astro;
@@ -14,10 +14,32 @@ console.log("[Signin Page] Environment:", {
   base: import.meta.env.BASE_URL
 });
 
-const cookieManager = new AuthCookieManager({ cookies });
-const { data: tokens } = cookieManager.getAuthTokens();
+// Create server-side Supabase client with cookie handling
+const supabase = createServerClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  {
+    cookies: {
+      get: (key: string) => cookies.get(key)?.value,
+      set: (key: string, value: string, options: CookieOptions) => {
+        cookies.set(key, value, {
+          ...options,
+          path: '/',
+        });
+      },
+      remove: (key: string, options: CookieOptions) => {
+        cookies.delete(key, {
+          ...options,
+          path: '/',
+        });
+      },
+    },
+  }
+);
 
-if (tokens) {
+const { data: { session } } = await supabase.auth.getSession();
+
+if (session) {
   return redirect("/dashboard");
 }
 ---
