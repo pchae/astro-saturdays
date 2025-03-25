@@ -12,13 +12,7 @@ interface ImportMetaEnv {
 interface Session {
   isValid: boolean;
   expiresAt: number;
-  user?: User;
-}
-
-interface User {
-  id: string;
-  email: string;
-  role: string;
+  user?: import('@supabase/supabase-js').User;
 }
 
 interface Metrics {
@@ -28,7 +22,7 @@ interface Metrics {
 declare namespace App {
   interface Locals {
     session?: Session;
-    user?: User;
+    user?: import('@supabase/supabase-js').User;
     metrics: Metrics;
   }
 }
