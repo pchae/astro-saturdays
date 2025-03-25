@@ -1,8 +1,7 @@
 // With `output: 'static'` configured:
 // export const prerender = false;
 import type { APIRoute } from "astro";
-import { supabase } from "@/lib/supabase";
-import { AuthCookieManager } from "@/lib/auth/CookieManager";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 // Disable static optimization for API routes
 export const prerender = false;
@@ -23,8 +22,6 @@ function logApiResponse(status: number) {
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   try {
-    const cookieManager = new AuthCookieManager({ cookies });
-    
     const body = await request.json();
     const { email, password } = body;
 
@@ -38,15 +35,28 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       );
     }
 
-    // Check existing tokens
-    const { data: existingTokens } = cookieManager.getAuthTokens();
-    const { data: existingSession } = cookieManager.getSessionData();
-
-    console.log("[Auth Pattern] Sign-in attempt", {
-      hasExistingTokens: !!existingTokens,
-      hasExistingSession: !!existingSession,
-      email
-    });
+    // Create server-side Supabase client with cookie handling
+    const supabase = createServerClient(
+      import.meta.env.PUBLIC_SUPABASE_URL,
+      import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          get: (key: string) => cookies.get(key)?.value,
+          set: (key: string, value: string, options: CookieOptions) => {
+            cookies.set(key, value, {
+              ...options,
+              path: '/',
+            });
+          },
+          remove: (key: string, options: CookieOptions) => {
+            cookies.delete(key, {
+              ...options,
+              path: '/',
+            });
+          },
+        },
+      }
+    );
 
     // Attempt sign in
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -69,53 +79,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       );
     }
 
-    const { session } = data;
-
-    // Set auth tokens
-    const tokenResult = cookieManager.setAuthTokens({
-      accessToken: session.access_token,
-      refreshToken: session.refresh_token
-    });
-
-    if (tokenResult.error) {
-      console.error("[Auth Pattern] Failed to set auth tokens", tokenResult.error);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to set authentication tokens",
-        }),
-        { status: 500 }
-      );
-    }
-
-    // Set session data
-    const sessionResult = cookieManager.setSessionData({
-      user: session.user,
-      tokens: {
-        accessToken: session.access_token,
-        refreshToken: session.refresh_token
-      },
-      expiresAt: session.expires_at ?? Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7) // Default to 1 week if not provided
-    });
-
-    if (sessionResult.error) {
-      console.error("[Auth Pattern] Failed to set session data", sessionResult.error);
-      return new Response(
-        JSON.stringify({
-          error: "Failed to set session data",
-        }),
-        { status: 500 }
-      );
-    }
-
-    // Verify cookies were set
-    const { data: verifyTokens } = cookieManager.getAuthTokens();
-    const { data: verifySession } = cookieManager.getSessionData();
-
-    console.log("[Auth Pattern] Auth cookies verification", {
-      tokensSet: !!verifyTokens,
-      sessionSet: !!verifySession
-    });
-
+    // No need to manually set cookies - Supabase SSR client handles this
     logApiResponse(200)
     return new Response(
       JSON.stringify({
