@@ -15,7 +15,7 @@ export function SettingsTabs({ defaultTab = 'profile' }: SettingsTabsProps) {
 
   return (
     <Tabs defaultValue={defaultTab} onValueChange={handleTabChange} className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
+      <TabsList className="grid max-w-7xl grid-cols-4">
         <TabsTrigger value="profile">Profile</TabsTrigger>
         <TabsTrigger value="security">Security</TabsTrigger>
         <TabsTrigger value="notifications">Notifications</TabsTrigger>
