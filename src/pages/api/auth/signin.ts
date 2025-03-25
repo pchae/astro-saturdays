@@ -1,7 +1,8 @@
 // With `output: 'static'` configured:
 // export const prerender = false;
 import type { APIRoute } from "astro";
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { AuthService } from '@/lib/auth/services';
+import { AuthErrors } from '@/lib/auth/utils';
 
 // Disable static optimization for API routes
 export const prerender = false;
@@ -35,30 +36,8 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
       );
     }
 
-    // Create server-side Supabase client with cookie handling
-    const supabase = createServerClient(
-      import.meta.env.PUBLIC_SUPABASE_URL,
-      import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-      {
-        cookies: {
-          get: (key: string) => cookies.get(key)?.value,
-          set: (key: string, value: string, options: CookieOptions) => {
-            cookies.set(key, value, {
-              ...options,
-              path: '/',
-            });
-          },
-          remove: (key: string, options: CookieOptions) => {
-            cookies.delete(key, {
-              ...options,
-              path: '/',
-            });
-          },
-        },
-      }
-    );
+    const supabase = await AuthService.createSupabaseClient({ cookies, redirect } as any);
 
-    // Attempt sign in
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

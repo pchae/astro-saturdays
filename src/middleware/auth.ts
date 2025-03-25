@@ -2,8 +2,8 @@ import type { MiddlewareHandler } from 'astro';
 import { defineMiddleware } from 'astro/middleware';
 import { createClient } from '@supabase/supabase-js';
 import { UserRole } from '@/lib/auth/types';
-import { PROTECTED_ROUTES, isPublicRoute } from '@/lib/auth/routes';
-import { AuthErrors } from '@/lib/auth/errors';
+import { PROTECTED_ROUTES, isPublicRoute } from '@/lib/auth/utils/routes';
+import { AuthErrors } from '@/lib/auth/utils/errors';
 
 // Define route permission interface locally
 interface RoutePermission {
