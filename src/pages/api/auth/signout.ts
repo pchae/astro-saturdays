@@ -31,6 +31,14 @@ export const GET: APIRoute = async ({ cookies, redirect }) => {
       }
     );
     
+    // Log current auth state before signout
+    console.log("[Signout] Pre-signout state:", {
+      hasAccessToken: !!cookies.get('sb-access-token'),
+      hasRefreshToken: !!cookies.get('sb-refresh-token'),
+      hasAuthCookie: !!cookies.get('sb-auth'),
+      hasProjectAuthToken: !!cookies.get(`sb-${import.meta.env.PUBLIC_SUPABASE_PROJECT_ID}-auth-token`)
+    });
+
     const { error } = await supabase.auth.signOut();
     
     if (error) {
@@ -43,12 +51,37 @@ export const GET: APIRoute = async ({ cookies, redirect }) => {
       );
     }
 
+    // Manually clear all auth-related cookies
+    const cookiesToClear = [
+      'sb-access-token',
+      'sb-refresh-token',
+      'sb-auth',
+      `sb-${import.meta.env.PUBLIC_SUPABASE_PROJECT_ID}-auth-token`
+    ];
+
+    cookiesToClear.forEach(name => {
+      cookies.delete(name, {
+        path: '/',
+        secure: import.meta.env.PROD,
+        sameSite: 'lax',
+        httpOnly: true
+      });
+    });
+
+    // Log post-signout state
+    console.log("[Signout] Post-signout state:", {
+      hasAccessToken: !!cookies.get('sb-access-token'),
+      hasRefreshToken: !!cookies.get('sb-refresh-token'),
+      hasAuthCookie: !!cookies.get('sb-auth'),
+      hasProjectAuthToken: !!cookies.get(`sb-${import.meta.env.PUBLIC_SUPABASE_PROJECT_ID}-auth-token`)
+    });
+
     return redirect("/signin");
   } catch (error: any) {
-    console.error("[API Error]", error);
+    console.error("[API Error] Signout failed:", error);
     return new Response(
       JSON.stringify({
-        error: "An unexpected error occurred",
+        error: "An unexpected error occurred during sign out",
       }),
       { status: 500 }
     );
