@@ -26,17 +26,26 @@ export async function checkAuth(Astro: AstroGlobal) {
       }
     );
 
-    const { data: { session }, error } = await supabase.auth.getSession();
+    // Get and validate user with the server
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (error || !session) {
-      console.error("[Auth] Session error or no session:", error);
+    if (error || !user) {
+      console.error("[Auth] User validation error:", error);
       return {
         redirect: Astro.redirect("/signin"),
       };
     }
 
+    // Get session for additional data if needed
+    const { data: { session } } = await supabase.auth.getSession();
+
     return {
-      session,
+      session: {
+        data: {
+          user,
+          session
+        }
+      }
     };
   } catch (error) {
     console.error("[Auth] Unexpected error:", error);
