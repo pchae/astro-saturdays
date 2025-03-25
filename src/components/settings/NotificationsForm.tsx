@@ -15,9 +15,9 @@ interface NotificationsFormProps {
   initialData?: Partial<NotificationFormData>;
 }
 
-const NOTIFICATION_CATEGORIES = ['security', 'account', 'updates', 'marketing', 'social'] as const;
+const NOTIFICATION_CATEGORIES = ['security', 'account', 'updates'] as const;
 const NOTIFICATION_CHANNELS = ['email', 'push', 'in_app', 'sms'] as const;
-const NOTIFICATION_FREQUENCIES = ['immediately', 'daily', 'weekly', 'never'] as const;
+// const NOTIFICATION_FREQUENCIES = ['immediately', 'daily', 'weekly', 'never'] as const;
 
 export function NotificationsForm({ initialData }: NotificationsFormProps) {
   const { form, onSubmit, isLoading } = useNotificationsForm(initialData);
@@ -98,31 +98,6 @@ export function NotificationsForm({ initialData }: NotificationsFormProps) {
                               />
                             ))}
                           </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`preferences.${category}.frequency`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Notification Frequency</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select frequency" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {NOTIFICATION_FREQUENCIES.map((frequency) => (
-                                <SelectItem key={frequency} value={frequency}>
-                                  {frequency.charAt(0).toUpperCase() + frequency.slice(1)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
