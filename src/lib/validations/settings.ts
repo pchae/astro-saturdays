@@ -43,21 +43,14 @@ const profileSchema = z.object({
 });
 
 const notificationSchema = z.object({
-  email: z.boolean().default(true),
-  push: z.boolean().default(false),
-  frequency: z.nativeEnum(NotificationFrequency).default(NotificationFrequency.WEEKLY),
-  digest: z.boolean().default(true),
-  marketing: z.boolean().default(false),
-  security: z.boolean().default(true),
-  newsletter: z.boolean().default(false),
+  email: z.boolean(),
+  push: z.boolean(),
+  frequency: z.enum(['daily', 'weekly', 'monthly']),
 });
 
 const privacySchema = z.object({
-  isPublic: z.boolean().default(false),
-  showEmail: z.boolean().default(false),
-  showLocation: z.boolean().default(false),
-  allowIndexing: z.boolean().default(true),
-  allowDataCollection: z.boolean().default(true),
+  isPublic: z.boolean(),
+  showEmail: z.boolean(),
 });
 
 const securitySchema = z.object({
@@ -75,30 +68,18 @@ const securitySchema = z.object({
   path: ["confirmPassword"],
 });
 
-const appearanceSchema = z.object({
-  theme: z.enum(['light', 'dark', 'system']).default('system'),
-  fontSize: z.enum(['small', 'medium', 'large']).default('medium'),
-  reducedMotion: z.boolean().default(false),
-  highContrast: z.boolean().default(false),
-});
-
-export const settingsFormSchema = z.object({
+export const settingsSchema = z.object({
   profile: profileSchema,
   notifications: notificationSchema,
   privacy: privacySchema,
   security: securitySchema,
-  appearance: appearanceSchema,
 });
 
-export type SettingsFormSchema = z.infer<typeof settingsFormSchema>;
-
-// Individual section types for granular form handling
 export type ProfileFormSchema = z.infer<typeof profileSchema>;
 export type NotificationFormSchema = z.infer<typeof notificationSchema>;
 export type PrivacyFormSchema = z.infer<typeof privacySchema>;
 export type SecurityFormSchema = z.infer<typeof securitySchema>;
-export type AppearanceFormSchema = z.infer<typeof appearanceSchema>;
 
 // Partial schemas for patch updates
-export const partialSettingsFormSchema = settingsFormSchema.partial();
+export const partialSettingsFormSchema = settingsSchema.partial();
 export type PartialSettingsFormSchema = z.infer<typeof partialSettingsFormSchema>; 
