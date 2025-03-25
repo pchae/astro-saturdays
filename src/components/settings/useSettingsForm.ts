@@ -1,27 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
-import {
-  profileFormSchema,
-  type ProfileFormData,
-} from '@/lib/schemas/settings/profile';
-import {
-  securityFormSchema,
-  type SecurityFormData,
-} from '@/lib/schemas/settings/security';
-import {
-  notificationFormSchema,
-  type NotificationFormData,
-} from '@/lib/schemas/settings/notifications';
-import {
-  privacyFormSchema,
-  type PrivacyFormData,
-} from '@/lib/schemas/settings/privacy';
-import {
-  appearanceFormSchema,
-  type AppearanceFormData,
-} from '@/lib/schemas/settings/appearance';
+import type { SettingsFormData } from '@/types/settings';
+import { profileFormSchema, type ProfileFormData } from '@/lib/schemas/settings/profile';
+import { securityFormSchema, type SecurityFormData } from '@/lib/schemas/settings/security';
+import { notificationFormSchema, type NotificationFormData } from '@/lib/schemas/settings/notifications';
+import { privacyFormSchema, type PrivacyFormData } from '@/lib/schemas/settings/privacy';
+import { appearanceFormSchema, type AppearanceFormData } from '@/lib/schemas/settings/appearance';
 import { settingsApi } from '@/lib/api/client';
 
 const defaultProfileData: ProfileFormData = {
@@ -253,6 +240,44 @@ export function useAppearanceForm(initialData?: Partial<AppearanceFormData>) {
     } catch (error) {
       console.error("Failed to update appearance settings:", error);
       toast.error("Failed to update appearance settings");
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
+
+// Combined Settings Form Hook
+export function useSettingsForm(initialData?: Partial<SettingsFormData>) {
+  const { user } = useUser();
+  const form = useForm<SettingsFormData>({
+    resolver: zodResolver(z.object({
+      profile: profileFormSchema,
+      security: securityFormSchema,
+      notifications: notificationFormSchema,
+      privacy: privacyFormSchema,
+      appearance: appearanceFormSchema,
+    })),
+    defaultValues: {
+      profile: { ...defaultProfileData, ...initialData?.profile },
+      security: { ...defaultSecurityData, ...initialData?.security },
+      notifications: { ...defaultNotificationData, ...initialData?.notifications },
+      privacy: { ...defaultPrivacyData, ...initialData?.privacy },
+      appearance: { ...defaultAppearanceData, ...initialData?.appearance },
+    },
+  });
+
+  const onSubmit = async (data: SettingsFormData) => {
+    try {
+      if (!user?.id) throw new Error("User not found");
+      await settingsApi.update(data);
+      toast.success("Settings updated successfully");
+    } catch (error) {
+      console.error("Failed to update settings:", error);
+      toast.error("Failed to update settings");
     }
   };
 
