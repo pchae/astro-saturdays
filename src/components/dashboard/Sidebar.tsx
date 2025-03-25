@@ -20,9 +20,9 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Calendar', href: '/calendar', icon: Calendar },
-  { name: 'Team', href: '/team', icon: Users },
-  { name: 'Analytics', href: '/analytics', icon: BarChart },
+  { name: 'Calendar', href: '/dashboard', icon: Calendar },
+  { name: 'Invoices', href: '/', icon: Users },
+  { name: 'Analytics', href: '/', icon: BarChart },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
