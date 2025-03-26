@@ -13,7 +13,16 @@ export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
 };
 
 // Define public routes that don't require authentication
-const PUBLIC_ROUTES = ['/signin', '/signup', '/reset-password', '/verify'];
+const PUBLIC_ROUTES = [
+  '/',
+  '/about',
+  '/signin',
+  '/register',
+  '/privacy',
+  '/reset-password',
+  '/verify',
+  '/404'
+];
 
 /**
  * Check if route is public
@@ -24,7 +33,7 @@ export function isPublicRoute(path: string): boolean {
       const baseRoute = route.replace('*', '');
       return path.startsWith(baseRoute);
     }
-    return path === route;
+    return path === route || path.startsWith('/api/');  // Allow API routes
   });
 }
 
