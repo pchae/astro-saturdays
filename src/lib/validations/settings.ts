@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { NotificationFrequency } from '@/types/settings';
 
 // Base schemas for reusable validation patterns
 const passwordSchema = z
@@ -45,7 +44,7 @@ const profileSchema = z.object({
 const notificationSchema = z.object({
   email: z.boolean(),
   push: z.boolean(),
-  frequency: z.enum(['daily', 'weekly', 'monthly']),
+  frequency: z.enum(['immediately', 'daily', 'weekly', 'monthly', 'never']),
 });
 
 const privacySchema = z.object({
