@@ -3,77 +3,124 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
 import type { SettingsFormData } from '@/types/settings';
-import type { ProfileFormData } from '@/lib/schemas/settings/profile';
-import { profileFormSchema } from '@/lib/schemas/settings/profile';
-import type { SecurityFormData } from '@/lib/schemas/settings/security';
-import { securityFormSchema } from '@/lib/schemas/settings/security';
-import type { NotificationFormData } from '@/lib/schemas/settings/notifications';
-import { notificationFormSchema } from '@/lib/schemas/settings/notifications';
+import type { ProfileSettingsSchema } from '@/lib/schemas/features/settings/profile';
+import { profileSettingsSchema } from '@/lib/schemas/features/settings/profile';
+import type { SecuritySettingsSchema } from '@/lib/schemas/features/settings/security';
+import { securitySettingsSchema } from '@/lib/schemas/features/settings/security';
+import type { NotificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
+import { notificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
 import { settingsApi } from '@/lib/api/client';
 import { updateProfile, updateSecurity, updateNotifications } from '@/lib/api/settings';
 
 // Default form data
-const defaultProfileData: ProfileFormData = {
-  fullName: '',
-  email: '',
-  bio: '',
-  avatarUrl: ''
-};
-
-const defaultSecurityData: SecurityFormData = {
-  currentPassword: '',
-  newPassword: '',
-  confirmNewPassword: '',
-  twoFactorEnabled: false,
-  sessionManagement: {
-    rememberMe: true,
-    sessionTimeout: 30,
-    allowMultipleSessions: true
+const defaultProfileData: ProfileSettingsSchema = {
+  personal: {
+    fullName: '',
+    email: '',
+    bio: '',
+    avatarUrl: '',
+    username: ''
+  },
+  professional: {
+    jobTitle: '',
+    company: '',
+    website: '',
+    location: ''
+  },
+  preferences: {
+    language: 'en',
+    timezone: 'UTC'
   }
 };
 
-const defaultNotificationData: NotificationFormData = {
+const defaultSecurityData: SecuritySettingsSchema = {
+  password: {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  },
+  twoFactor: {
+    enabled: false,
+    method: 'email',
+    recoveryEmail: ''
+  },
+  securityQuestions: {
+    questions: []
+  },
+  sessionManagement: {
+    rememberMe: true,
+    sessionTimeout: 30,
+    maxSessions: 1,
+    allowMultipleSessions: false
+  }
+};
+
+const defaultNotificationData: NotificationSettingsSchema = {
   preferences: {
-    security: {
-      enabled: true,
-      channels: ['email'],
-      frequency: 'immediately'
-    },
-    account: {
-      enabled: true,
-      channels: ['email'],
-      frequency: 'immediately'
-    },
-    updates: {
-      enabled: true,
-      channels: ['email'],
-      frequency: 'weekly'
-    },
-    marketing: {
+    preferences: {
+      security: {
+        enabled: true,
+        channels: ['email'],
+        frequency: 'immediately'
+      },
+      account: {
+        enabled: true,
+        channels: ['email'],
+        frequency: 'immediately'
+      },
+      updates: {
+        enabled: true,
+        channels: ['email'],
+        frequency: 'weekly'
+      },
+      marketing: {
+        enabled: false,
+        channels: ['email'],
+        frequency: 'never'
+      },
+      social: {
+        enabled: true,
+        channels: ['in_app', 'email'],
+        frequency: 'daily'
+      },
+      system: {
+        enabled: true,
+        channels: ['email'],
+        frequency: 'immediately'
+      }
+    }
+  },
+  schedule: {
+    quietHours: {
       enabled: false,
-      channels: ['email'],
-      frequency: 'never'
+      start: '22:00',
+      end: '07:00'
     },
-    social: {
+    timezone: 'UTC'
+  },
+  frequency: {
+    maxPerHour: 20,
+    maxPerDay: 100,
+    digestEmail: {
       enabled: true,
-      channels: ['in_app', 'email'],
-      frequency: 'daily'
+      frequency: 'daily',
+      time: '09:00'
     }
   }
 };
 
 // Profile Form Hook
-export function useProfileForm(initialData?: Partial<ProfileFormData>) {
+export function useProfileForm(initialData?: Partial<ProfileSettingsSchema>) {
   const { user } = useUser();
-  const form = useForm<ProfileFormData>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useForm<ProfileSettingsSchema>({
+    resolver: zodResolver(profileSettingsSchema.row),
     defaultValues: {
       ...defaultProfileData,
       ...initialData,
     },
   });
 
-  const onSubmit = async (data: ProfileFormData) => {
+  const onSubmit = async (data: ProfileSettingsSchema) => {
     try {
       await updateProfile('current-user', data);
       return { success: true };
@@ -91,17 +138,17 @@ export function useProfileForm(initialData?: Partial<ProfileFormData>) {
 }
 
 // Security Form Hook
-export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
+export function useSecurityForm(initialData?: Partial<SecuritySettingsSchema>) {
   const { user } = useUser();
-  const form = useForm<SecurityFormData>({
-    resolver: zodResolver(securityFormSchema),
+  const form = useForm<SecuritySettingsSchema>({
+    resolver: zodResolver(securitySettingsSchema.row),
     defaultValues: {
       ...defaultSecurityData,
       ...initialData,
     },
   });
 
-  const onSubmit = async (data: SecurityFormData) => {
+  const onSubmit = async (data: SecuritySettingsSchema) => {
     try {
       await updateSecurity('current-user', data);
       return { success: true };
@@ -119,17 +166,17 @@ export function useSecurityForm(initialData?: Partial<SecurityFormData>) {
 }
 
 // Notification Form Hook
-export function useNotificationForm(initialData?: Partial<NotificationFormData>) {
+export function useNotificationForm(initialData?: Partial<NotificationSettingsSchema>) {
   const { user } = useUser();
-  const form = useForm<NotificationFormData>({
-    resolver: zodResolver(notificationFormSchema),
+  const form = useForm<NotificationSettingsSchema>({
+    resolver: zodResolver(notificationSettingsSchema.row),
     defaultValues: {
       ...defaultNotificationData,
       ...initialData,
     },
   });
 
-  const onSubmit = async (data: NotificationFormData) => {
+  const onSubmit = async (data: NotificationSettingsSchema) => {
     try {
       await updateNotifications('current-user', data);
       return { success: true };
