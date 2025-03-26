@@ -1,5 +1,19 @@
+// Core exports
+export * from './core/types';
+export * from './core/validators';
+export * from './core/messages';
+
+// Utility exports
+export * from './utils/factories';
+
+// Feature schema exports
+export * as authSchemas from './features/auth';
+
+// Re-export zod for convenience
+export { z } from 'zod';
+
 // Base schemas and validation
-export * from "./base/field-schemas"
+export * from "./base/fields"
 export * from "./base/validation-rules"
 
 // Settings schemas
