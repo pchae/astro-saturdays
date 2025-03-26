@@ -1,6 +1,9 @@
-// Base schemas and utilities
-export * from "./base/common"
-export * from "./base/validation"
+// Base schemas and validation
+export * from "./base/field-schemas"
+export * from "./base/validation-rules"
+
+// Settings schemas
+export * from "./settings"
 
 // Profile schemas and types
 export * from "./settings/profile"
