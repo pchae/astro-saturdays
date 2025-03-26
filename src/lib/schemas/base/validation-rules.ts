@@ -1,8 +1,8 @@
 /**
- * Validation constants used across schema definitions
- * @description Centralized constants for validation rules and messages
+ * Validation rules used across schema definitions
+ * @description Centralized rules for validation constraints and messages
  */
-export const VALIDATION_CONSTANTS = {
+export const VALIDATION_RULES = {
   PHONE: {
     /** Regular expression for international phone number validation */
     REGEX: /^\+?[1-9]\d{1,14}$/,
@@ -34,6 +34,6 @@ export const VALIDATION_CONSTANTS = {
 } as const
 
 /**
- * Type definition for validation constants
+ * Type definition for validation rules
  */
-export type ValidationConstants = typeof VALIDATION_CONSTANTS 
+export type ValidationRules = typeof VALIDATION_RULES 

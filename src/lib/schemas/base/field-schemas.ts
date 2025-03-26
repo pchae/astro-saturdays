@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { VALIDATION_CONSTANTS } from "./constants"
+import { VALIDATION_RULES } from "./validation-rules"
 
 /**
  * Email validation schema with custom error messages
@@ -58,8 +58,8 @@ export const urlSchema = z
 export const phoneSchema = z
   .string()
   .regex(
-    VALIDATION_CONSTANTS.PHONE.REGEX,
-    VALIDATION_CONSTANTS.PHONE.MESSAGE
+    VALIDATION_RULES.PHONE.REGEX,
+    VALIDATION_RULES.PHONE.MESSAGE
   )
   .describe("Phone number in international format")
 
@@ -70,14 +70,14 @@ export const phoneSchema = z
 export const timeoutSchema = z
   .number()
   .min(
-    VALIDATION_CONSTANTS.SESSION.MIN_TIMEOUT,
-    `Timeout must be at least ${VALIDATION_CONSTANTS.SESSION.MIN_TIMEOUT} minutes`
+    VALIDATION_RULES.SESSION.MIN_TIMEOUT,
+    `Timeout must be at least ${VALIDATION_RULES.SESSION.MIN_TIMEOUT} minutes`
   )
   .max(
-    VALIDATION_CONSTANTS.SESSION.MAX_TIMEOUT,
-    `Timeout must be less than ${VALIDATION_CONSTANTS.SESSION.MAX_TIMEOUT} minutes`
+    VALIDATION_RULES.SESSION.MAX_TIMEOUT,
+    `Timeout must be less than ${VALIDATION_RULES.SESSION.MAX_TIMEOUT} minutes`
   )
-  .default(VALIDATION_CONSTANTS.SESSION.DEFAULT_TIMEOUT)
+  .default(VALIDATION_RULES.SESSION.DEFAULT_TIMEOUT)
   .describe("Session timeout in minutes")
 
 /**
@@ -121,10 +121,10 @@ export const textFieldSchema = (options?: { min?: number; max?: number }) =>
   z
     .string()
     .min(
-      options?.min ?? VALIDATION_CONSTANTS.TEXT.MIN_LENGTH,
-      `Text must be at least ${options?.min ?? VALIDATION_CONSTANTS.TEXT.MIN_LENGTH} characters`
+      options?.min ?? VALIDATION_RULES.TEXT.MIN_LENGTH,
+      `Text must be at least ${options?.min ?? VALIDATION_RULES.TEXT.MIN_LENGTH} characters`
     )
     .max(
-      options?.max ?? VALIDATION_CONSTANTS.TEXT.MAX_LENGTH,
-      `Text must be less than ${options?.max ?? VALIDATION_CONSTANTS.TEXT.MAX_LENGTH} characters`
+      options?.max ?? VALIDATION_RULES.TEXT.MAX_LENGTH,
+      `Text must be less than ${options?.max ?? VALIDATION_RULES.TEXT.MAX_LENGTH} characters`
     ) 
