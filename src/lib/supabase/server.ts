@@ -1,5 +1,5 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import type { Database } from '@/lib/shared/types/supabase';
+import type { Database } from '../shared/types/supabase';
 import type { AstroGlobal } from 'astro';
 
 /**
