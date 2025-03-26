@@ -4,8 +4,8 @@ import {
   recoveryEmailSchema, 
   phoneSchema, 
   timeoutSchema 
-} from "../base/common"
-import { VALIDATION_CONSTANTS } from "../base/constants"
+} from "../base/field-schemas"
+import { VALIDATION_RULES } from "../base/validation-rules"
 import { optionalString } from "../base/validation"
 
 /**
@@ -61,12 +61,12 @@ const baseSecurityQuestionsSchema = z.object({
     })
   )
   .min(
-    VALIDATION_CONSTANTS.SECURITY.MIN_QUESTIONS,
-    `At least ${VALIDATION_CONSTANTS.SECURITY.MIN_QUESTIONS} security questions are required`
+    VALIDATION_RULES.SECURITY.MIN_QUESTIONS,
+    `At least ${VALIDATION_RULES.SECURITY.MIN_QUESTIONS} security questions are required`
   )
   .max(
-    VALIDATION_CONSTANTS.SECURITY.MAX_QUESTIONS,
-    `Maximum of ${VALIDATION_CONSTANTS.SECURITY.MAX_QUESTIONS} security questions allowed`
+    VALIDATION_RULES.SECURITY.MAX_QUESTIONS,
+    `Maximum of ${VALIDATION_RULES.SECURITY.MAX_QUESTIONS} security questions allowed`
   ),
 })
 
@@ -81,7 +81,7 @@ const baseSessionSchema = z.object({
   sessionTimeout: timeoutSchema,
   maxSessions: z.number()
     .min(1)
-    .max(VALIDATION_CONSTANTS.SESSION.MAX_CONCURRENT)
+    .max(VALIDATION_RULES.SESSION.MAX_CONCURRENT)
     .default(1)
     .describe("Maximum number of concurrent sessions"),
   allowMultipleSessions: z.boolean()

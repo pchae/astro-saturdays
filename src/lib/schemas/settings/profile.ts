@@ -1,11 +1,11 @@
 import { z } from "zod"
 import { 
   emailSchema, 
-  textFieldSchema, 
+  usernameSchema, 
   urlSchema, 
-  usernameSchema,
-  languageSchema
-} from "../base/common"
+  languageSchema,
+  textFieldSchema 
+} from "../base/field-schemas"
 import { optionalString } from "../base/validation"
 
 /**
