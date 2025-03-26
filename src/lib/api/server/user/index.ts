@@ -1,7 +1,7 @@
 import type { ProfileSettingsSchema } from '@/lib/database/schemas';
 import { createClient } from '@/lib/supabase/server';
 import type { AstroGlobal } from 'astro';
-import type { ApiResponse } from '../types';
+import type { ApiResponse } from '../../server/types';
 
 /**
  * Get user profile

@@ -1,13 +1,14 @@
 import type { AstroGlobal } from 'astro';
-import { supabase } from '../../supabase/client';
-import { AuthError, AuthErrors } from '../../errors/auth';
-import { UserRole } from '../../../types/auth';
-import type { AuthResponse, AuthSession } from '../../../types/auth';
+import { createClient as createBrowserClient } from '@/lib/supabase/client';
+import { createClient as createServerClient } from '@/lib/supabase/server';
+import { AuthErrors } from '@/lib/api/server/errors';
+import { UserRole } from '@/types/auth';
+import type { AuthResponse } from '@/types/auth';
 
 export class AuthService {
   static async validateSession(context: AstroGlobal): Promise<AuthResponse> {
     try {
-      const client = supabase.createServerClient(context);
+      const client = createServerClient(context);
       const { data: { user }, error: userError } = await client.auth.getUser();
 
       if (userError || !user) {
@@ -35,7 +36,7 @@ export class AuthService {
         }
       };
     } catch (error) {
-      if (error instanceof AuthError) {
+      if (error instanceof Error) {
         return {
           success: false,
           error
@@ -51,7 +52,8 @@ export class AuthService {
 
   static async signIn(email: string, password: string): Promise<AuthResponse> {
     try {
-      const { data, error } = await supabase.getClient().auth.signInWithPassword({
+      const client = createBrowserClient();
+      const { data, error } = await client.auth.signInWithPassword({
         email,
         password
       });
@@ -73,7 +75,7 @@ export class AuthService {
         }
       };
     } catch (error) {
-      if (error instanceof AuthError) {
+      if (error instanceof Error) {
         return {
           success: false,
           error
@@ -88,7 +90,7 @@ export class AuthService {
   }
 
   static async signOut(context: AstroGlobal): Promise<void> {
-    const client = supabase.createServerClient(context);
+    const client = createServerClient(context);
     await client.auth.signOut();
   }
 } 

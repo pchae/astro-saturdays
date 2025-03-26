@@ -5,7 +5,7 @@ import type {
 } from '@/lib/database/schemas';
 import { createClient } from '@/lib/supabase/server';
 import type { AstroGlobal } from 'astro';
-import type { ApiResponse } from '../types';
+import type { ApiResponse } from '../../server/types';
 
 /**
  * Update user profile settings

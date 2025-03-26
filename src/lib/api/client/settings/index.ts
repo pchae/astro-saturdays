@@ -3,7 +3,7 @@ import type {
   SecuritySettingsSchema,
   NotificationSettingsSchema
 } from '@/lib/database/schemas';
-import type { ApiResponse } from '../types';
+import type { ApiResponse } from '../../client/types';
 
 export interface SettingsData {
   profile?: ProfileSettingsSchema;
