@@ -1,33 +1,37 @@
 import type {
-  ProfileFormData,
-  SecurityFormData,
-  NotificationFormData
-} from '@/lib/schemas/settings';
+  ProfileSettingsSchema,
+  SecuritySettingsSchema,
+  NotificationSettingsSchema
+} from '@/lib/database/schemas';
+import type { ApiResponse } from '../types';
 
 export interface SettingsData {
-  profile?: ProfileFormData;
-  security?: SecurityFormData;
-  notifications?: NotificationFormData;
+  profile?: ProfileSettingsSchema;
+  security?: SecuritySettingsSchema;
+  notifications?: NotificationSettingsSchema;
 }
 
 export interface SettingsUpdateData {
-  profile?: ProfileFormData;
-  security?: SecurityFormData;
-  notifications?: NotificationFormData;
+  profile?: Partial<ProfileSettingsSchema>;
+  security?: Partial<SecuritySettingsSchema>;
+  notifications?: Partial<NotificationSettingsSchema>;
 }
 
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
-
-class SettingsApi {
+/**
+ * Client-side settings API for managing user settings
+ */
+export class SettingsApi {
   private baseUrl = '/api/settings';
 
+  /**
+   * Fetch all settings for the current user
+   */
   async fetch(): Promise<ApiResponse<SettingsData>> {
     try {
       const response = await fetch(this.baseUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       return data;
     } catch (error) {
@@ -39,7 +43,10 @@ class SettingsApi {
     }
   }
 
-  async update(data: SettingsData): Promise<ApiResponse<SettingsData>> {
+  /**
+   * Update settings for the current user
+   */
+  async update(data: SettingsUpdateData): Promise<ApiResponse<SettingsData>> {
     try {
       const response = await fetch(this.baseUrl, {
         method: 'PUT',
@@ -48,6 +55,9 @@ class SettingsApi {
         },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const responseData = await response.json();
       return responseData;
     } catch (error) {
@@ -60,4 +70,5 @@ class SettingsApi {
   }
 }
 
+// Export singleton instance
 export const settingsApi = new SettingsApi(); 
