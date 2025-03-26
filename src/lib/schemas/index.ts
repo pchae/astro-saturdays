@@ -8,6 +8,7 @@ export * from './utils/factories';
 
 // Feature schema exports
 export * as authSchemas from './features/auth';
+export * as settingsSchemas from './features/settings';
 
 // Re-export zod for convenience
 export { z } from 'zod';
@@ -16,30 +17,18 @@ export { z } from 'zod';
 export * from "./base/fields"
 export * from "./base/validation-rules"
 
-// Settings schemas
-export * from "./settings"
-
-// Profile schemas and types
-export * from "./settings/profile"
-
-// Security schemas and types
-export * from "./settings/security"
-
-// Notification schemas and types
-export * from "./settings/notifications"
-
 // Combined types for settings
-import type { ProfileFormData } from "./settings/profile"
-import type { SecuritySettingsData } from "./settings/security"
-import type { NotificationSettings } from "./settings/notifications"
+import type { ProfileSettingsSchema } from "./features/settings/profile"
+import type { SecuritySettingsSchema } from "./features/settings/security"
+import type { NotificationSettingsSchema } from "./features/settings/notifications"
 
 /**
  * Combined type for all user settings
  */
 export type UserSettings = {
-  profile: ProfileFormData
-  security: SecuritySettingsData
-  notifications: NotificationSettings
+  profile: ProfileSettingsSchema
+  security: SecuritySettingsSchema
+  notifications: NotificationSettingsSchema
 }
 
 /**
