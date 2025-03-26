@@ -5,7 +5,7 @@ import type {
 } from '@/lib/database/schemas';
 import { createClient } from '@/lib/supabase/server';
 import type { AstroGlobal } from 'astro';
-import type { ApiResponse } from '../../server/types';
+import type { ApiResponse } from '@/types/api';
 
 /**
  * Update user profile settings
@@ -114,7 +114,7 @@ export async function fetchUserSettings(
   const supabase = createClient(context);
   
   try {
-    const [profileResult, settingsResult] = await Promise.all([
+    const [profileResult, settingsResult, userResult] = await Promise.all([
       supabase
         .from('profiles')
         .select('*')
@@ -124,11 +124,18 @@ export async function fetchUserSettings(
         .from('settings')
         .select('*')
         .eq('user_id', userId)
-        .single()
+        .single(),
+      supabase.auth.admin.getUserById(userId)
     ]);
 
     if (profileResult.error) throw profileResult.error;
     if (settingsResult.error) throw settingsResult.error;
+    if (userResult.error) throw userResult.error;
+
+    const email = userResult.data.user.email;
+    if (!email) {
+      throw new Error('User email not found');
+    }
 
     return {
       success: true,
@@ -138,7 +145,8 @@ export async function fetchUserSettings(
             username: profileResult.data.username,
             fullName: profileResult.data.full_name,
             avatarUrl: profileResult.data.avatar_url,
-            bio: profileResult.data.bio
+            bio: profileResult.data.bio,
+            email
           },
           professional: {
             website: profileResult.data.website

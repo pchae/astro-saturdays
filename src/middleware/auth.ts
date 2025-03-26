@@ -3,8 +3,30 @@ import { defineMiddleware } from 'astro/middleware';
 import { createClient } from '@supabase/supabase-js';
 import { UserRole } from '@/types/auth';
 import type { RoutePermission } from '@/types/auth';
-import { PROTECTED_ROUTES, isPublicRoute } from '@/lib/auth/utils/routes';
 import { AuthErrors } from '@/lib/errors/auth';
+
+// Define protected routes and their permissions
+export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
+  '/dashboard': { roles: [UserRole.USER, UserRole.ADMIN] },
+  '/settings': { roles: [UserRole.USER, UserRole.ADMIN] },
+  '/admin': { roles: [UserRole.ADMIN] }
+};
+
+// Define public routes that don't require authentication
+const PUBLIC_ROUTES = ['/signin', '/signup', '/reset-password', '/verify'];
+
+/**
+ * Check if route is public
+ */
+export function isPublicRoute(path: string): boolean {
+  return PUBLIC_ROUTES.some(route => {
+    if (route.includes('*')) {
+      const baseRoute = route.replace('*', '');
+      return path.startsWith(baseRoute);
+    }
+    return path === route;
+  });
+}
 
 // Helper to check if role has required permission level
 function hasPermission(userRole: string | undefined, permission: RoutePermission): boolean {

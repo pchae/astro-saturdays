@@ -1,5 +1,5 @@
 import type { ProfileSettingsSchema } from '@/lib/database/schemas';
-import type { ApiResponse } from '../../client/types';
+import type { ApiResponse } from '@/types/api';
 
 export class UserApi {
   private baseUrl: string;

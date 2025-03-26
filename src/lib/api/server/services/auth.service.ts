@@ -1,7 +1,7 @@
 import type { AstroGlobal } from 'astro';
 import { createClient as createBrowserClient } from '@/lib/supabase/client';
 import { createClient as createServerClient } from '@/lib/supabase/server';
-import { AuthErrors } from '@/lib/api/server/errors';
+import { AuthErrors } from '@/lib/errors/auth';
 import { UserRole } from '@/types/auth';
 import type { AuthResponse } from '@/types/auth';
 

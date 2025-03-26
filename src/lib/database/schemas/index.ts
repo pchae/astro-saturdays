@@ -1,7 +1,8 @@
 // Re-export all schemas
-export * from './auth';
 export * from './settings';
-export * from './profile';
+export * from './settings/profile';
+export * from './settings/security';
+export * from './settings/notifications';
 
 // Re-export types
-export type { Database } from '@/lib/shared/types/supabase'; 
+export type { Database } from '@/types/supabase'; 

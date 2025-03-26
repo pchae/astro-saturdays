@@ -1,9 +1,7 @@
 // With `output: 'static'` configured:
 // export const prerender = false;
 import type { APIRoute } from "astro";
-import { AuthService } from '@/lib/api/server/services/auth.service';
-import { AuthErrors } from '@/lib/api/server/errors';
-import { createClient } from '@/lib/supabase/client';
+import { AuthErrors } from '@/lib/errors/auth';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 // Disable static optimization for API routes

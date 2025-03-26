@@ -8,19 +8,15 @@ export * from './utils/factories';
 
 // Feature schema exports
 export * as authSchemas from './features/auth';
-export * as settingsSchemas from './features/settings';
-
-// Re-export zod for convenience
-export { z } from 'zod';
 
 // Base schemas and validation
 export * from "./base/fields"
 export * from "./base/validation-rules"
 
 // Combined types for settings
-import type { ProfileSettingsSchema } from "./features/settings/profile"
-import type { SecuritySettingsSchema } from "./features/settings/security"
-import type { NotificationSettingsSchema } from "./features/settings/notifications"
+import type { ProfileSettingsSchema } from "@/lib/database/schemas/settings/profile"
+import type { SecuritySettingsSchema } from "@/lib/database/schemas/settings/security"
+import type { NotificationSettingsSchema } from "@/lib/database/schemas/settings/notifications"
 
 /**
  * Combined type for all user settings

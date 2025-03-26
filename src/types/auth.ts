@@ -2,8 +2,9 @@ import type { Session, User } from '@supabase/supabase-js';
 import type { AstroGlobal } from 'astro';
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  USER = 'USER'
+  ADMIN = 'admin',
+  USER = 'user',
+  GUEST = 'guest'
 }
 
 export interface AuthState {
@@ -44,6 +45,10 @@ export interface AuthResponse {
     user: User & { role: UserRole };
   };
   error?: Error;
+}
+
+export interface RoutePermission {
+  roles: UserRole[];
 }
 
 /**
