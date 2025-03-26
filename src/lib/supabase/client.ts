@@ -1,70 +1,16 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import type { AstroGlobal } from 'astro';
-import { ApiErrors } from '../errors/api';
+import { createBrowserClient } from '@supabase/ssr';
+import type { Database } from '@/lib/shared/types/supabase';
 
-class SupabaseService {
-  private static instance: SupabaseService;
-  private client: SupabaseClient | null = null;
+/**
+ * Creates a Supabase client for client-side operations
+ * @returns Supabase client instance with proper typing
+ */
+export function createClient() {
+  const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-  private constructor() {}
-
-  static getInstance(): SupabaseService {
-    if (!SupabaseService.instance) {
-      SupabaseService.instance = new SupabaseService();
-    }
-    return SupabaseService.instance;
-  }
-
-  private getConfig() {
-    const url = import.meta.env.PUBLIC_SUPABASE_URL;
-    const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
-
-    if (!url || !key) {
-      throw ApiErrors.internal();
-    }
-
-    return { url, key };
-  }
-
-  getClient(): SupabaseClient {
-    if (this.client) return this.client;
-
-    const { url, key } = this.getConfig();
-
-    this.client = createClient(url, key, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true
-      }
-    });
-
-    return this.client;
-  }
-
-  createServerClient(context: AstroGlobal) {
-    const { url, key } = this.getConfig();
-
-    return createServerClient(url, key, {
-      cookies: {
-        get: (key: string) => context.cookies.get(key)?.value,
-        set: (key: string, value: string, options: CookieOptions) => {
-          context.cookies.set(key, value, {
-            ...options,
-            path: '/',
-          });
-        },
-        remove: (key: string, options: CookieOptions) => {
-          context.cookies.delete(key, {
-            ...options,
-            path: '/',
-          });
-        },
-      },
-    });
-  }
+  return createBrowserClient<Database>(supabaseUrl, supabaseKey);
 }
 
-// Export singleton instance
-export const supabase = SupabaseService.getInstance(); 
+// Export a type for the browser client
+export type SupabaseBrowserClient = ReturnType<typeof createClient>; 
