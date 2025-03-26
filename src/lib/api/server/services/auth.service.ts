@@ -3,7 +3,7 @@ import { createClient as createBrowserClient } from '@/lib/supabase/client';
 import { createClient as createServerClient } from '@/lib/supabase/server';
 import { AuthErrors } from '@/lib/errors/auth';
 import { UserRole } from '@/types/auth';
-import type { AuthResponse } from '@/types/auth';
+import type { AuthResponse, AuthSession } from '@/types/auth';
 
 export class AuthService {
   static async validateSession(context: AstroGlobal): Promise<AuthResponse> {
@@ -60,14 +60,16 @@ export class AuthService {
 
       if (error) throw AuthErrors.invalidCredentials();
 
+      const session: AuthSession = {
+        isValid: true,
+        expiresAt: data.session?.expires_at ? data.session.expires_at * 1000 : Date.now() + 3600000,
+        user: data.user
+      };
+
       return {
         success: true,
         data: {
-          session: {
-            isValid: true,
-            expiresAt: data.session?.expires_at ?? 0,
-            user: data.user
-          },
+          session,
           user: {
             ...data.user,
             role: (data.user.role as UserRole) ?? UserRole.USER

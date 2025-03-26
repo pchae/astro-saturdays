@@ -3,17 +3,15 @@
 interface ImportMetaEnv {
     readonly PUBLIC_SUPABASE_URL: string
     readonly PUBLIC_SUPABASE_ANON_KEY: string
+    readonly PUBLIC_SUPABASE_PROJECT_ID: string
   }
   
   interface ImportMeta {
     readonly env: ImportMetaEnv
   }
 
-interface Session {
-  isValid: boolean;
-  expiresAt: number;
-  user?: import('@supabase/supabase-js').User;
-}
+// Use the AuthSession type from our auth types
+type Session = import('@/types/auth').AuthSession;
 
 interface Metrics {
   operations: number;

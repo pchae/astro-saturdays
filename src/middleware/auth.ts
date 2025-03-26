@@ -1,9 +1,27 @@
-import type { MiddlewareHandler } from 'astro';
+import type { MiddlewareHandler, APIContext } from 'astro';
+import type { AstroGlobal } from 'astro';
 import { defineMiddleware } from 'astro/middleware';
 import { createClient } from '@supabase/supabase-js';
+import type { Session as SupabaseSession } from '@supabase/supabase-js';
 import { UserRole } from '@/types/auth';
-import type { RoutePermission } from '@/types/auth';
-import { AuthErrors } from '@/lib/errors/auth';
+import type { AuthConfig, AuthContext, AuthState, RoutePermission, AuthSession } from '@/types/auth';
+import { AuthErrors, SessionError, UnauthorizedError } from '@/lib/errors/auth';
+
+// Default configuration
+const DEFAULT_CONFIG: AuthConfig = {
+  publicRoutes: [
+    '/',
+    '/about',
+    '/signin',
+    '/register',
+    '/privacy',
+    '/reset-password',
+    '/verify',
+    '/404'
+  ],
+  authFailRedirect: '/signin',
+  afterAuthRedirect: '/dashboard'
+};
 
 // Define protected routes and their permissions
 export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
@@ -12,23 +30,50 @@ export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
   '/admin': { roles: [UserRole.ADMIN] }
 };
 
-// Define public routes that don't require authentication
-const PUBLIC_ROUTES = [
-  '/',
-  '/about',
-  '/signin',
-  '/register',
-  '/privacy',
-  '/reset-password',
-  '/verify',
-  '/404'
-];
+/**
+ * Get current auth state
+ */
+async function getAuthState(context: APIContext | AstroGlobal): Promise<AuthState> {
+  const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
+    }
+  );
+  
+  try {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    
+    if (error) throw error;
+    
+    return {
+      session,
+      user: session?.user ?? null,
+      isLoading: false,
+      error: null
+    };
+  } catch (error) {
+    return {
+      session: null,
+      user: null,
+      isLoading: false,
+      error: error instanceof Error ? error : new Error('Unknown error')
+    };
+  }
+}
 
 /**
  * Check if route is public
  */
-export function isPublicRoute(path: string): boolean {
-  return PUBLIC_ROUTES.some(route => {
+export function isPublicRoute(path: string, publicRoutes?: string[]): boolean {
+  // Use default routes if none provided, ensure it's always an array
+  const routes = publicRoutes ?? DEFAULT_CONFIG.publicRoutes ?? [];
+  return routes.some(route => {
     if (route.includes('*')) {
       const baseRoute = route.replace('*', '');
       return path.startsWith(baseRoute);
@@ -40,10 +85,9 @@ export function isPublicRoute(path: string): boolean {
 // Helper to check if role has required permission level
 function hasPermission(userRole: string | undefined, permission: RoutePermission): boolean {
   if (!permission.roles || !userRole) {
-    return false; // If no roles specified or no user role, deny access
+    return false;
   }
   
-  // Convert string role to UserRole enum
   let role: UserRole;
   switch (userRole) {
     case 'admin':
@@ -61,9 +105,13 @@ function hasPermission(userRole: string | undefined, permission: RoutePermission
 
 export const authMiddleware = defineMiddleware(async (context, next) => {
   const { locals, url, cookies } = context;
+  const config = { ...DEFAULT_CONFIG };
+  
+  // Get current auth state
+  const state = await getAuthState(context);
   
   // First check if route is public
-  if (isPublicRoute(url.pathname)) {
+  if (isPublicRoute(url.pathname, config.publicRoutes)) {
     console.log('[Auth Middleware] Public route detected:', {
       path: url.pathname,
       skippingAuth: true
@@ -74,57 +122,50 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
 
   console.log('[Auth Middleware] Processing request:', {
     path: url.pathname,
-    hasSession: !!locals.session,
-    hasUser: !!locals.user,
-    sessionObject: locals.session ? JSON.stringify({
-      isValid: locals.session.isValid,
-      expiresAt: locals.session.expiresAt,
-      expiresAtFormatted: new Date(locals.session.expiresAt).toISOString()
-    }) : 'null',
-    userObject: locals.user ? JSON.stringify({
-      id: locals.user.id,
-      email: locals.user.email,
-      role: locals.user.role
-    }) : 'null',
+    hasSession: !!state.session,
+    hasUser: !!state.user,
     timestamp: new Date().toISOString()
   });
 
   try {
-    // Create a new Supabase client for this request
-    const client = createClient(
-      import.meta.env.PUBLIC_SUPABASE_URL,
-      import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false,
-          detectSessionInUrl: false
-        }
-      }
-    );
-
-    // Validate the session
-    const { data: { user }, error } = await client.auth.getUser();
-
-    if (error || !user) {
-      console.log('[Auth Debug] Supabase getUser failed, invalidating session');
+    if (!state.session || !state.user) {
+      console.log('[Auth Debug] No valid session found');
       cookies.delete('sb-access-token', { path: '/' });
       cookies.delete('sb-refresh-token', { path: '/' });
       locals.metrics.operations++;
-      throw AuthErrors.unauthorized();
+      
+      // Check if request expects JSON
+      if (context.request.headers.get('accept')?.includes('application/json')) {
+        throw new UnauthorizedError();
+      }
+      
+      return context.redirect(config.authFailRedirect || '/signin');
+    }
+
+    // Check for session expiration
+    if (state.session.expires_at && Date.now() > state.session.expires_at * 1000) {
+      throw new SessionError();
     }
 
     // Check route permissions
     const routePermission = PROTECTED_ROUTES[url.pathname];
     if (routePermission) {
-      const hasRequiredPermission = hasPermission(user.role, routePermission);
+      const hasRequiredPermission = hasPermission(state.user.role, routePermission);
       if (!hasRequiredPermission) {
         locals.metrics.operations++;
         throw AuthErrors.forbidden();
       }
     }
 
+    // Store auth state in locals with proper typing
+    locals.session = {
+      ...state.session,
+      isValid: true,
+      expiresAt: state.session.expires_at ? state.session.expires_at * 1000 : Date.now() + 3600000 // 1 hour default
+    } as AuthSession;
+    locals.user = state.user;
     locals.metrics.operations++;
+    
     return next();
   } catch (error) {
     console.error('[Auth Middleware Error]', {
@@ -134,6 +175,11 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
     });
     
     locals.metrics.operations++;
-    return Response.redirect(new URL('/signin', url), 302);
+    
+    if (error instanceof UnauthorizedError || error instanceof SessionError) {
+      return context.redirect(config.authFailRedirect || '/signin');
+    }
+    
+    throw error;
   }
 }) satisfies MiddlewareHandler; 
