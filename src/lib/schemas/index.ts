@@ -7,8 +7,7 @@ export * from "./forms/profile/schema"
 export * from "./forms/profile/types"
 
 // Security schemas and types
-export * from "./forms/security/schema"
-export * from "./forms/security/types"
+export * from "./security"
 
 // Notification schemas and types
 export * from "./forms/notifications/schema"
@@ -16,7 +15,7 @@ export * from "./forms/notifications/types"
 
 // Combined types for settings
 import type { ProfileFormData } from "./forms/profile/types"
-import type { SecuritySettings } from "./forms/security/types"
+import type { SecuritySettingsData } from "./security"
 import type { NotificationSettings } from "./forms/notifications/types"
 
 /**
@@ -24,7 +23,7 @@ import type { NotificationSettings } from "./forms/notifications/types"
  */
 export type UserSettings = {
   profile: ProfileFormData
-  security: SecuritySettings
+  security: SecuritySettingsData
   notifications: NotificationSettings
 }
 
