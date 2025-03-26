@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { SchemaDefinition } from '../core/types';
-import { VALIDATION_MESSAGES } from '../core/messages';
+import type { SchemaDefinition } from '@/lib/schemas/core/types';
+import { VALIDATION_MESSAGES } from '@/lib/schemas/core/messages';
 
 /**
  * Options for creating a schema set

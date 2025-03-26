@@ -1,7 +1,7 @@
 import type { AstroGlobal } from 'astro';
 import { createClient } from '@/lib/supabase/server';
 import type { AuthConfig, AuthContext, AuthState } from '@/types/auth';
-import { SessionError, UnauthorizedError } from '@/lib/api/server/errors';
+import { SessionError, UnauthorizedError } from '../errors';
 
 const DEFAULT_CONFIG: AuthConfig = {
   publicRoutes: ['/login', '/register', '/reset-password'],

@@ -44,4 +44,36 @@ export interface AuthResponse {
     user: User & { role: UserRole };
   };
   error?: Error;
+}
+
+/**
+ * Auth error types
+ */
+export class AuthError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public status: number = 401
+  ) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
+export class SessionError extends AuthError {
+  constructor(message = 'Invalid or expired session') {
+    super(message, 'AUTH_SESSION_ERROR', 401);
+  }
+}
+
+export class UnauthorizedError extends AuthError {
+  constructor(message = 'Unauthorized access') {
+    super(message, 'AUTH_UNAUTHORIZED', 401);
+  }
+}
+
+export class ForbiddenError extends AuthError {
+  constructor(message = 'Access forbidden') {
+    super(message, 'AUTH_FORBIDDEN', 403);
+  }
 } 

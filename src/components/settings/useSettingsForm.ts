@@ -3,14 +3,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
 import type { SettingsFormData } from '@/types/settings';
-import type { ProfileSettingsSchema } from '@/lib/schemas/features/settings/profile';
-import { profileSettingsSchema } from '@/lib/schemas/features/settings/profile';
-import type { SecuritySettingsSchema } from '@/lib/schemas/features/settings/security';
-import { securitySettingsSchema } from '@/lib/schemas/features/settings/security';
-import type { NotificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
-import { notificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
-import { settingsApi } from '@/lib/api/client';
-import { updateProfile, updateSecurity, updateNotifications } from '@/lib/api/settings';
+import type { ProfileSettingsSchema } from '@/lib/database/schemas/settings/profile';
+import { profileSettingsSchema } from '@/lib/database/schemas/settings/profile';
+import type { SecuritySettingsSchema } from '@/lib/database/schemas/settings/security';
+import { securitySettingsSchema } from '@/lib/database/schemas/settings/security';
+import type { NotificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
+import { notificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
+import { settingsApi } from '@/lib/api/client/settings';
 
 // Default form data
 const defaultProfileData: ProfileSettingsSchema = {
@@ -122,8 +121,8 @@ export function useProfileForm(initialData?: Partial<ProfileSettingsSchema>) {
 
   const onSubmit = async (data: ProfileSettingsSchema) => {
     try {
-      await updateProfile('current-user', data);
-      return { success: true };
+      const response = await settingsApi.update({ profile: data });
+      return { success: response.success };
     } catch (error) {
       console.error('Failed to update profile:', error);
       return { success: false, error };
@@ -150,8 +149,8 @@ export function useSecurityForm(initialData?: Partial<SecuritySettingsSchema>) {
 
   const onSubmit = async (data: SecuritySettingsSchema) => {
     try {
-      await updateSecurity('current-user', data);
-      return { success: true };
+      const response = await settingsApi.update({ security: data });
+      return { success: response.success };
     } catch (error) {
       console.error('Failed to update security settings:', error);
       return { success: false, error };
@@ -178,8 +177,8 @@ export function useNotificationForm(initialData?: Partial<NotificationSettingsSc
 
   const onSubmit = async (data: NotificationSettingsSchema) => {
     try {
-      await updateNotifications('current-user', data);
-      return { success: true };
+      const response = await settingsApi.update({ notifications: data });
+      return { success: response.success };
     } catch (error) {
       console.error('Failed to update notification settings:', error);
       return { success: false, error };
