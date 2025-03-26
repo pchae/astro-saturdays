@@ -6,10 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { useSecurityForm } from './useSettingsForm';
 import { useUser } from '@/lib/hooks/useUser';
-import type { SecurityFormData } from '@/lib/schemas/settings/security';
+import type { SecurityFormData } from '@/types/settings';
 
 interface SecurityFormProps {
   initialData?: Partial<SecurityFormData>;
@@ -18,6 +17,7 @@ interface SecurityFormProps {
 export function SecurityForm({ initialData }: SecurityFormProps) {
   const { form, onSubmit, isLoading } = useSecurityForm(initialData);
   const { user } = useUser();
+  const twoFactorEnabled = form.watch("twoFactorEnabled");
 
   return (
     <Form {...form}>
@@ -38,7 +38,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
               <input 
                 type="text" 
                 autoComplete="username" 
-                value={user?.email} 
+                value={user?.email || ""} 
                 aria-hidden="true"
                 className="hidden"
                 readOnly
@@ -55,7 +55,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                         type="password" 
                         placeholder="Enter current password" 
                         autoComplete="current-password"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -74,7 +74,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                         type="password" 
                         placeholder="Enter new password" 
                         autoComplete="new-password"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -93,7 +93,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                         type="password" 
                         placeholder="Confirm new password" 
                         autoComplete="new-password"
-                        {...field} 
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -126,30 +126,76 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                   </FormItem>
                 )}
               />
+            </div>
 
-              {form.watch("twoFactorEnabled") && (
-                <FormField
-                  control={form.control}
-                  name="recoveryEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Recovery Email</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="email" 
-                          placeholder="backup@email.com" 
-                          {...field} 
-                          value={field.value || ""}
-                        />
-                      </FormControl>
+            {/* Session Management */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Session Management</h3>
+
+              <FormField
+                control={form.control}
+                name="sessionManagement.rememberMe"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Remember Me</FormLabel>
                       <FormDescription>
-                        Used for account recovery if you lose access to 2FA
+                        Keep me signed in on this device
                       </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sessionManagement.sessionTimeout"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Session Timeout (minutes)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={5}
+                        max={60}
+                        {...field}
+                        onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      How long until your session expires (5-60 minutes)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sessionManagement.allowMultipleSessions"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Allow Multiple Sessions</FormLabel>
+                      <FormDescription>
+                        Allow signing in from multiple devices
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex justify-start">
