@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createSchemaSet, createStringField } from '../../../utils/factories';
-import { patterns } from '../../../core/validators';
-import { VALIDATION_MESSAGES } from '../../../core/messages';
+import { patterns } from '@/lib/schemas/core/validators';
+import { VALIDATION_MESSAGES } from '@/lib/schemas/core/messages';
 
 /**
  * Schema for personal information
