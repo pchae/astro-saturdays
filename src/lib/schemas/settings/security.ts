@@ -9,10 +9,10 @@ import { VALIDATION_RULES } from "../base/validation-rules"
 import { optionalString } from "../base/validation"
 
 /**
- * Base schema for password-related operations
+ * Creates a schema for password change operations
  * @description Validates password change operations with confirmation
  */
-const basePasswordSchema = z.object({
+const createPasswordSchema = z.object({
   currentPassword: z.string()
     .min(1, "Current password is required")
     .describe("User's current password"),
@@ -27,10 +27,10 @@ const basePasswordSchema = z.object({
 })
 
 /**
- * Base schema for two-factor authentication settings
+ * Creates a schema for two-factor authentication settings
  * @description Validates 2FA configuration including method and backup options
  */
-const baseTwoFactorSchema = z.object({
+const createTwoFactorSchema = z.object({
   enabled: z.boolean()
     .default(false)
     .describe("Whether 2FA is enabled"),
@@ -46,10 +46,10 @@ const baseTwoFactorSchema = z.object({
 })
 
 /**
- * Base schema for security questions
+ * Creates a schema for security questions
  * @description Validates security questions and answers for account recovery
  */
-const baseSecurityQuestionsSchema = z.object({
+const createSecurityQuestionsSchema = z.object({
   questions: z.array(
     z.object({
       question: z.string()
@@ -71,10 +71,10 @@ const baseSecurityQuestionsSchema = z.object({
 })
 
 /**
- * Base schema for session management
+ * Creates a schema for session management
  * @description Validates session configuration including timeouts and concurrent sessions
  */
-const baseSessionSchema = z.object({
+const createSessionSchema = z.object({
   rememberMe: z.boolean()
     .default(true)
     .describe("Whether to remember the user's session"),
@@ -94,25 +94,25 @@ const baseSessionSchema = z.object({
 /**
  * Schema for password change operations
  */
-export const passwordChangeSchema = basePasswordSchema
+export const passwordChangeSchema = createPasswordSchema
 export type PasswordChangeData = z.infer<typeof passwordChangeSchema>
 
 /**
  * Schema for two-factor authentication settings
  */
-export const twoFactorSettingsSchema = baseTwoFactorSchema
+export const twoFactorSettingsSchema = createTwoFactorSchema
 export type TwoFactorSettingsData = z.infer<typeof twoFactorSettingsSchema>
 
 /**
  * Schema for security questions management
  */
-export const securityQuestionsSchema = baseSecurityQuestionsSchema
+export const securityQuestionsSchema = createSecurityQuestionsSchema
 export type SecurityQuestionsData = z.infer<typeof securityQuestionsSchema>
 
 /**
  * Schema for session management settings
  */
-export const sessionManagementSchema = baseSessionSchema
+export const sessionManagementSchema = createSessionSchema
 export type SessionManagementData = z.infer<typeof sessionManagementSchema>
 
 /**
@@ -124,7 +124,7 @@ export const securityFormSchema = z.object({
   newPassword: passwordSchema,
   confirmNewPassword: passwordSchema,
   twoFactorEnabled: z.boolean().default(false),
-  sessionManagement: baseSessionSchema,
+  sessionManagement: createSessionSchema,
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
   message: "Passwords don't match",
   path: ["confirmNewPassword"],
@@ -136,10 +136,10 @@ export type SecurityFormData = z.infer<typeof securityFormSchema>
  * @description Combines all security features into a single schema
  */
 export const securitySettingsSchema = z.object({
-  password: basePasswordSchema,
-  twoFactor: baseTwoFactorSchema,
-  securityQuestions: baseSecurityQuestionsSchema,
-  sessionManagement: baseSessionSchema,
+  password: createPasswordSchema,
+  twoFactor: createTwoFactorSchema,
+  securityQuestions: createSecurityQuestionsSchema,
+  sessionManagement: createSessionSchema,
 })
 export type SecuritySettingsData = z.infer<typeof securitySettingsSchema>
 
