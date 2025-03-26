@@ -1,40 +1,17 @@
+import type {
+  ProfileFormData,
+  SecuritySettings,
+  NotificationSettings,
+} from "@/lib/schemas/settings"
+
 // Base settings interfaces
-export interface ProfileSettings {
-  fullName?: string;
-  email?: string;
-  bio?: string;
-  avatarUrl?: string;
-  updatedAt?: string;
-}
-
-export interface SecuritySettings {
-  twoFactorEnabled: boolean;
-  recoveryEmail?: string;
-  securityQuestions?: Array<{
-    question: string;
-    answer: string;
-  }>;
-  sessionManagement: {
-    rememberMe: boolean;
-    sessionTimeout: number;
-    allowMultipleSessions: boolean;
-  };
-}
-
-export interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  sms: boolean;
-  preferences: {
-    marketing: boolean;
-    security: boolean;
-    updates: boolean;
-  };
-}
+export type { ProfileFormData }
+export type { SecuritySettings }
+export type { NotificationSettings }
 
 // Combined settings type
 export interface UserSettings {
-  profile: ProfileSettings;
+  profile: ProfileFormData;
   security: SecuritySettings;
   notifications: NotificationSettings;
   updatedAt?: string;
@@ -42,7 +19,7 @@ export interface UserSettings {
 
 // API types
 export interface SettingsUpdateData {
-  profile?: Partial<ProfileSettings>;
+  profile?: Partial<ProfileFormData>;
   security?: Partial<SecuritySettings>;
   notifications?: Partial<NotificationSettings>;
 }
@@ -54,7 +31,6 @@ export interface SettingsResponse {
 }
 
 // Form data types
-export type ProfileFormData = ProfileSettings;
 export type SecurityFormData = SecuritySettings;
 export type NotificationFormData = NotificationSettings;
 

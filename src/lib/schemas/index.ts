@@ -3,20 +3,18 @@ export * from "./base/common"
 export * from "./base/validation"
 
 // Profile schemas and types
-export * from "./forms/profile/schema"
-export * from "./forms/profile/types"
+export * from "./settings/profile"
 
 // Security schemas and types
-export * from "./security"
+export * from "./settings/security"
 
 // Notification schemas and types
-export * from "./forms/notifications/schema"
-export * from "./forms/notifications/types"
+export * from "./settings/notifications"
 
 // Combined types for settings
-import type { ProfileFormData } from "./forms/profile/types"
-import type { SecuritySettingsData } from "./security"
-import type { NotificationSettings } from "./forms/notifications/types"
+import type { ProfileFormData } from "./settings/profile"
+import type { SecuritySettingsData } from "./settings/security"
+import type { NotificationSettings } from "./settings/notifications"
 
 /**
  * Combined type for all user settings
