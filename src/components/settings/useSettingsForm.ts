@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
-import type { AllSettingsData } from '@/lib/api/client/settings';
+import type { AllSettingsData } from '@/lib/api-client/settings';
 import type { SettingsFormData } from '@/types/settings';
 import type { ProfileSettingsSchema } from '@/lib/database/schemas/settings/profile';
 import { profileSettingsSchema } from '@/lib/database/schemas/settings/profile';
@@ -10,7 +10,7 @@ import type { SecuritySettingsSchema } from '@/lib/database/schemas/settings/sec
 import { securitySettingsSchema } from '@/lib/database/schemas/settings/security';
 import type { NotificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
 import { notificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
-import { settingsApi } from '@/lib/api/client/settings';
+import { settingsApi } from '@/lib/api-client/settings';
 import type { DeepPartial } from '../../types/utils';
 
 // Generic settings section form hook types
