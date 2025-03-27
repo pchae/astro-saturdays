@@ -11,13 +11,14 @@ import {
 } from 'lucide-react';
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  currentPath?: string;
   user?: {
     name?: string;
     email?: string;
   };
 }
 
+
+// Admin navigation items
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Calendar', href: '/dashboard', icon: Calendar },
@@ -26,12 +27,25 @@ const navigation = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export function Sidebar({ className, currentPath = '', user, ...props }: SidebarProps) {
+
+export function Sidebar({ className, user, ...props }: SidebarProps) {
+  // Functionality to get the current path
+  // Get the path directly from the browser window object
+  const [currentPath, setCurrentPath] = React.useState('');
+
+  React.useEffect(() => {
+    // Ensure this runs only on the client after mount
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
+    }
+  }, []); // Empty depdency array ensures it runs once on mount
+
+
   return (
     <div className={cn("flex h-screen flex-col border-r border-blue-500 bg-background", className)} {...props}>
       {/* Logo */}
       <div className="px-6 py-5 border-0 border-red-100">
-        <a href="/dashboard" className="flex items-center no-underline">
+        <a href="/about" className="flex items-center no-underline">
           <span className="text-xl font-bold text-white">Saturdays.io TECH</span>
         </a>
       </div>
@@ -39,15 +53,16 @@ export function Sidebar({ className, currentPath = '', user, ...props }: Sidebar
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1">
         {navigation.map((item) => {
-          const isActive = currentPath === item.href;
+          const isCurrent = currentPath === item.href || 
+                             (item.href !== '/' && currentPath.startsWith(item.href));
           return (
             <a
               key={item.name}
               href={item.href}
               className={cn(
                 "flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
-                isActive
-                  ? "bg-gray-500/50 text-white"
+                isCurrent
+                  ? "bg-blue-500/50 text-white"
                   : "text-gray-400 hover:bg-primary/5"
               )}
             >
