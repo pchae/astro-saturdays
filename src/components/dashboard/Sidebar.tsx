@@ -32,7 +32,7 @@ export function Sidebar({ className, currentPath = '', user, ...props }: Sidebar
       {/* Logo */}
       <div className="px-6 py-5 border-0 border-red-100">
         <a href="/dashboard" className="flex items-center no-underline">
-          <span className="text-xl font-bold">Saturdays.io</span>
+          <span className="text-xl font-bold text-white">Saturdays.io TECH</span>
         </a>
       </div>
 
