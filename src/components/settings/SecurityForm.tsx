@@ -151,50 +151,6 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="sessionManagement.sessionTimeout"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Session Timeout (minutes)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={5}
-                        max={60}
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      How long until your session expires (5-60 minutes)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="sessionManagement.allowMultipleSessions"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">Allow Multiple Sessions</FormLabel>
-                      <FormDescription>
-                        Allow signing in from multiple devices
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
             </div>
 
             <div className="flex justify-start">
