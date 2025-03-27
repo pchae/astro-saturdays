@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+'use client';
+
+import * as React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { cn } from '@/lib/utils'
 import { Button, Dialog, DialogPanel } from '@headlessui/react'
 import { Menu, X } from 'lucide-react'
 
-interface HeaderProps {
-  currentPath?: string;
-}
 
 interface NavigationItem {
   name: string;
@@ -12,36 +13,28 @@ interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'About', href: '/about' },
+  { name: 'Our Work', href: '/work' },
+  { name: 'About Us', href: '/about' },
 ]
 
 const navLinkStyles = "text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600";
 
-export default function Header({ currentPath = '/' }: HeaderProps) {
+export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const dialogRef = useRef<HTMLDivElement>(null)
   const [isHydrated, setIsHydrated] = useState(false)
 
-  // Add path validation
-  const validatedPath = useMemo(() => {
-    if (!currentPath || typeof currentPath !== 'string') {
-      console.warn('Invalid currentPath provided:', currentPath);
-      return '/';
-    }
-    return currentPath;
-  }, [currentPath]);
+  // Functionality to get the current path
+  // Get the path directly from the browser window object
+  const [currentPath, setCurrentPath] = React.useState('');
 
-  // Inline isActivePath logic
-  const isActivePath = useCallback((href: string) => {
-    try {
-      if (href === '/' && validatedPath === '/') return true;
-      if (href !== '/' && validatedPath.startsWith(href)) return true;
-      return false;
-    } catch (error) {
-      console.warn('Error checking active path:', error);
-      return false;
+  React.useEffect(() => {
+    // Ensure this runs only on the client after mount
+    if (typeof window !== 'undefined') {
+      setCurrentPath(window.location.pathname);
     }
-  }, [validatedPath]);
+  }, []); // Empty depdency array ensures it runs once on mount
+
 
   // Control body scroll and prevent dragging when mobile menu is open
   useEffect(() => {
@@ -130,15 +123,25 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
           </button>
         </div>
         <div className="hidden items-center lg:flex lg:gap-x-12">
-          {navigation.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-base font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
-            >
-              {item.name}
-            </a>
-          ))}
+          {navigation.map((item) => {
+            const isCurrent = currentPath === item.href ||
+              (item.href !== ('/') && currentPath.startsWith(item.href));
+              return (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "text-base font-bold transition-colors text-gray-900 hover:text-blue-600",
+                    isCurrent
+                      ? "underline underline-offset-4 text-blue-600"
+                      : "text-gray-900 hover:text-blue-600"
+                  )}
+                >
+                  {item.name}
+                </a>
+              );
+            }) 
+          }
           <Button
             as="a"
             href="/signin"
@@ -174,16 +177,26 @@ export default function Header({ currentPath = '/' }: HeaderProps) {
           </nav>
           <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
             <div className="divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="text-3xl font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
-                  >
-                    {item.name}
-                  </a>
-                ))}
+              <div className="flex flex-col space-y-2 gap-y-4 py-6">
+              {navigation.map((item) => {
+                const isCurrent = currentPath === item.href ||
+                  (item.href !== ('/') && currentPath.startsWith(item.href));
+                  return (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className={cn(
+                        "text-3xl font-bold transition-colors no-underline text-gray-900 hover:text-blue-600",
+                        isCurrent
+                          ? "underline underline-offset-4 text-blue-600"
+                          : "text-gray-900 hover:text-blue-600"
+                      )}
+                    >
+                      {item.name}
+                    </a>
+                  );
+                }) 
+              }
               </div>
               <div className="py-6">
                 <a
