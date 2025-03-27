@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from '@/components/ui/form';
 import { useProfileForm } from './useSettingsForm';
-import type { ProfileFormData } from '@/lib/schemas/settings/profile';
+import type { ProfileSettingsSchema as ProfileFormData } from '@/lib/database/schemas/settings/profile';
 
 interface ProfileFormProps {
   initialData?: Partial<ProfileFormData>;
@@ -33,7 +33,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               
               <FormField
                 control={form.control}
-                name="fullName"
+                name="personal.fullName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
@@ -50,7 +50,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
 
               <FormField
                 control={form.control}
-                name="email"
+                name="personal.email"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -67,7 +67,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
 
               <FormField
                 control={form.control}
-                name="bio"
+                name="personal.bio"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Bio</FormLabel>
@@ -88,7 +88,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
 
               <FormField
                 control={form.control}
-                name="avatarUrl"
+                name="personal.avatarUrl"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Avatar URL</FormLabel>
