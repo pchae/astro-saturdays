@@ -13,8 +13,8 @@ interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  { name: 'Our Work', href: '/work' },
-  { name: 'About Us', href: '/about' },
+  { name: 'Work', href: '/work' },
+  { name: 'About', href: '/about' },
 ]
 
 const navLinkStyles = "text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600";
