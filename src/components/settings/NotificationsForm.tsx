@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useNotificationForm } from './useSettingsForm';
-import type { NotificationFormData } from '@/lib/schemas/settings/notifications';
+import type { NotificationSettingsSchema as NotificationFormData } from '@/lib/database/schemas/settings/notifications';
 
 interface NotificationsFormProps {
   initialData?: Partial<NotificationFormData>;
@@ -40,7 +40,7 @@ export function NotificationsForm({ initialData }: NotificationsFormProps) {
                 
                 <FormField
                   control={form.control}
-                  name={`preferences.${category}.enabled`}
+                  name={`preferences.preferences.${category}.enabled`}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">

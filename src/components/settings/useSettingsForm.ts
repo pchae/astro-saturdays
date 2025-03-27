@@ -2,15 +2,56 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUser } from '@/lib/hooks/useUser';
+import type { AllSettingsData } from '@/lib/api-client/settings';
 import type { SettingsFormData } from '@/types/settings';
-import type { ProfileSettingsSchema } from '@/lib/schemas/features/settings/profile';
-import { profileSettingsSchema } from '@/lib/schemas/features/settings/profile';
-import type { SecuritySettingsSchema } from '@/lib/schemas/features/settings/security';
-import { securitySettingsSchema } from '@/lib/schemas/features/settings/security';
-import type { NotificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
-import { notificationSettingsSchema } from '@/lib/schemas/features/settings/notifications';
-import { settingsApi } from '@/lib/api/client';
-import { updateProfile, updateSecurity, updateNotifications } from '@/lib/api/settings';
+import type { ProfileSettingsSchema } from '@/lib/database/schemas/settings/profile';
+import { profileSettingsSchema } from '@/lib/database/schemas/settings/profile';
+import type { SecuritySettingsSchema } from '@/lib/database/schemas/settings/security';
+import { securitySettingsSchema } from '@/lib/database/schemas/settings/security';
+import type { NotificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
+import { notificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
+import { settingsApi } from '@/lib/api-client/settings';
+import type { DeepPartial } from '../../types/utils';
+
+// Generic settings section form hook types
+interface UseSettingsSectionFormArgs<T extends z.ZodType> {
+  schema: T;
+  defaultValues: DeepPartial<z.infer<T>>;
+  updateFunction: (data: z.infer<T>) => Promise<{ success: boolean; error?: any }>;
+  initialData?: DeepPartial<z.infer<T>>;
+}
+
+// Generic settings section form hook
+export function useSettingsSectionForm<T extends z.ZodType>({
+  schema,
+  defaultValues,
+  updateFunction,
+  initialData,
+}: UseSettingsSectionFormArgs<T>) {
+  const form = useForm<z.infer<T>>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      ...defaultValues,
+      ...initialData,
+    } as z.infer<T>,
+  });
+
+  const onSubmit = async (data: z.infer<T>) => {
+    try {
+      const response = await updateFunction(data);
+      return response;
+    } catch (error) {
+      console.error('Failed to update settings:', error);
+      return { success: false, error };
+    }
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(onSubmit),
+    isLoading: form.formState.isSubmitting,
+  };
+}
 
 // Default form data
 const defaultProfileData: ProfileSettingsSchema = {
@@ -111,108 +152,49 @@ const defaultNotificationData: NotificationSettingsSchema = {
 
 // Profile Form Hook
 export function useProfileForm(initialData?: Partial<ProfileSettingsSchema>) {
-  const { user } = useUser();
-  const form = useForm<ProfileSettingsSchema>({
-    resolver: zodResolver(profileSettingsSchema.row),
-    defaultValues: {
-      ...defaultProfileData,
-      ...initialData,
-    },
+  return useSettingsSectionForm({
+    schema: profileSettingsSchema.row,
+    defaultValues: defaultProfileData,
+    updateFunction: settingsApi.updateProfile,
+    initialData: initialData as DeepPartial<ProfileSettingsSchema>,
   });
-
-  const onSubmit = async (data: ProfileSettingsSchema) => {
-    try {
-      await updateProfile('current-user', data);
-      return { success: true };
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-      return { success: false, error };
-    }
-  };
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
-  };
 }
 
 // Security Form Hook
 export function useSecurityForm(initialData?: Partial<SecuritySettingsSchema>) {
-  const { user } = useUser();
-  const form = useForm<SecuritySettingsSchema>({
-    resolver: zodResolver(securitySettingsSchema.row),
-    defaultValues: {
-      ...defaultSecurityData,
-      ...initialData,
-    },
+  return useSettingsSectionForm({
+    schema: securitySettingsSchema.row,
+    defaultValues: defaultSecurityData,
+    updateFunction: settingsApi.updateSecurity,
+    initialData: initialData as DeepPartial<SecuritySettingsSchema>,
   });
-
-  const onSubmit = async (data: SecuritySettingsSchema) => {
-    try {
-      await updateSecurity('current-user', data);
-      return { success: true };
-    } catch (error) {
-      console.error('Failed to update security settings:', error);
-      return { success: false, error };
-    }
-  };
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
-  };
 }
 
 // Notification Form Hook
 export function useNotificationForm(initialData?: Partial<NotificationSettingsSchema>) {
-  const { user } = useUser();
-  const form = useForm<NotificationSettingsSchema>({
-    resolver: zodResolver(notificationSettingsSchema.row),
-    defaultValues: {
-      ...defaultNotificationData,
-      ...initialData,
-    },
+  return useSettingsSectionForm({
+    schema: notificationSettingsSchema.row,
+    defaultValues: defaultNotificationData,
+    updateFunction: settingsApi.updateNotifications,
+    initialData: initialData as DeepPartial<NotificationSettingsSchema>,
   });
-
-  const onSubmit = async (data: NotificationSettingsSchema) => {
-    try {
-      await updateNotifications('current-user', data);
-      return { success: true };
-    } catch (error) {
-      console.error('Failed to update notification settings:', error);
-      return { success: false, error };
-    }
-  };
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit),
-    isLoading: form.formState.isSubmitting,
-  };
-}
-
-// Combined Settings Form Hook
-export function useSettingsForm() {
-  const profileForm = useProfileForm();
-  const securityForm = useSecurityForm();
-  const notificationForm = useNotificationForm();
-
-  return {
-    profileForm,
-    securityForm,
-    notificationForm
-  };
 }
 
 // Hook to fetch all settings
 export function useSettings() {
   const { user } = useUser();
 
-  const fetchSettings = async () => {
-    if (!user?.id) throw new Error("User not found");
-    return await settingsApi.fetch();
+  const fetchSettings = async (): Promise<AllSettingsData | undefined> => {
+    console.log('useSettings: Calling settingsApi.fetchAll...');
+    const result = await settingsApi.fetchAll();
+
+    if (!result.success) {
+      console.error("useSettings: Failed to fetch settings:", result.error);
+      throw result.error || new Error("Failed to fetch settings");
+    }
+
+    console.log('useSettings: Successfully fetched settings data.');
+    return result.data;
   };
 
   return {

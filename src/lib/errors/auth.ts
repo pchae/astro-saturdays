@@ -7,28 +7,32 @@ export class AuthError extends AppError {
   }
 }
 
+export class SessionError extends AuthError {
+  constructor(message = 'Invalid or expired session') {
+    super(message, 'AUTH_SESSION_ERROR', 401);
+  }
+}
+
+export class UnauthorizedError extends AuthError {
+  constructor(message = 'Unauthorized access') {
+    super(message, 'AUTH_UNAUTHORIZED', 401);
+  }
+}
+
+export class ForbiddenError extends AuthError {
+  constructor(message = 'Access forbidden') {
+    super(message, 'AUTH_FORBIDDEN', 403);
+  }
+}
+
 export const AuthErrors = {
-  unauthorized: () => new AuthError(
-    'Authentication required',
-    'AUTH_UNAUTHORIZED',
-    401
-  ),
-  
-  forbidden: () => new AuthError(
-    'Insufficient permissions',
-    'AUTH_FORBIDDEN',
-    403
-  ),
+  unauthorized: () => new UnauthorizedError(),
+  forbidden: () => new ForbiddenError(),
+  sessionExpired: () => new SessionError(),
   
   invalidToken: () => new AuthError(
     'Invalid or expired token',
     'AUTH_INVALID_TOKEN',
-    401
-  ),
-  
-  sessionExpired: () => new AuthError(
-    'Session has expired',
-    'AUTH_SESSION_EXPIRED',
     401
   ),
   

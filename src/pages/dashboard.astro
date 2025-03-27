@@ -5,6 +5,7 @@ import DashboardNav from "../components/dashboard/DashboardNav.astro";
 import { StatCard } from "../components/ui/stat-card";
 import { FighterSection } from "../components/dashboard/fighter-section";
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import type { User } from '@supabase/supabase-js'; // Import User type
 
 // Use the auth middleware
 export const prerender = false;
@@ -44,17 +45,26 @@ const supabase = createServerClient(
   }
 );
 
-// Get session
-const { data: { session } } = await supabase.auth.getSession();
+// Check authentication using getUser()
+console.log("[Dashboard] Starting auth check with getUser()");
+const { data: { user }, error } = await supabase.auth.getUser();
 
-console.log("[Dashboard] Auth session state:", {
-  hasSession: !!session,
-  sessionDetails: session ? {
-    hasUser: !!session.user,
-    userEmail: session.user?.email,
-    expiresAt: session.expires_at
-  } : null
-});
+let email: string | undefined; // Define email variable
+
+if (error) {
+  console.error("[Dashboard] Error during getUser():", error.message);
+  // Treat errors during getUser as unauthenticated
+  return Astro.redirect("/signin");
+}
+
+if (!user) {
+  console.log("[Dashboard] No authenticated user found via getUser(), redirecting to signin");
+  return Astro.redirect("/signin");
+}
+
+// If getUser() succeeds, the user is authenticated
+email = user.email; // Get email from the validated user object
+console.log("[Dashboard] Auth successful via getUser(), rendering page for:", email);
 
 // Dashboard data
 const stats = [
@@ -71,28 +81,9 @@ const ufcFighters = [
   { id: '3', name: 'Alexander Volkanovski', organization: 'UFC', image: '/pfp/3949584.png' },
 ];
 
-console.log("[Dashboard] Starting auth check");
-try {
-  if (!session) {
-    console.log("[Dashboard] No session found, redirecting to signin");
-    return Astro.redirect("/signin");
-  }
-
-  // Get user data from session
-  const user = session.user;
-  const email = user?.email;
-
-  console.log("[Dashboard] Auth successful, rendering page");
-} catch (error) {
-  console.error("[Dashboard] Error during auth check:", {
-    message: error.message,
-    stack: error.stack?.split('\n')[0]
-  });
-  return Astro.redirect("/signin");
-}
 ---
 
-<DashboardLayout title="Dashboard - Saturdays.io" email={session.user.email} user={session.user}>
+<DashboardLayout title="Dashboard - Saturdays.io" email={email} user={user}>
   <DashboardNav />
 
   <section class="p-4 gap-y-2 bg-black">

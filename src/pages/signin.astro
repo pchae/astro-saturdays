@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/react/Header";
+import Header from "../components/landing/Header";
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export const prerender = false;
@@ -37,11 +37,22 @@ const supabase = createServerClient(
   }
 );
 
-const { data: { session } } = await supabase.auth.getSession();
+// Check if user is already authenticated server-side using getUser()
+const { data: { user }, error } = await supabase.auth.getUser();
 
-if (session) {
+// Optional: Log error if needed, but typically an error here means no valid session
+if (error) {
+  console.warn("[Signin Page] getUser check failed on load:", error.message);
+}
+
+// If getUser returns a user, they are logged in, redirect to dashboard
+if (user) {
+  console.log("[Signin Page] User already authenticated via getUser(), redirecting...");
   return redirect("/dashboard");
 }
+
+// Otherwise, continue to render the sign-in page
+console.log("[Signin Page] No authenticated user found, rendering sign-in form.");
 ---
 
 <Layout title="Sign in | Saturdays.io">

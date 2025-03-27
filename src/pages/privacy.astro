@@ -1,15 +1,13 @@
 ---
-import Footer from '../components/react/Footer';
-import Header from '../components/react/Header';
 import Layout from '../layouts/Layout.astro';
 
-const title = 'Saturdays.io - Privacy Policy';
-const description = 'Saturdays.io Privacy Policy';
+import Header from '../components/landing/Header';
+import Footer from '../components/landing/Footer';
 ---
 
 <Layout title="Saturdays.io Privacy Policy">
 
-    <Header />
+    <Header client:load />
 
     <main class="">
         <div class="p-4">

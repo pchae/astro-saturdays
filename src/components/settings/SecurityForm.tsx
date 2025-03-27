@@ -17,7 +17,6 @@ interface SecurityFormProps {
 export function SecurityForm({ initialData }: SecurityFormProps) {
   const { form, onSubmit, isLoading } = useSecurityForm(initialData);
   const { user } = useUser();
-  const twoFactorEnabled = form.watch("twoFactorEnabled");
 
   return (
     <Form {...form}>
@@ -46,7 +45,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
               
               <FormField
                 control={form.control}
-                name="currentPassword"
+                name="password.currentPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Current Password</FormLabel>
@@ -65,7 +64,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
 
               <FormField
                 control={form.control}
-                name="newPassword"
+                name="password.newPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>New Password</FormLabel>
@@ -84,7 +83,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
 
               <FormField
                 control={form.control}
-                name="confirmNewPassword"
+                name="password.confirmPassword"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Confirm New Password</FormLabel>
@@ -108,7 +107,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
               
               <FormField
                 control={form.control}
-                name="twoFactorEnabled"
+                name="twoFactor.enabled"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                     <div className="space-y-0.5">
@@ -119,8 +118,8 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
                     </div>
                     <FormControl>
                       <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
+                        checked={form.watch("twoFactor.enabled")}
+                        onCheckedChange={(checked) => form.setValue("twoFactor.enabled", checked)}
                       />
                     </FormControl>
                   </FormItem>

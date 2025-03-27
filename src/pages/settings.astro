@@ -2,21 +2,62 @@
 import DashboardLayout from "../layouts/Dashboard.astro";
 import { SettingsTabs } from "../components/settings/SettingsTabs";
 import DashboardNav from "../components/dashboard/DashboardNav.astro";
-import { checkAuth } from "../lib/auth";
+// import { isPublicRoute } from "../middleware/auth";
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import type { User } from '@supabase/supabase-js'; // Import User type
 
 // Check authentication
 export const prerender = false;
-const authResult = await checkAuth(Astro);
-if (authResult.redirect) return authResult.redirect;
 
-// Get user data for layout
-const user = authResult.session?.data?.user;
+// Supabase client setup - from dashboard.astro
+const supabase = createServerClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
+  {
+    cookies: {
+      get: (key: string) => Astro.cookies.get(key)?.value,
+      set: (key: string, value: string, options: CookieOptions) => {
+        Astro.cookies.set(key, value, {
+          ...options,
+          path: '/',
+        });
+      },
+      remove: (key: string, options: CookieOptions) => {
+        Astro.cookies.delete(key, {
+          ...options,
+          path: '/',
+        });
+      },
+    },
+  }
+)
+
+// Check authentication using getUser()
+console.log("[Settings] Starting auth check with getUser()");
+const { data: { user }, error } = await supabase.auth.getUser();
+
+let email: string | undefined; // Define email variable
+
+if (error) {
+  console.error("[Settings] Error during getUser():", error.message);
+  // Treat errors during getUser as unauthenticated
+  return Astro.redirect("/signin");
+}
+
+if (!user) {
+  console.log("[Settings] No authenticated user found via getUser(), redirecting to signin");
+  return Astro.redirect('/signin');
+}
+
+// If getUser() succeeds, the user is authenticated
+email = user.email; // Get email from the validated user object
+console.log("[Settings] Auth successful via getUser(), rendering page for:", email);
 
 // Get the active tab from URL hash or default to 'profile'
 const hash = Astro.url.hash.slice(1) || 'profile';
 ---
 
-<DashboardLayout title="Settings - Saturdays.io" email={user.email} user={user}>
+<DashboardLayout title="Settings - Saturdays.io" email={email} user={user}>
   <DashboardNav />
   <div class="container p-4">
     <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
