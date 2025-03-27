@@ -1,8 +1,12 @@
 import type {
-  ProfileFormData,
-  SecuritySettings,
-  NotificationSettings,
-} from "@/lib/schemas/settings"
+  ProfileSettingsSchema as ProfileFormData,
+} from "@/lib/database/schemas/settings/profile";
+import type {
+  SecuritySettingsSchema as SecuritySettings,
+} from "@/lib/database/schemas/settings/security";
+import type {
+  NotificationSettingsSchema as NotificationSettings,
+} from "@/lib/database/schemas/settings/notifications";
 
 // Base settings interfaces
 export type { ProfileFormData }
