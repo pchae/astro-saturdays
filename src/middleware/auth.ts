@@ -1,7 +1,7 @@
 import type { MiddlewareHandler, APIContext } from 'astro';
 import type { AstroGlobal } from 'astro';
 import { defineMiddleware } from 'astro/middleware';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type Session, type User } from '@supabase/supabase-js';
 import type { Session as SupabaseSession } from '@supabase/supabase-js';
 import { UserRole } from '@/types/auth';
 import type { AuthConfig, AuthContext, AuthState, RoutePermission, AuthSession } from '@/types/auth';
@@ -31,9 +31,9 @@ export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
 };
 
 /**
- * Get current auth state
+ * Get current auth state by verifying token with Supabase server
  */
-async function getAuthState(context: APIContext | AstroGlobal): Promise<AuthState> {
+async function getAuthState(cookies: APIContext['cookies']): Promise<AuthState> {
   const supabase = createClient(
     import.meta.env.PUBLIC_SUPABASE_URL,
     import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
@@ -45,24 +45,54 @@ async function getAuthState(context: APIContext | AstroGlobal): Promise<AuthStat
       }
     }
   );
-  
+
   try {
-    const { data: { session }, error } = await supabase.auth.getSession();
-    
-    if (error) throw error;
-    
+    // Extract access token from cookies
+    const accessToken = cookies.get('sb-access-token')?.value;
+
+    if (!accessToken) {
+      // No token, clearly no session
+      return { session: null, user: null, isLoading: false, error: null };
+    }
+
+    // Replace getSession with getUser(token)
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken);
+
+    if (error) {
+      // Token might be invalid or expired
+      console.warn('[Auth Middleware] getUser error:', error.message);
+      // Optionally clear cookies here if token is invalid
+      // cookies.delete('sb-access-token', { path: '/' });
+      // cookies.delete('sb-refresh-token', { path: '/' });
+      return { session: null, user: null, isLoading: false, error };
+    }
+
+    // If getUser succeeds, we have a valid user, but maybe not the full session object
+    // Depending on needs, you might need to construct a partial session-like object
+    // Or decide if just having the `user` object is sufficient for `locals`
+    const partialSession = user ? {
+      access_token: accessToken, // We have this
+      token_type: 'bearer', // Assuming bearer
+      user: user, // We have the validated user
+      // expires_at, refresh_token etc. might be missing or inaccurate without getSession
+      // If expires_at is crucial, you might need a different approach or accept potential inaccuracy
+      expires_at: undefined // Mark as potentially unknown
+    } as Session : null;
+
+
     return {
-      session,
-      user: session?.user ?? null,
+      session: partialSession, // Use the reconstructed/validated data
+      user: user ?? null,
       isLoading: false,
       error: null
     };
   } catch (error) {
+     console.error('[Auth Middleware] Unexpected error in getAuthState:', error);
     return {
       session: null,
       user: null,
       isLoading: false,
-      error: error instanceof Error ? error : new Error('Unknown error')
+      error: error instanceof Error ? error : new Error('Unknown error in getAuthState')
     };
   }
 }
@@ -107,8 +137,8 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
   const { locals, url, cookies } = context;
   const config = { ...DEFAULT_CONFIG };
   
-  // Get current auth state
-  const state = await getAuthState(context);
+  // Pass cookies to getAuthState
+  const state = await getAuthState(cookies);
   
   // First check if route is public
   if (isPublicRoute(url.pathname, config.publicRoutes)) {
@@ -142,10 +172,12 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
       return context.redirect(config.authFailRedirect || '/signin');
     }
 
-    // Check for session expiration
-    if (state.session.expires_at && Date.now() > state.session.expires_at * 1000) {
-      throw new SessionError();
-    }
+    // Check for session expiration - This part needs careful review
+    // as partialSession might not have expires_at correctly
+    // if (state.session?.expires_at && Date.now() > state.session.expires_at * 1000) {
+    //   console.warn('[Auth Middleware] Session potentially expired (based on partial data)');
+    //   // throw new SessionError(); // Re-evaluate if this check is reliable now
+    // }
 
     // Check route permissions
     const routePermission = PROTECTED_ROUTES[url.pathname];
@@ -158,11 +190,11 @@ export const authMiddleware = defineMiddleware(async (context, next) => {
     }
 
     // Store auth state in locals with proper typing
-    locals.session = {
+    locals.session = state.session ? {
       ...state.session,
-      isValid: true,
-      expiresAt: state.session.expires_at ? state.session.expires_at * 1000 : Date.now() + 3600000 // 1 hour default
-    } as AuthSession;
+      isValid: true, // Since getUser succeeded
+      expiresAt: state.session.expires_at ? state.session.expires_at * 1000 : undefined // expires_at might be undefined now
+    } as AuthSession : undefined;
     locals.user = state.user;
     locals.metrics.operations++;
     
