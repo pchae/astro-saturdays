@@ -3,44 +3,26 @@ import DashboardLayout from "../layouts/Dashboard.astro";
 import { SettingsTabs } from "../components/settings/SettingsTabs";
 import DashboardNav from "../components/dashboard/DashboardNav.astro";
 // import { isPublicRoute } from "../middleware/auth";
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import type { User } from '@supabase/supabase-js'; // Import User type
 
 // Check authentication
 export const prerender = false;
 
-// Supabase client setup - from dashboard.astro
-const supabase = createServerClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-  {
-    cookies: {
-      get: (key: string) => Astro.cookies.get(key)?.value,
-      set: (key: string, value: string, options: CookieOptions) => {
-        Astro.cookies.set(key, value, {
-          ...options,
-          path: '/',
-        });
-      },
-      remove: (key: string, options: CookieOptions) => {
-        Astro.cookies.delete(key, {
-          ...options,
-          path: '/',
-        });
-      },
-    },
-  }
-)
+// Remove Supabase client creation
+/*
+const supabase = createServerClient(...);
+*/
 
-// Check authentication using getUser()
+// Remove direct auth check (getUser / getSession)
+/*
 console.log("[Settings] Starting auth check with getUser()");
 const { data: { user }, error } = await supabase.auth.getUser();
 
-let email: string | undefined; // Define email variable
+let email: string | undefined;
 
 if (error) {
   console.error("[Settings] Error during getUser():", error.message);
-  // Treat errors during getUser as unauthenticated
   return Astro.redirect("/signin");
 }
 
@@ -48,10 +30,21 @@ if (!user) {
   console.log("[Settings] No authenticated user found via getUser(), redirecting to signin");
   return Astro.redirect('/signin');
 }
+*/
+
+// Trust middleware: Get user from locals
+// @ts-ignore - Astro/TS struggles with App.Locals inference here
+const user = Astro.locals.user as User | null;
+
+// Fallback check (should not be hit if middleware is correct)
+if (!user) {
+  console.error("[Settings] User not found in locals. Middleware might have failed. Redirecting...");
+  return Astro.redirect("/signin");
+}
 
 // If getUser() succeeds, the user is authenticated
-email = user.email; // Get email from the validated user object
-console.log("[Settings] Auth successful via getUser(), rendering page for:", email);
+const email = user.email; // Get email from the validated user object
+console.log("[Settings] Rendering page for user (from locals):", email);
 
 // Get the active tab from URL hash or default to 'profile'
 const hash = Astro.url.hash.slice(1) || 'profile';

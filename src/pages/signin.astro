@@ -1,10 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/landing/Header";
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+// Keep Supabase imports removed if middleware handles client creation/injection
+// import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export const prerender = false;
-const { cookies, redirect } = Astro;
+// Remove Astro.locals check and redirect logic
+// const { redirect, locals } = Astro;
 
 console.log("[Signin Page] Page load - Server side rendering");
 console.log("[Signin Page] Environment:", {
@@ -14,45 +16,24 @@ console.log("[Signin Page] Environment:", {
   base: import.meta.env.BASE_URL
 });
 
-// Create server-side Supabase client with cookie handling
-const supabase = createServerClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-  {
-    cookies: {
-      get: (key: string) => cookies.get(key)?.value,
-      set: (key: string, value: string, options: CookieOptions) => {
-        cookies.set(key, value, {
-          ...options,
-          path: '/',
-        });
-      },
-      remove: (key: string, options: CookieOptions) => {
-        cookies.delete(key, {
-          ...options,
-          path: '/',
-        });
-      },
-    },
-  }
-);
+// Remove the Supabase client creation here
+/*
+const supabase = createServerClient(...)
+*/
 
-// Check if user is already authenticated server-side using getUser()
-const { data: { user }, error } = await supabase.auth.getUser();
+// Remove the direct getSession call
+/*
+const { data: { session } } = await supabase.auth.getSession();
+*/
 
-// Optional: Log error if needed, but typically an error here means no valid session
-if (error) {
-  console.warn("[Signin Page] getUser check failed on load:", error.message);
-}
+// Remove the check for middleware-determined user
+// const user = locals.user;
+// if (user) {
+//   console.log("[Signin Page] User already authenticated via locals, redirecting...");
+//   return redirect("/dashboard");
+// }
 
-// If getUser returns a user, they are logged in, redirect to dashboard
-if (user) {
-  console.log("[Signin Page] User already authenticated via getUser(), redirecting...");
-  return redirect("/dashboard");
-}
-
-// Otherwise, continue to render the sign-in page
-console.log("[Signin Page] No authenticated user found, rendering sign-in form.");
+console.log("[Signin Page] Rendering sign-in form.");
 ---
 
 <Layout title="Sign in | Saturdays.io">
@@ -121,6 +102,8 @@ console.log("[Signin Page] No authenticated user found, rendering sign-in form."
                         </button>
                     </div>
                 </form>
+
+                <div id="signin-message-area" class="mt-4 text-center text-sm"></div>
     
                 <p class="mt-8 text-center text-base leading-normal text-gray-700 pb-4">
                     Don't have an account?{' '}
@@ -139,9 +122,17 @@ console.log("[Signin Page] No authenticated user found, rendering sign-in form."
     console.log('[Signin Page] Client-side script loaded');
     
     const form = document.getElementById('signin-form') as HTMLFormElement;
-    if (form) {
+    const messageArea = document.getElementById('signin-message-area') as HTMLDivElement;
+    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+
+    if (form && messageArea && submitButton) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Start loading state
+        submitButton.disabled = true;
+        messageArea.textContent = '';
+        messageArea.className = 'mt-4 text-center text-sm'; // Reset classes
         
         const formData = new FormData(form);
         const email = formData.get('email');
@@ -173,6 +164,8 @@ console.log("[Signin Page] No authenticated user found, rendering sign-in form."
           if (!response.ok) {
             console.error('[Signin Page] Sign-in failed:', data.error);
             // TODO: Show error message to user
+            messageArea.textContent = data.error || 'Sign-in failed. Please check your credentials.';
+            messageArea.classList.add('text-red-600');
             return;
           }
 
@@ -186,14 +179,21 @@ console.log("[Signin Page] No authenticated user found, rendering sign-in form."
             window.location.href = data.redirect;
           } else {
             console.error('[Signin Page] Invalid success response:', data);
+            messageArea.textContent = 'Sign-in succeeded but failed to redirect.';
+            messageArea.classList.add('text-orange-600'); // Use orange for unexpected success state
           }
         } catch (error) {
           console.error('[Signin Page] Sign-in error:', error);
           // TODO: Show error message to user
+          messageArea.textContent = 'An unexpected error occurred. Please try again.';
+          messageArea.classList.add('text-red-600');
+        } finally {
+          // Reset loading state
+          submitButton.disabled = false;
         }
       });
     } else {
-      console.error('[Signin Page] Signin form not found in DOM');
+      console.error('[Signin Page] Signin form, message area, or submit button not found in DOM');
     }
   });
 </script>

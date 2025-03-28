@@ -4,48 +4,23 @@ import DashboardHeader from "../components/dashboard/DashboardHeader.astro";
 import DashboardNav from "../components/dashboard/DashboardNav.astro";
 import { StatCard } from "../components/ui/stat-card";
 import { FighterSection } from "../components/dashboard/fighter-section";
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import type { User } from '@supabase/supabase-js'; // Import User type
+import type { User } from '@supabase/supabase-js';
 
 // Use the auth middleware
 export const prerender = false;
 
 console.log("[Dashboard] Page load started");
 
-// Log all request headers for debugging
-const headers = Object.fromEntries(
-  Array.from(Astro.request.headers.entries())
-);
-console.log("[Dashboard] All request headers:", headers);
+// Debugging logs can remain if helpful
+// ... (keep logs if desired) ...
 
-// Log cookie details
-const cookieHeader = Astro.request.headers.get('cookie');
-console.log("[Dashboard] Raw cookie header:", cookieHeader);
+// Remove Supabase client creation
+/*
+const supabase = createServerClient(...);
+*/
 
-// Create server-side Supabase client with cookie handling
-const supabase = createServerClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
-  {
-    cookies: {
-      get: (key: string) => Astro.cookies.get(key)?.value,
-      set: (key: string, value: string, options: CookieOptions) => {
-        Astro.cookies.set(key, value, {
-          ...options,
-          path: '/',
-        });
-      },
-      remove: (key: string, options: CookieOptions) => {
-        Astro.cookies.delete(key, {
-          ...options,
-          path: '/',
-        });
-      },
-    },
-  }
-);
-
-// Check authentication using getUser()
+// Remove direct auth check (getUser / getSession)
+/*
 console.log("[Dashboard] Starting auth check with getUser()");
 const { data: { user }, error } = await supabase.auth.getUser();
 
@@ -53,7 +28,6 @@ let email: string | undefined; // Define email variable
 
 if (error) {
   console.error("[Dashboard] Error during getUser():", error.message);
-  // Treat errors during getUser as unauthenticated
   return Astro.redirect("/signin");
 }
 
@@ -61,10 +35,22 @@ if (!user) {
   console.log("[Dashboard] No authenticated user found via getUser(), redirecting to signin");
   return Astro.redirect("/signin");
 }
+*/
+
+// Trust middleware: Get user from locals
+// Explicitly type Astro.locals
+const locals = Astro.locals as App.Locals;
+const user = locals.user; // Should now be User | null
+
+// Fallback check (should not be hit if middleware is correct)
+if (!user) {
+  console.error("[Dashboard] User not found in locals. Middleware might have failed. Redirecting...");
+  return Astro.redirect("/signin");
+}
 
 // If getUser() succeeds, the user is authenticated
-email = user.email; // Get email from the validated user object
-console.log("[Dashboard] Auth successful via getUser(), rendering page for:", email);
+const email = user.email; // Get email from the validated user object
+console.log("[Dashboard] Rendering page for user (from locals):", email);
 
 // Dashboard data
 const stats = [
@@ -74,7 +60,7 @@ const stats = [
   { name: 'Status', value: 'ONLINE' },
 ];
 
-// Mock fighter data - in a real app, this would come from an API or database
+// Mock fighter data
 const ufcFighters = [
   { id: '1', name: 'Jon Jones', organization: 'UFC', image: '/pfp/2335639.png' },
   { id: '2', name: 'Alex Pereira', organization: 'UFC', image: '/pfp/4705658.png' },
