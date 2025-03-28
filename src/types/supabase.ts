@@ -6,7 +6,6 @@ export interface Database {
           id: string;
           username: string | null;
           full_name: string | null;
-          avatar_url: string | null;
           bio: string | null;
           website: string | null;
           created_at: string;
@@ -16,7 +15,6 @@ export interface Database {
           id: string;
           username?: string | null;
           full_name?: string | null;
-          avatar_url?: string | null;
           bio?: string | null;
           website?: string | null;
           created_at?: string;
@@ -26,7 +24,6 @@ export interface Database {
           id?: string;
           username?: string | null;
           full_name?: string | null;
-          avatar_url?: string | null;
           bio?: string | null;
           website?: string | null;
           created_at?: string;

@@ -15,9 +15,9 @@ export type { NotificationSettings }
 
 // Combined settings type
 export interface UserSettings {
-  profile: ProfileFormData;
-  security: SecuritySettings;
-  notifications: NotificationSettings;
+  profile: ProfileFormData | null;
+  security: SecuritySettings | null;
+  notifications: NotificationSettings | null;
   updatedAt?: string;
 }
 
