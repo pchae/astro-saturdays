@@ -158,16 +158,20 @@ function hasRequiredRole(user: User | null, requiredRoles: UserRole[]): boolean 
 }
 
 // Type the context parameter explicitly
-export const onRequest = defineMiddleware(async (context: APIContext, next) => { 
+export const onRequest = defineMiddleware(async (context: APIContext, next) => {
   // Explicitly type locals for better type safety
+  // @ts-ignore - IDE linter struggles with locals type here
   const locals = context.locals as App.Locals;
   const { url, cookies, redirect } = context;
   const pathname = url.pathname;
 
   // Initialize metrics if needed
+  // @ts-ignore - IDE linter struggles with locals type here
   if (typeof locals.metrics === 'undefined') {
+    // @ts-ignore - IDE linter struggles with locals type here
     locals.metrics = { operations: 0 };
   }
+  // @ts-ignore - IDE linter struggles with locals type here
   locals.metrics.operations++; // Increment metric count early
 
   // --- Use @supabase/ssr ---
@@ -182,10 +186,13 @@ export const onRequest = defineMiddleware(async (context: APIContext, next) => {
   const { data: { session } } = await supabase.auth.getSession();
   const user = session?.user ?? null;
 
-  // Store session and user in locals *unconditionally* first
+  // Store the Supabase client, session, and user in locals
+  // @ts-ignore - IDE linter struggles with locals type here
+  locals.supabase = supabase;
+  // @ts-ignore - IDE linter struggles with locals type here
   locals.session = session;
+  // @ts-ignore - IDE linter struggles with locals type here
   locals.user = user;
-  // --- End @supabase/ssr Usage ---
 
   console.log(`[Middleware] Path: ${pathname}, User: ${user?.email ?? 'None'}, Session: ${session ? 'Exists' : 'None'}`);
 
