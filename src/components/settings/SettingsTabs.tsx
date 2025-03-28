@@ -1,78 +1,111 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ProfileForm } from "./ProfileForm";
 import { SecurityForm } from "./SecurityForm";
 import { NotificationsForm } from "./NotificationsForm";
 import type { UserSettings, ProfileFormData } from "@/types/settings";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
-// Define an interface for the raw profile data structure from API/script
-interface RawProfileData {
-  id?: string;
-  userId?: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  phoneNumber?: string | null;
-  companyName?: string | null;
-  companyPosition?: string | null;
-  // Add other fields if necessary
+interface RawApiSettings {
+  profile: {
+    id?: string;
+    userId?: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    phoneNumber?: string | null;
+    companyName?: string | null;
+    companyPosition?: string | null;
+  } | null;
+  security: any;
+  notifications: any;
 }
 
 interface SettingsTabsProps {
   defaultTab?: string;
-  settingsDataId: string;
 }
 
-export function SettingsTabs({ defaultTab = 'profile', settingsDataId }: SettingsTabsProps) {
-  const [loadedSettings, setLoadedSettings] = useState<UserSettings | null>(null);
+const fetchSettings = async (): Promise<RawApiSettings> => {
+  console.log('[fetchSettings] Fetching from /api/settings/all...');
+  const response = await fetch('/api/settings/all');
+  if (!response.ok) {
+    let errorBody = 'Unknown error';
+    try {
+      const errorJson = await response.json();
+      errorBody = errorJson.error || JSON.stringify(errorJson);
+    } catch { /* Ignore */ }
+    console.error(`[fetchSettings] API fetch failed with status ${response.status}: ${errorBody}`);
+    throw new Error(`Failed to fetch settings. Status: ${response.status}. Error: ${errorBody}`);
+  }
+  const data = await response.json();
+  console.log('[fetchSettings] Successfully fetched settings:', data);
+  return data as RawApiSettings;
+};
 
-  useEffect(() => {
-    console.log(`[SettingsTabs Client] Attempting to read data from script tag ID: ${settingsDataId}`);
-    const scriptTag = document.getElementById(settingsDataId);
-    if (scriptTag && scriptTag.textContent) {
-      try {
-        const parsedData = JSON.parse(scriptTag.textContent);
-        console.log("[SettingsTabs Client] Successfully parsed raw data:", parsedData);
-
-        // --- Transform flat profile data to nested structure --- 
-        let transformedProfile: ProfileFormData | null = null;
-        if (parsedData && parsedData.profile) {
-          const rawProfile = parsedData.profile as RawProfileData;
-          transformedProfile = {
-            personal: {
-              firstName: rawProfile.firstName || '',
-              lastName: rawProfile.lastName || '',
-              phoneNumber: rawProfile.phoneNumber || '',
-            },
-            professional: {
-              companyName: rawProfile.companyName || '',
-              companyPosition: rawProfile.companyPosition || '',
-            },
-          };
-          console.log("[SettingsTabs Client] Transformed profile data:", transformedProfile);
-        }
-        // --- End Transformation --- 
-
-        // Set state with the transformed profile data
-        setLoadedSettings({
-          profile: transformedProfile,
-          // Keep others as they were (or null)
-          security: parsedData?.security || null,
-          notifications: parsedData?.notifications || null,
-        });
-
-      } catch (error) {
-        console.error("[SettingsTabs Client] Failed to parse/transform JSON:", error);
-        setLoadedSettings(null);
+export function SettingsTabs({ defaultTab = 'profile' }: SettingsTabsProps) {
+  const { 
+    data: loadedSettings,
+    isLoading,
+    isError,
+    error 
+  } = useQuery<RawApiSettings, Error, UserSettings | null>({
+    queryKey: ['settings', 'all'],
+    queryFn: fetchSettings,
+    staleTime: 1000 * 60 * 5,
+    select: (rawData) => {
+      if (!rawData) return null;
+      console.log('[useQuery select] Transforming raw API data:', rawData);
+      let transformedProfile: ProfileFormData | null = null;
+      if (rawData.profile) {
+        transformedProfile = {
+          personal: {
+            firstName: rawData.profile.firstName || '',
+            lastName: rawData.profile.lastName || '',
+            phoneNumber: rawData.profile.phoneNumber || '',
+          },
+          professional: {
+            companyName: rawData.profile.companyName || '',
+            companyPosition: rawData.profile.companyPosition || '',
+          },
+        };
       }
-    } else {
-      console.warn(`[SettingsTabs Client] Script tag with ID ${settingsDataId} not found or empty.`);
-      setLoadedSettings(null);
-    }
-  }, [settingsDataId]);
+      const transformedData: UserSettings = {
+        profile: transformedProfile,
+        security: rawData.security || null,
+        notifications: rawData.notifications || null,
+      };
+      console.log('[useQuery select] Returning transformed data:', transformedData);
+      return transformedData;
+    },
+  });
 
   const handleTabChange = (tab: string) => {
     window.history.replaceState(null, '', `#${tab}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-1/2" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert variant="destructive">
+        <Terminal className="h-4 w-4" />
+        <AlertTitle>Error Loading Settings</AlertTitle>
+        <AlertDescription>
+          There was a problem fetching your settings. Please try refreshing the page. 
+          {error && <p className="mt-2 text-xs">Details: {error.message}</p>}
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <Tabs defaultValue={defaultTab} onValueChange={handleTabChange} className="w-full">
