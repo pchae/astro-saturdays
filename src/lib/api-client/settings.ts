@@ -1,7 +1,7 @@
 import type { ProfileSettingsSchema } from '@/lib/database/schemas/settings/profile';
 import type { SecuritySettingsSchema } from '@/lib/database/schemas/settings/security';
 import type { NotificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
-import { supabase } from '@/lib/supabase/client'; // Uncomment if using Supabase
+import { supabase } from '@/lib/supabase/client'; // Restore this import
 
 // Define the structure for combined settings data
 export interface AllSettingsData {
@@ -19,30 +19,29 @@ interface SettingsApi {
 
 // Specific update functions per section
 async function updateProfileSettings(data: ProfileSettingsSchema): Promise<{ success: boolean; error?: any }> {
-  console.log('Updating profile settings with:', data);
+  console.log('Updating profile settings via API with:', data);
   try {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      console.error('Error fetching user:', userError);
-      return { success: false, error: userError || new Error('User not found') };
+    // Use fetch to call the backend API endpoint
+    const response = await fetch('/api/settings/profile', { // Assuming this is the correct endpoint
+      method: 'PUT', // Assuming PUT method
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      console.error('Error updating profile settings via API:', result.error || `HTTP status ${response.status}`);
+      return { success: false, error: result.error || new Error(`Failed to update profile (HTTP ${response.status})`) };
     }
 
-    // Assuming your table is 'user_profiles' and the schema matches the columns
-    // or you are using JSONB columns matching the nested structure.
-    const { error: updateError } = await supabase
-      .from('user_profiles') // Replace 'user_profiles' if your table name is different
-      .update(data)
-      .eq('user_id', user.id); // Assuming a 'user_id' column linked to auth.users.id
-
-    if (updateError) {
-      console.error('Error updating profile settings:', updateError);
-      return { success: false, error: updateError };
-    }
-
-    console.log('Profile settings updated successfully.');
+    console.log('Profile settings updated successfully via API.');
     return { success: true };
+
   } catch (error) {
-    console.error('Unexpected error in updateProfileSettings:', error);
+    console.error('Unexpected error in updateProfileSettings fetch:', error);
     return { success: false, error };
   }
 }
