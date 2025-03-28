@@ -6,6 +6,7 @@ import type { Session as SupabaseSession } from '@supabase/supabase-js';
 import { UserRole } from '@/types/auth';
 import type { AuthConfig, AuthContext, AuthState, RoutePermission, AuthSession } from '@/types/auth';
 import { AuthErrors, SessionError, UnauthorizedError } from '@/lib/errors/auth';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 // Default configuration
 const DEFAULT_CONFIG: AuthConfig = {
@@ -29,6 +30,18 @@ export const PROTECTED_ROUTES: Record<string, RoutePermission> = {
   '/settings': { roles: [UserRole.USER, UserRole.ADMIN] },
   '/admin': { roles: [UserRole.ADMIN] }
 };
+
+// --- Configuration ---
+// Keep your existing route definitions
+const protectedRoutes = ["/dashboard", "/settings", "/admin"]; // Routes requiring login
+const publicOnlyRoutes = ["/signin", "/register", "/reset-password", "/verify"]; // Routes for logged-out users only
+const adminRoutes = ["/admin"]; // Routes requiring admin role (adjust if needed)
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const signInPath = '/signin';
+const dashboardPath = '/dashboard';
+// --- End Configuration ---
 
 /**
  * Get current auth state by verifying token with Supabase server
@@ -133,85 +146,80 @@ function hasPermission(userRole: string | undefined, permission: RoutePermission
   return permission.roles.includes(role);
 }
 
-export const authMiddleware = defineMiddleware(async (context, next) => {
-  const { locals, url, cookies } = context;
-  const config = { ...DEFAULT_CONFIG };
-  
-  // Pass cookies to getAuthState
-  const state = await getAuthState(cookies);
-  
-  // First check if route is public
-  if (isPublicRoute(url.pathname, config.publicRoutes)) {
-    console.log('[Auth Middleware] Public route detected:', {
-      path: url.pathname,
-      skippingAuth: true
-    });
-    locals.metrics.operations++;
-    return next();
-  }
+// Simplified permission check - verify how user.role is set (e.g., custom claims)
+// If user.role isn't available, you might need context.locals.session?.user?.app_metadata?.roles or similar
+function hasRequiredRole(user: User | null, requiredRoles: UserRole[]): boolean {
+    if (!user || !requiredRoles.length) {
+        return false;
+    }
+    // ASSUMPTION: user.role exists (e.g., via custom claims). Adjust if needed.
+    const userRole = (user.role as UserRole) || UserRole.GUEST;
+    return requiredRoles.includes(userRole);
+}
 
-  console.log('[Auth Middleware] Processing request:', {
-    path: url.pathname,
-    hasSession: !!state.session,
-    hasUser: !!state.user,
-    timestamp: new Date().toISOString()
+// Type the context parameter explicitly
+export const onRequest = defineMiddleware(async (context: APIContext, next) => { 
+  // Explicitly type locals for better type safety
+  const locals = context.locals as App.Locals;
+  const { url, cookies, redirect } = context;
+  const pathname = url.pathname;
+
+  // Initialize metrics if needed
+  if (typeof locals.metrics === 'undefined') {
+    locals.metrics = { operations: 0 };
+  }
+  locals.metrics.operations++; // Increment metric count early
+
+  // --- Use @supabase/ssr ---
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get: (key) => cookies.get(key)?.value,
+      set: (key, value, options) => cookies.set(key, value, { ...options, path: '/' }),
+      remove: (key, options) => cookies.delete(key, { ...options, path: '/' }),
+    },
   });
 
-  try {
-    if (!state.session || !state.user) {
-      console.log('[Auth Debug] No valid session found');
-      cookies.delete('sb-access-token', { path: '/' });
-      cookies.delete('sb-refresh-token', { path: '/' });
-      locals.metrics.operations++;
-      
-      // Check if request expects JSON
-      if (context.request.headers.get('accept')?.includes('application/json')) {
-        throw new UnauthorizedError();
-      }
-      
-      return context.redirect(config.authFailRedirect || '/signin');
-    }
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
-    // Check for session expiration - This part needs careful review
-    // as partialSession might not have expires_at correctly
-    // if (state.session?.expires_at && Date.now() > state.session.expires_at * 1000) {
-    //   console.warn('[Auth Middleware] Session potentially expired (based on partial data)');
-    //   // throw new SessionError(); // Re-evaluate if this check is reliable now
-    // }
+  // Store session and user in locals *unconditionally* first
+  locals.session = session;
+  locals.user = user;
+  // --- End @supabase/ssr Usage ---
 
-    // Check route permissions
-    const routePermission = PROTECTED_ROUTES[url.pathname];
-    if (routePermission) {
-      const hasRequiredPermission = hasPermission(state.user.role, routePermission);
-      if (!hasRequiredPermission) {
-        locals.metrics.operations++;
-        throw AuthErrors.forbidden();
-      }
-    }
+  console.log(`[Middleware] Path: ${pathname}, User: ${user?.email ?? 'None'}, Session: ${session ? 'Exists' : 'None'}`);
 
-    // Store auth state in locals with proper typing
-    locals.session = state.session ? {
-      ...state.session,
-      isValid: true, // Since getUser succeeded
-      expiresAt: state.session.expires_at ? state.session.expires_at * 1000 : undefined // expires_at might be undefined now
-    } as AuthSession : undefined;
-    locals.user = state.user;
-    locals.metrics.operations++;
-    
-    return next();
-  } catch (error) {
-    console.error('[Auth Middleware Error]', {
-      path: url.pathname,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
-    });
-    
-    locals.metrics.operations++;
-    
-    if (error instanceof UnauthorizedError || error instanceof SessionError) {
-      return context.redirect(config.authFailRedirect || '/signin');
-    }
-    
-    throw error;
+  // --- Redirect Logic ---
+
+  // 1. Check Protected Routes
+  const isProtectedRoute = protectedRoutes.some(prefix => pathname.startsWith(prefix));
+  if (isProtectedRoute && !session) {
+    console.log(`[Middleware] No session, accessing protected route. Redirecting to ${signInPath}.`);
+    // Optionally add redirect target: return redirect(`${signInPath}?redirect=${encodeURIComponent(pathname)}`);
+    return redirect(signInPath);
   }
-}) satisfies MiddlewareHandler; 
+
+  // 2. Check Public-Only Routes (FIX for ERR_TOO_MANY_REDIRECTS)
+  const isPublicOnlyRoute = publicOnlyRoutes.some(prefix => pathname.startsWith(prefix));
+  if (isPublicOnlyRoute && session) {
+    console.log(`[Middleware] Session found, accessing public-only route. Redirecting to ${dashboardPath}.`);
+    return redirect(dashboardPath);
+  }
+
+  // 3. Check Role-Based Permissions (Example for Admin)
+  const isAdminRoute = adminRoutes.some(prefix => pathname.startsWith(prefix));
+  if (isAdminRoute && session) { // Only check roles if logged in
+      // Adjust role check based on how roles are stored (user.role, app_metadata, etc.)
+      if (!hasRequiredRole(user, [UserRole.ADMIN])) {
+          console.log(`[Middleware] User ${user?.email} lacks ADMIN role for ${pathname}. Redirecting.`);
+          // Redirect non-admins away from admin routes (e.g., to dashboard or show a 'Forbidden' page)
+          return redirect(dashboardPath); // Or context.rewrite('/forbidden') if you have such a page
+      }
+  }
+
+  // --- End Redirect Logic ---
+
+  // If no redirects triggered, proceed to the page
+  console.log(`[Middleware] No redirect needed for ${pathname}. Proceeding.`);
+  return next();
+}); 
