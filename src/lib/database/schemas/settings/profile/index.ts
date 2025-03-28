@@ -4,110 +4,78 @@ import { patterns } from '@/lib/schemas/core/validators';
 import { VALIDATION_MESSAGES } from '@/lib/schemas/core/messages';
 
 /**
- * Schema for personal information
+ * Schema for personal information (Matches DB: firstName, lastName, phoneNumber)
  */
 export const personalInfoSchema = createSchemaSet({
-  fullName: createStringField({ 
-    min: 2, 
+  firstName: createStringField({
+    min: 1, 
     max: 50,
-    message: 'Full name must be between 2 and 50 characters'
+    message: 'First name is required'
   }),
-  email: createStringField({
-    pattern: patterns.email,
-    message: VALIDATION_MESSAGES.string.email()
+  lastName: createStringField({
+    min: 1, 
+    max: 50,
+    message: 'Last name is required'
   }),
-  username: createStringField({
-    min: 3,
-    max: 20,
-    pattern: /^[a-zA-Z0-9_]+$/,
-    message: VALIDATION_MESSAGES.custom.username()
-  }),
-  bio: createStringField({
-    max: 500,
-    message: 'Bio must be less than 500 characters'
-  }).optional(),
-  avatarUrl: createStringField({
-    pattern: patterns.url,
-    message: VALIDATION_MESSAGES.string.url('Avatar URL')
-  })
+  phoneNumber: createStringField({
+    // Add specific phone validation if needed
+    message: 'Invalid phone number'
+  }).optional(), // Assuming phone number is optional
+  // Removed: email, username, bio
 });
 
 /**
- * Schema for professional information
+ * Schema for professional information (Matches DB: companyName, companyPosition)
  */
 export const professionalInfoSchema = createSchemaSet({
-  jobTitle: createStringField({
-    max: 100,
-    message: 'Job title must be less than 100 characters'
-  }).optional(),
-  company: createStringField({
+  companyName: createStringField({
     max: 100,
     message: 'Company name must be less than 100 characters'
-  }).optional(),
-  website: createStringField({
-    pattern: patterns.url,
-    message: VALIDATION_MESSAGES.string.url('Website')
-  }),
-  location: createStringField({
+  }).optional(), // Assuming optional
+  companyPosition: createStringField({
     max: 100,
-    message: 'Location must be less than 100 characters'
-  }).optional()
+    message: 'Position must be less than 100 characters'
+  }).optional(), // Assuming optional
+  // Removed: jobTitle, company, website, location
 });
 
 /**
- * Schema for user preferences
+ * Schema for user preferences - REMOVED as these columns don't exist
  */
-export const preferencesSchema = createSchemaSet({
-  language: z.enum(['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh']),
-  timezone: createStringField({
-    min: 1,
-    message: 'Timezone is required'
-  })
-});
+// export const preferencesSchema = createSchemaSet({
+//   language: z.enum(['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh']),
+//   timezone: createStringField({
+//     min: 1,
+//     message: 'Timezone is required'
+//   })
+// });
 
 /**
- * Combined profile settings schema
+ * Combined profile settings schema (Updated: Removed preferences)
  */
 export const profileSettingsSchema = createSchemaSet({
   personal: personalInfoSchema.row,
   professional: professionalInfoSchema.row,
-  preferences: preferencesSchema.row
+  // preferences: preferencesSchema.row // Removed
 });
 
 /**
- * Schema for profile picture updates
+ * Schema for basic profile information - REMOVED
  */
-export const profilePictureSchema = createSchemaSet({
-  avatarUrl: createStringField({
-    pattern: patterns.url,
-    message: VALIDATION_MESSAGES.string.url('Avatar URL')
-  })
-});
-
-/**
- * Schema for basic profile information
- */
-export const basicProfileSchema = createSchemaSet({
-  fullName: personalInfoSchema.row.shape.fullName,
-  email: personalInfoSchema.row.shape.email,
-  username: personalInfoSchema.row.shape.username,
-  avatarUrl: personalInfoSchema.row.shape.avatarUrl
-});
+// export const basicProfileSchema = ...;
 
 // Type exports
 export type PersonalInfoSchema = z.infer<typeof personalInfoSchema.row>;
-export type ProfessionalInfoSchema = z.infer<typeof professionalInfoSchema.row>;
-export type PreferencesSchema = z.infer<typeof preferencesSchema.row>;
+export type ProfessionalInfoSchema = z.infer<typeof professionalInfoSchema.row>; // Schema is now empty, type might not be needed
+// export type PreferencesSchema = z.infer<typeof preferencesSchema.row>; // Removed
 export type ProfileSettingsSchema = z.infer<typeof profileSettingsSchema.row>;
-export type ProfilePictureSchema = z.infer<typeof profilePictureSchema.row>;
-export type BasicProfileSchema = z.infer<typeof basicProfileSchema.row>;
+// export type BasicProfileSchema = z.infer<typeof basicProfileSchema.row>; // Removed
 
 /**
- * Type for profile-related actions
+ * Type for profile-related actions (Updated: Removed preferences_update)
  */
-export type ProfileAction = 
+export type ProfileAction =
   | { type: 'personal_update'; data: PersonalInfoSchema }
-  | { type: 'professional_update'; data: ProfessionalInfoSchema }
-  | { type: 'preferences_update'; data: PreferencesSchema }
-  | { type: 'picture_update'; data: ProfilePictureSchema }
-  | { type: 'basic_update'; data: BasicProfileSchema }; 
+  | { type: 'professional_update'; data: ProfessionalInfoSchema };
+  // | { type: 'preferences_update'; data: PreferencesSchema }; // Removed
+  // | { type: 'basic_update'; data: BasicProfileSchema }; // Removed 
