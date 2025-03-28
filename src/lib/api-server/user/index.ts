@@ -36,7 +36,6 @@ export async function getUserProfile(
         personal: {
           username: profile.username,
           fullName: profile.full_name,
-          avatarUrl: profile.avatar_url,
           bio: profile.bio,
           email
         },
@@ -75,7 +74,6 @@ export async function updateUserProfile(
         .update({
           username: data.personal?.username,
           full_name: data.personal?.fullName,
-          avatar_url: data.personal?.avatarUrl,
           bio: data.personal?.bio,
           website: data.professional?.website,
           updated_at: new Date().toISOString()
@@ -100,7 +98,6 @@ export async function updateUserProfile(
         personal: {
           username: profile.username,
           fullName: profile.full_name,
-          avatarUrl: profile.avatar_url,
           bio: profile.bio,
           email
         },
