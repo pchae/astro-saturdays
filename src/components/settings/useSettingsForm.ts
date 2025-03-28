@@ -17,7 +17,7 @@ import type { DeepPartial } from '../../types/utils';
 interface UseSettingsSectionFormArgs<T extends z.ZodType> {
   schema: T;
   defaultValues: DeepPartial<z.infer<T>>;
-  updateFunction: (data: z.infer<T>) => Promise<{ success: boolean; error?: any }>;
+  updateFunction: (data: z.infer<T>) => Promise<{ success: boolean; data?: DeepPartial<z.infer<T>>; error?: any }>;
   initialData?: DeepPartial<z.infer<T>>;
 }
 
@@ -36,12 +36,33 @@ export function useSettingsSectionForm<T extends z.ZodType>({
     } as z.infer<T>,
   });
 
-  const onSubmit = async (data: z.infer<T>) => {
+  const onSubmit = async (formData: z.infer<T>) => {
+    console.log("Submitting settings data:", formData);
     try {
-      const response = await updateFunction(data);
+      const response = await updateFunction(formData);
+      console.log("Update response received:", response);
+
+      if (response.success && response.data) {
+        console.log("Update successful. Resetting form with new data:", response.data);
+        try {
+          // Reset form with the latest data returned from the API
+          form.reset(response.data as z.infer<T>);
+          console.log("Form reset completed.");
+        } catch (resetError) {
+          console.error("Error resetting form after successful update:", resetError);
+          // Optionally: show a notification to the user that UI update failed but data was saved
+        }
+      } else if (!response.success) {
+        console.error("Update failed:", response.error);
+        // Optionally: Add more specific error handling/display based on response.error
+        // form.setError('root.serverError', { message: 'Failed to save settings' });
+      }
+
+      // Return the response for potential further handling if needed
       return response;
     } catch (error) {
-      console.error('Failed to update settings:', error);
+      console.error('Unexpected error during settings update:', error);
+      // form.setError('root.serverError', { message: 'An unexpected error occurred' });
       return { success: false, error };
     }
   };
@@ -53,25 +74,21 @@ export function useSettingsSectionForm<T extends z.ZodType>({
   };
 }
 
-// Default form data
+// Default form data (Updated: Removed preferences)
 const defaultProfileData: ProfileSettingsSchema = {
   personal: {
-    fullName: '',
-    email: '',
-    bio: '',
-    avatarUrl: '',
-    username: ''
+    firstName: '',
+    lastName: '',
+    phoneNumber: ''
   },
   professional: {
-    jobTitle: '',
-    company: '',
-    website: '',
-    location: ''
+    companyName: '',
+    companyPosition: ''
   },
-  preferences: {
-    language: 'en',
-    timezone: 'UTC'
-  }
+  // preferences: { // Removed
+  //   language: 'en',
+  //   timezone: 'UTC'
+  // }
 };
 
 const defaultSecurityData: SecuritySettingsSchema = {
