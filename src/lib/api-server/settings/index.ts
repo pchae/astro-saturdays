@@ -156,10 +156,6 @@ export async function fetchUserSettings(
         companyName: profileData?.companyName ?? '',
         companyPosition: profileData?.companyPosition ?? ''
       },
-      preferences: {
-        language: 'en',
-        timezone: 'UTC'
-      }
     };
 
     return {
