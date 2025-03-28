@@ -8,8 +8,11 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   try {
-    const body = await request.json();
-    const { email, password } = body;
+    // const body = await request.json();
+    // const { email, password } = body;
+    const formData = await request.formData();
+    const email = formData.get('email')?.toString();
+    const password = formData.get('password')?.toString();
 
     if (!email || !password) {
       return new Response(

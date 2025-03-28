@@ -21,7 +21,7 @@ export const prerender = false;
             </div>
 
             <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form action="/api/auth/register" method="POST" class="space-y-6">
+                <form id="register-form" action="/api/auth/register" method="POST" class="space-y-6">
                     <div>
                         <label for="email" class="block text-sm/6 font-medium text-gray-900">
                             Email address
@@ -66,6 +66,8 @@ export const prerender = false;
                     </div>
                 </form>
 
+                <div id="message-area" class="mt-4 text-center text-sm"></div>
+
                 <p class="mt-8 text-center text-base text-gray-700 pb-4">
                     Already have an account?{' '}
                     <a href="/signin" class="font-semibold text-blue-600 hover:text-blue-500">
@@ -75,4 +77,56 @@ export const prerender = false;
             </div>
         </div>
     </main>
+
+<script>
+  const form = document.getElementById('register-form') as HTMLFormElement;
+  const messageArea = document.getElementById('message-area') as HTMLDivElement;
+
+  if (form && messageArea) {
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Stop default submission
+
+      if (submitButton) submitButton.disabled = true;
+      messageArea.textContent = ''; // Clear previous messages
+      messageArea.className = 'mt-4 text-center text-sm'; // Reset classes
+
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            // Required for the API route to know it's an AJAX request
+            'Accept': 'application/json' 
+          }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          messageArea.textContent = result.error || 'An unexpected error occurred.';
+          messageArea.classList.add('text-red-600');
+        } else {
+          if (result.requiresEmailConfirmation) {
+            messageArea.textContent = result.message || 'Please check your email.';
+            messageArea.classList.add('text-green-600');
+            form.reset(); // Clear the form fields
+          } else {
+            // Successful registration and immediate login
+            window.location.href = '/dashboard'; // Redirect
+          }
+        }
+      } catch (error) {
+        console.error('Registration failed:', error);
+        messageArea.textContent = 'An error occurred during registration.';
+        messageArea.classList.add('text-red-600');
+      } finally {
+        if (submitButton) submitButton.disabled = false;
+      }
+    });
+  }
+</script>
 </Layout>
