@@ -17,25 +17,32 @@ export async function updateProfile(
 ): Promise<ApiResponse> {
   const supabase = createClient(context);
   
+  const updatePayload: { [key: string]: any } = {};
+  if (data.personal?.firstName !== undefined) updatePayload.firstName = data.personal.firstName;
+  if (data.personal?.lastName !== undefined) updatePayload.lastName = data.personal.lastName;
+  if (data.personal?.phoneNumber !== undefined) updatePayload.phoneNumber = data.personal.phoneNumber;
+  if (data.professional?.companyName !== undefined) updatePayload.companyName = data.professional.companyName;
+  if (data.professional?.companyPosition !== undefined) updatePayload.companyPosition = data.professional.companyPosition;
+  
+  if (Object.keys(updatePayload).length === 0) {
+    return { success: true };
+  }
+
+  updatePayload.updatedAt = new Date().toISOString();
+  
   try {
     const { error } = await supabase
       .from('profiles')
-      .update({
-        username: data.personal?.username,
-        full_name: data.personal?.fullName,
-        avatar_url: data.personal?.avatarUrl,
-        website: data.professional?.website,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId);
+      .update(updatePayload)
+      .eq('userId', userId);
 
     if (error) throw error;
     return { success: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to update profile:', error);
     return {
       success: false,
-      error: 'Failed to update profile settings'
+      error: error.message || 'Failed to update profile settings'
     };
   }
 }
@@ -118,8 +125,8 @@ export async function fetchUserSettings(
       supabase
         .from('profiles')
         .select('*')
-        .eq('id', userId)
-        .single(),
+        .eq('userId', userId)
+        .maybeSingle(),
       supabase
         .from('settings')
         .select('*')
@@ -128,7 +135,9 @@ export async function fetchUserSettings(
       supabase.auth.admin.getUserById(userId)
     ]);
 
-    if (profileResult.error) throw profileResult.error;
+    const profileData = profileResult.data;
+
+    if (profileResult.error && profileResult.error.code !== 'PGRST116') throw profileResult.error;
     if (settingsResult.error) throw settingsResult.error;
     if (userResult.error) throw userResult.error;
 
@@ -137,34 +146,35 @@ export async function fetchUserSettings(
       throw new Error('User email not found');
     }
 
+    const mappedProfile: ProfileSettingsSchema = {
+      personal: {
+        firstName: profileData?.firstName ?? '',
+        lastName: profileData?.lastName ?? '',
+        phoneNumber: profileData?.phoneNumber ?? ''
+      },
+      professional: {
+        companyName: profileData?.companyName ?? '',
+        companyPosition: profileData?.companyPosition ?? ''
+      },
+      preferences: {
+        language: 'en',
+        timezone: 'UTC'
+      }
+    };
+
     return {
       success: true,
       data: {
-        profile: {
-          personal: {
-            username: profileResult.data.username,
-            fullName: profileResult.data.full_name,
-            avatarUrl: profileResult.data.avatar_url,
-            bio: profileResult.data.bio,
-            email
-          },
-          professional: {
-            website: profileResult.data.website
-          },
-          preferences: {
-            language: 'en',
-            timezone: 'UTC'
-          }
-        },
+        profile: mappedProfile,
         security: settingsResult.data.security,
         notifications: settingsResult.data.notifications
       }
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch user settings:', error);
     return {
       success: false,
-      error: 'Failed to fetch user settings'
+      error: error.message || 'Failed to fetch user settings'
     };
   }
 } 
