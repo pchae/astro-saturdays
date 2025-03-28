@@ -1,16 +1,21 @@
 ---
 import Layout from '@/layouts/Dashboard.astro';
-import { SettingsTabs } from '@/components/settings/SettingsTabs';
+// import { SettingsTabs } from '@/components/settings/SettingsTabs'; // Comment out old
+// import { QueryProvider } from '@/components/QueryProvider'; 
+// import { SimpleQueryTester } from '@/components/SimpleQueryTester'; // Import new
+import { SettingsClientWrapper } from '@/components/SettingsClientWrapper'; // Import the wrapper
 
-let userSettings: any = null; // Initialize as null
-let fetchError: string | null = null;
-const settingsDataId = "initial-settings-data"; 
+// Remove unused variables related to script tag embedding
+// let userSettings: any = null; 
+// let fetchError: string | null = null;
+// const settingsDataId = "initial-settings-data"; 
 
-// Pass Astro.request to include headers/cookies in the fetch call
+// Keep fetch logic for now? Could be removed if *all* data is client-fetched
+// For now, let's keep it commented out to avoid confusion
+/*
 try {
   console.log("[Settings Page] Fetching settings from /api/settings/all");
   const response = await fetch(`${Astro.url.origin}/api/settings/all`, {
-    // Forward headers from the original request to the internal API call
     headers: Astro.request.headers, 
   });
 
@@ -19,32 +24,32 @@ try {
     try {
       const errorJson = await response.json();
       errorBody = errorJson.error || JSON.stringify(errorJson);
-    } catch { /* Ignore */ }
+    } catch { // Ignore // }
     console.error(`[Settings Page] API fetch failed with status ${response.status}: ${errorBody}`);
     throw new Error(`Failed to fetch settings. Status: ${response.status}. Error: ${errorBody}`);
   }
 
-  userSettings = await response.json();
-  console.log("[Settings Page] Successfully fetched settings from API:", userSettings);
+  // userSettings = await response.json(); // No longer used here
+  // console.log("[Settings Page] Successfully fetched settings from API:", userSettings);
 
 } catch (error: any) {
   console.error('[Settings Page] Error fetching settings from API:', error);
-  fetchError = error.message || 'Failed to load settings.';
-  userSettings = null; // Ensure it's null on error
+  // fetchError = error.message || 'Failed to load settings.'; // No longer used here
+  // userSettings = null;
 }
+*/
 ---
 
 <Layout title="User Settings">
-
   <div class="container mx-auto px-4 py-10">
     <h1 class="text-3xl font-bold mb-6">Settings</h1>
-    {fetchError && (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-        <strong class="font-bold">Error:</strong>
-        <span class="block sm:inline"> {fetchError} Please try refreshing the page.</span>
-      </div>
-    )}
-    <SettingsTabs client:load settingsDataId={settingsDataId} />
-    <script id={settingsDataId} type="application/json" set:html={JSON.stringify(userSettings)} />
+    {/* Remove fetchError display, as errors are handled client-side now */}
+    {/* {fetchError && (...) } */}
+    
+    {/* Pass client:only only, no more settingsDataId */}
+    <SettingsClientWrapper client:only="react" />
+    
+    {/* Remove the script tag */}
+    {/* <script id={settingsDataId} type="application/json" set:html={JSON.stringify(userSettings)} /> */}
   </div>
 </Layout> 
