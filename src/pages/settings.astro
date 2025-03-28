@@ -1,59 +1,50 @@
 ---
-import DashboardLayout from "../layouts/Dashboard.astro";
-import { SettingsTabs } from "../components/settings/SettingsTabs";
-import DashboardNav from "../components/dashboard/DashboardNav.astro";
-// import { isPublicRoute } from "../middleware/auth";
-// import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import type { User } from '@supabase/supabase-js'; // Import User type
+import Layout from '@/layouts/Dashboard.astro';
+import { SettingsTabs } from '@/components/settings/SettingsTabs';
 
-// Check authentication
-export const prerender = false;
+let userSettings: any = null; // Initialize as null
+let fetchError: string | null = null;
+const settingsDataId = "initial-settings-data"; 
 
-// Remove Supabase client creation
-/*
-const supabase = createServerClient(...);
-*/
+// Pass Astro.request to include headers/cookies in the fetch call
+try {
+  console.log("[Settings Page] Fetching settings from /api/settings/all");
+  const response = await fetch(`${Astro.url.origin}/api/settings/all`, {
+    // Forward headers from the original request to the internal API call
+    headers: Astro.request.headers, 
+  });
 
-// Remove direct auth check (getUser / getSession)
-/*
-console.log("[Settings] Starting auth check with getUser()");
-const { data: { user }, error } = await supabase.auth.getUser();
+  if (!response.ok) {
+    let errorBody = 'Unknown error';
+    try {
+      const errorJson = await response.json();
+      errorBody = errorJson.error || JSON.stringify(errorJson);
+    } catch { /* Ignore */ }
+    console.error(`[Settings Page] API fetch failed with status ${response.status}: ${errorBody}`);
+    throw new Error(`Failed to fetch settings. Status: ${response.status}. Error: ${errorBody}`);
+  }
 
-let email: string | undefined;
+  userSettings = await response.json();
+  console.log("[Settings Page] Successfully fetched settings from API:", userSettings);
 
-if (error) {
-  console.error("[Settings] Error during getUser():", error.message);
-  return Astro.redirect("/signin");
+} catch (error: any) {
+  console.error('[Settings Page] Error fetching settings from API:', error);
+  fetchError = error.message || 'Failed to load settings.';
+  userSettings = null; // Ensure it's null on error
 }
-
-if (!user) {
-  console.log("[Settings] No authenticated user found via getUser(), redirecting to signin");
-  return Astro.redirect('/signin');
-}
-*/
-
-// Trust middleware: Get user from locals
-// @ts-ignore - Astro/TS struggles with App.Locals inference here
-const user = Astro.locals.user as User | null;
-
-// Fallback check (should not be hit if middleware is correct)
-if (!user) {
-  console.error("[Settings] User not found in locals. Middleware might have failed. Redirecting...");
-  return Astro.redirect("/signin");
-}
-
-// If getUser() succeeds, the user is authenticated
-const email = user.email; // Get email from the validated user object
-console.log("[Settings] Rendering page for user (from locals):", email);
-
-// Get the active tab from URL hash or default to 'profile'
-const hash = Astro.url.hash.slice(1) || 'profile';
 ---
 
-<DashboardLayout title="Settings - Saturdays.io" email={email} user={user}>
-  <DashboardNav />
-  <div class="container p-4">
-    <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
-    <SettingsTabs client:load defaultTab={hash} />
+<Layout title="User Settings">
+
+  <div class="container mx-auto px-4 py-10">
+    <h1 class="text-3xl font-bold mb-6">Settings</h1>
+    {fetchError && (
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">Error:</strong>
+        <span class="block sm:inline"> {fetchError} Please try refreshing the page.</span>
+      </div>
+    )}
+    <SettingsTabs client:load settingsDataId={settingsDataId} />
+    <script id={settingsDataId} type="application/json" set:html={JSON.stringify(userSettings)} />
   </div>
-</DashboardLayout>
+</Layout> 
