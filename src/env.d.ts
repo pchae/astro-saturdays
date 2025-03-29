@@ -24,6 +24,8 @@ interface Metrics {
 
 declare namespace App {
   interface Locals {
+    // Add the Supabase client instance type
+    supabase: SupabaseClient<Database> | null; 
     // Use official Supabase types
     session: import('@supabase/supabase-js').Session | null;
     user: import('@supabase/supabase-js').User | null;
