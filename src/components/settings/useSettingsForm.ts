@@ -1,13 +1,12 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useUser } from '@/lib/hooks/useUser';
+import { useState } from 'react';
 import type { AllSettingsData } from '@/lib/api-client/settings';
 import type { SettingsFormData } from '@/types/settings';
 import type { ProfileSettingsSchema } from '@/lib/database/schemas/settings/profile';
 import { profileSettingsSchema } from '@/lib/database/schemas/settings/profile';
-import type { SecuritySettingsSchema } from '@/lib/database/schemas/settings/security';
-import { securitySettingsSchema } from '@/lib/database/schemas/settings/security';
+import type { SecuritySettingsSchema, PasswordSchema } from '@/lib/database/schemas/settings/security';
+import { securitySettingsSchema, passwordSchema } from '@/lib/database/schemas/settings/security';
 import type { NotificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
 import { notificationSettingsSchema } from '@/lib/database/schemas/settings/notifications';
 import { settingsApi } from '@/lib/api-client/settings';
@@ -29,7 +28,6 @@ export function useSettingsSectionForm<T extends z.ZodType>({
   initialData,
 }: UseSettingsSectionFormArgs<T>) {
   const form = useForm<z.infer<T>>({
-    resolver: zodResolver(schema),
     defaultValues: {
       ...defaultValues,
       ...initialData,
@@ -91,7 +89,7 @@ const defaultProfileData: ProfileSettingsSchema = {
   // }
 };
 
-const defaultSecurityData: SecuritySettingsSchema = {
+const defaultSecurityData: DeepPartial<SecuritySettingsSchema> = {
   password: {
     currentPassword: '',
     newPassword: '',
@@ -99,18 +97,19 @@ const defaultSecurityData: SecuritySettingsSchema = {
   },
   twoFactor: {
     enabled: false,
-    method: 'email',
-    recoveryEmail: ''
+    // method: 'email', // Default might come from schema
+    // recoveryEmail: '' // Default might come from schema
   },
-  securityQuestions: {
-    questions: []
-  },
-  sessionManagement: {
-    rememberMe: true,
-    sessionTimeout: 30,
-    maxSessions: 1,
-    allowMultipleSessions: false
-  }
+  // securityQuestions and sessionManagement might be handled separately or removed if not used
+  // securityQuestions: {
+  //   questions: []
+  // },
+  // sessionManagement: {
+  //   rememberMe: true,
+  //   sessionTimeout: 30,
+  //   maxSessions: 1,
+  //   allowMultipleSessions: false
+  // }
 };
 
 const defaultNotificationData: NotificationSettingsSchema = {
@@ -177,14 +176,121 @@ export function useProfileForm(initialData?: Partial<ProfileSettingsSchema>) {
   });
 }
 
-// Security Form Hook
+// Security Form Hook (Refactored)
 export function useSecurityForm(initialData?: Partial<SecuritySettingsSchema>) {
-  return useSettingsSectionForm({
-    schema: securitySettingsSchema.row,
-    defaultValues: defaultSecurityData,
-    updateFunction: settingsApi.updateSecurity,
-    initialData: initialData as DeepPartial<SecuritySettingsSchema>,
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const form = useForm<SecuritySettingsSchema>({
+    defaultValues: {
+      ...defaultSecurityData,
+      ...initialData,
+      password: {
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+        ...(initialData?.password),
+      },
+      twoFactor: {
+        enabled: initialData?.twoFactor?.enabled ?? false,
+        method: initialData?.twoFactor?.method ?? 'email',
+        phone: initialData?.twoFactor?.phone ?? '',
+        recoveryEmail: initialData?.twoFactor?.recoveryEmail ?? '',
+        backupCodes: initialData?.twoFactor?.backupCodes ?? [],
+      },
+      securityQuestions: {
+        questions: initialData?.securityQuestions?.questions ?? [],
+      },
+      sessionManagement: {
+        rememberMe: initialData?.sessionManagement?.rememberMe ?? true,
+        sessionTimeout: initialData?.sessionManagement?.sessionTimeout ?? 30,
+        maxSessions: initialData?.sessionManagement?.maxSessions ?? 1,
+        allowMultipleSessions: initialData?.sessionManagement?.allowMultipleSessions ?? false,
+      }
+    } as SecuritySettingsSchema,
+    mode: 'onChange',
   });
+
+  const handleSecuritySubmit = async (formData: SecuritySettingsSchema) => {
+    console.log("[useSecurityForm] handleSecuritySubmit entered.");
+
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    let updateOccurred = false;
+
+    console.log("Security form submitted. Dirty fields:", form.formState.dirtyFields);
+    console.log("Submitted Data:", formData);
+
+    if (form.formState.dirtyFields.password?.currentPassword || 
+        form.formState.dirtyFields.password?.newPassword || 
+        form.formState.dirtyFields.password?.confirmPassword) 
+    {
+        updateOccurred = true;
+        console.log("Password fields dirty, attempting validation and update...");
+        
+        const passwordValidation = passwordSchema.safeParse(formData.password);
+
+        if (!passwordValidation.success) {
+            console.error("Manual password validation failed:", passwordValidation.error.flatten());
+            const fieldErrors = passwordValidation.error.flatten().fieldErrors;
+            Object.entries(fieldErrors).forEach(([field, messages]) => {
+                if (messages && messages.length > 0) {
+                    form.setError(`password.${field as keyof PasswordSchema}`, {
+                        type: 'manual',
+                        message: messages[0],
+                    });
+                }
+            });
+            const generalErrorMsg = Object.values(fieldErrors).flat().join(" ");
+            setError(generalErrorMsg || "Password validation failed.");
+            setIsLoading(false);
+            return;
+        }
+
+        const validatedPasswordData = passwordValidation.data;
+        
+        console.log("[useSecurityForm] Logging settingsApi object:");
+
+        const result = await settingsApi.updatePassword(validatedPasswordData);
+        console.log("Password update result:", result);
+
+        if (!result.success) {
+            console.error("Password update failed:", result.error);
+            setError(result.error || 'Failed to update password.');
+        } else {
+            console.log("Password update successful.");
+            setSuccessMessage("Password updated successfully.");
+            form.resetField("password.currentPassword");
+            form.resetField("password.newPassword");
+            form.resetField("password.confirmPassword");
+            form.reset({}, { keepValues: true, keepDirty: false, keepDefaultValues: false, keepErrors: false, keepTouched: false, keepIsSubmitSuccessful: true });
+        }
+    } else {
+        console.log("Password fields not dirty, skipping update.");
+    }
+
+    if (form.formState.dirtyFields.twoFactor?.enabled) {
+        updateOccurred = true;
+        console.log("2FA enabled status changed, but API integration is pending.");
+        setError("2FA changes cannot be saved yet.");
+    }
+    
+    if (!updateOccurred) {
+        setSuccessMessage("No changes detected.");
+    }
+
+    setIsLoading(false);
+  };
+
+  return {
+    form,
+    onSubmit: form.handleSubmit(handleSecuritySubmit),
+    isLoading,
+    error,
+    successMessage,
+  };
 }
 
 // Notification Form Hook
@@ -199,19 +305,22 @@ export function useNotificationForm(initialData?: Partial<NotificationSettingsSc
 
 // Hook to fetch all settings
 export function useSettings() {
-  const { user } = useUser();
-
   const fetchSettings = async (): Promise<AllSettingsData | undefined> => {
-    console.log('useSettings: Calling settingsApi.fetchAll...');
-    const result = await settingsApi.fetchAll();
+    console.log('useSettings: Fetching settings...');
+    const profileResult = await settingsApi.fetchProfile();
 
-    if (!result.success) {
-      console.error("useSettings: Failed to fetch settings:", result.error);
-      throw result.error || new Error("Failed to fetch settings");
+    if (!profileResult.success) {
+      console.error("useSettings: Failed to fetch one or more settings sections:", profileResult.error);
+      throw profileResult.error || new Error("Failed to fetch settings");
     }
 
     console.log('useSettings: Successfully fetched settings data.');
-    return result.data;
+    const allData: AllSettingsData = {
+        profile: profileResult.data ?? null,
+        security: null,
+        notifications: null
+    }
+    return allData;
   };
 
   return {
