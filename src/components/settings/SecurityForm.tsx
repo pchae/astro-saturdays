@@ -23,7 +23,7 @@ export function SecurityForm({ initialData }: SecurityFormProps) {
       <form onSubmit={onSubmit} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Security Settings</CardTitle>
+            <CardTitle>Account Settings</CardTitle>
             <CardDescription>
               Manage your account security and authentication preferences
             </CardDescription>
