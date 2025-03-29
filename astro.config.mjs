@@ -5,6 +5,11 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 // Import /serverless for a Serverless SSR site
 import vercelServerless from '@astrojs/vercel/serverless';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,9 +22,13 @@ export default defineConfig({
   ],
   vite: {
     plugins: [
-      react(),
       tailwindcss()
     ],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      }
+    },
     define: {
       // Expose env variables to client-side code
       'import.meta.env.PUBLIC_SUPABASE_URL': 
