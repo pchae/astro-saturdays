@@ -11,6 +11,18 @@ interface Props {
 }
 
 const { title, description, image, email, user } = Astro.props;
+
+// Split full name into first and last names
+const fullName = user?.user_metadata?.full_name || '';
+const nameParts = fullName.split(' ');
+const firstName = nameParts[0] || undefined; // Use undefined if name is empty
+const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined; // Handle multiple parts or missing last name
+
+const userPropForSidebar = {
+  firstName: firstName,
+  lastName: lastName,
+  email: email
+};
 ---
 
 <!doctype html>
@@ -29,10 +41,7 @@ const { title, description, image, email, user } = Astro.props;
       {/* Fixed sidebar */}
       <Sidebar
         client:load
-        user={{
-          name: user?.user_metadata?.full_name,
-          email: email
-        }}
+        user={userPropForSidebar}
         className="fixed inset-y-0 left-0 z-20 w-64 bg-black"
       />
       
