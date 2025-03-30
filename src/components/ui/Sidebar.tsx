@@ -12,7 +12,8 @@ import {
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   user?: {
-    name?: string;
+    firstName?: string;
+    lastName?: string;
     email?: string;
   };
 }
@@ -42,11 +43,11 @@ export function Sidebar({ className, user, ...props }: SidebarProps) {
 
 
   return (
-    <div className={cn("flex h-screen flex-col border-r border-blue-500 bg-background", className)} {...props}>
+    <div className={cn("flex h-screen flex-col border-r border-emerald-800 bg-background", className)} {...props}>
       {/* Logo */}
       <div className="px-6 py-5 border-0 border-red-100">
         <a href="/" className="flex items-center no-underline">
-          <span className="text-xl font-bold text-white">Saturdays.io TECH</span>
+          <span className="text-xl font-bold text-white">Vibranium</span>
         </a>
       </div>
 
@@ -62,7 +63,7 @@ export function Sidebar({ className, user, ...props }: SidebarProps) {
               className={cn(
                 "flex items-center px-2 py-2 text-sm font-medium rounded-md text-white",
                 isCurrent
-                  ? "bg-blue-500/50 text-white"
+                  ? "bg-emerald-900 text-white"
                   : "text-gray-400 hover:bg-primary/5"
               )}
             >
@@ -74,13 +75,13 @@ export function Sidebar({ className, user, ...props }: SidebarProps) {
       </nav>
 
       {/* User Profile Section */}
-      <div className="px-6 py-4 border-t border-blue-500">
+      <div className="px-6 py-4 border-t border-emerald-800">
         <div className="flex items-center">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 rounded-full bg-white" />
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium text-white">{user?.name || 'User Name'}</p>
+            <p className="text-sm font-medium text-white">{user?.firstName && user?.lastName ? `${user.firstName} ${user.lastName}` : 'User Name'}</p>
             <p className="text-xs text-muted-foreground">{user?.email || 'user@example.com'}</p>
           </div>
         </div>
