@@ -33,6 +33,14 @@ const { data: { session } } = await supabase.auth.getSession();
 //   return redirect("/dashboard");
 // }
 
+// comment out the following:
+//<p class="mt-8 text-center text-base leading-normal text-gray-700 pb-4">
+//  Don't have an account?{' '}
+//  <a href="/register" class="font-semibold text-blue-600 hover:text-blue-500">
+//    Sign up
+//  </a>
+// </p>
+
 console.log("[Signin Page] Rendering sign-in form.");
 ---
 
@@ -104,13 +112,6 @@ console.log("[Signin Page] Rendering sign-in form.");
                 </form>
 
                 <div id="signin-message-area" class="mt-4 text-center text-sm"></div>
-    
-                <p class="mt-8 text-center text-base leading-normal text-gray-700 pb-4">
-                    Don't have an account?{' '}
-                    <a href="/register" class="font-semibold text-blue-600 hover:text-blue-500">
-                    Sign up
-                    </a>
-                </p>
             </div>
         </div>
     </main>
