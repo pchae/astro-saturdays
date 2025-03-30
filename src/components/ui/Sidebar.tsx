@@ -45,7 +45,7 @@ export function Sidebar({ className, user, ...props }: SidebarProps) {
     <div className={cn("flex h-screen flex-col border-r border-blue-500 bg-background", className)} {...props}>
       {/* Logo */}
       <div className="px-6 py-5 border-0 border-red-100">
-        <a href="/about" className="flex items-center no-underline">
+        <a href="/" className="flex items-center no-underline">
           <span className="text-xl font-bold text-white">Saturdays.io TECH</span>
         </a>
       </div>
