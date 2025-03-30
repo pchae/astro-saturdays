@@ -6,39 +6,7 @@ import Layout from '@/layouts/Dashboard.astro';
 import DashboardNav from '@/components/dashboard/DashboardNav.astro';
 import { SettingsClientWrapper } from '@/components/SettingsClientWrapper'; // Import the wrapper
 
-// Remove unused variables related to script tag embedding
-// let userSettings: any = null; 
-// let fetchError: string | null = null;
-// const settingsDataId = "initial-settings-data"; 
 
-// Keep fetch logic for now? Could be removed if *all* data is client-fetched
-// For now, let's keep it commented out to avoid confusion
-/*
-try {
-  console.log("[Settings Page] Fetching settings from /api/settings/all");
-  const response = await fetch(`${Astro.url.origin}/api/settings/all`, {
-    headers: Astro.request.headers, 
-  });
-
-  if (!response.ok) {
-    let errorBody = 'Unknown error';
-    try {
-      const errorJson = await response.json();
-      errorBody = errorJson.error || JSON.stringify(errorJson);
-    } catch { // Ignore // }
-    console.error(`[Settings Page] API fetch failed with status ${response.status}: ${errorBody}`);
-    throw new Error(`Failed to fetch settings. Status: ${response.status}. Error: ${errorBody}`);
-  }
-
-  // userSettings = await response.json(); // No longer used here
-  // console.log("[Settings Page] Successfully fetched settings from API:", userSettings);
-
-} catch (error: any) {
-  console.error('[Settings Page] Error fetching settings from API:', error);
-  // fetchError = error.message || 'Failed to load settings.'; // No longer used here
-  // userSettings = null;
-}
-*/
 ---
 
 <Layout title="User Settings">
