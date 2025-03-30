@@ -1,6 +1,25 @@
 import { Button } from '@headlessui/react'
+import { CodeBlockDemo } from '@/components/landing/CodeSample'
+import { CodeBlock } from "@/components/ui/code-block"
 
 export default function HeroCode() {
+  const exampleCode = `
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+`;
+
   return (
     <section id="code">
       <div className="relative isolate overflow-hidden bg-linear-to-b from-indigo-100/20 border-y border-blue-200">
@@ -10,10 +29,10 @@ export default function HeroCode() {
               <div className="max-w-lg">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
                   <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-pretty text-gray-900">
-                    Supercharge your web apps
+                    We partner with your developers to build elegant Design Systems
                   </h1>
-                  <p className="mt-6 text-lg/8 text-gray-600">
-                    We create fully accessible, responsive, Design systems and performant apps.
+                  <p className="mt-6 text-xl leading-normal text-gray-600">
+                    We create fully responsive, accessible, Design systems and performant code.
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
                     <Button
@@ -38,40 +57,13 @@ export default function HeroCode() {
                   <div className="mx-auto max-w-2xl md:mx-0 md:max-w-none">
                     <div className="w-screen overflow-hidden rounded-tl-xl bg-gray-900">
                       <div className="flex bg-gray-800/40 ring-1 ring-white/5">
-                        <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
-                          <div className="border-r border-b border-r-white/10 border-b-white/20 bg-white/5 px-4 py-2 text-white">
-                            NotificationSetting.jsx
-                          </div>
-                          <div className="border-r border-gray-600/10 px-4 py-2">App.jsx</div>
-                        </div>
                       </div>
                       <div className="px-6 pt-6 pb-14">
-                        <pre className="text-sm text-gray-300">
-                          <code>{`import { useState } from 'react'
-
-export default function Example() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="p-4 bg-white rounded-lg shadow">
-      <button 
-        onClick={() => setCount(c => c + 1)}
-        className="px-4 py-2 text-white bg-indigo-600 rounded hover:bg-indigo-500"
-      >
-        Count: {count}
-      </button>
-      <div className="mt-4 text-gray-600">
-        <p className="text-sm">Click count: {count}</p>
-        {count > 5 && (
-          <div className="mt-2 p-2 bg-green-100 text-green-800 rounded">
-            High engagement!
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}`}</code>
-                        </pre>
+                        <CodeBlock
+                          language="typescript"
+                          filename="AgentFlow.tsx"
+                          code={exampleCode}
+                        />
                       </div>
                     </div>
                   </div>
