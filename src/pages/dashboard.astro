@@ -2,9 +2,8 @@
 import DashboardLayout from "../layouts/Dashboard.astro";
 import DashboardHeader from "../components/dashboard/DashboardHeader.astro";
 import DashboardNav from "../components/dashboard/DashboardNav.astro";
-import { StatCard } from "../components/ui/stat-card";
-import { FighterSection } from "../components/dashboard/fighter-section";
 import type { User } from '@supabase/supabase-js';
+// import { QueryProvider } from '@/components/QueryProvider';
 
 // Use the auth middleware
 export const prerender = false;
@@ -51,20 +50,15 @@ if (!user) {
 const email = user.email; // Get email from the validated user object
 console.log("[Dashboard] Rendering page for user (from locals):", email);
 
-// Dashboard data
+// REMOVE Dashboard data (mock stats)
+/*
 const stats = [
   { name: 'Number of deploys', value: '9999' },
   { name: 'Average deploy time', value: '32', unit: 'seconds' },
   { name: 'Instances', value: '1' },
   { name: 'Status', value: 'ONLINE' },
 ];
-
-// Mock fighter data to be replaced with actual data
-const ufcFighters = [
-  { id: '1', name: 'Jon Jones', organization: 'UFC', image: '/pfp/2335639.png' },
-  { id: '2', name: 'Alex Pereira', organization: 'UFC', image: '/pfp/4705658.png' },
-  { id: '3', name: 'Alexander Volkanovski', organization: 'UFC', image: '/pfp/3949584.png' },
-];
+*/
 
 ---
 
@@ -75,27 +69,12 @@ const ufcFighters = [
     <DashboardHeader />
 
     <section class="">
-      <!-- Stats -->
-      <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
-        {stats.map(stat => (
-          <StatCard
-            client:load
-            name={stat.name}
-            value={stat.value}
-            unit={stat.unit}
-          />
-        ))}
-      </dl>
-    </section>
-
-    <section class="">
-      <!-- Fighter sections -->
+      <!-- DATA sections -->
       <div class="pt-8">
         <div class="bg-gray-800/30 border border-white/10 rounded-lg p-6 hover:bg-gray-700/30 transition-colors duration-200">
           <h3 class="text-lg font-medium text-white">
-            Placeholder box
+            Placeholder box for Data (Server Rendered?)
           </h3>
-          
         </div>
       </div>
     </section>
@@ -106,9 +85,8 @@ const ufcFighters = [
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
             <div class="bg-gray-800/30 border border-white/10 rounded-lg p-6 hover:bg-gray-700/30 transition-colors duration-200">
               <h3 class="text-lg font-medium text-white">
-                Placeholder box
+                Placeholder box 2 (Server Rendered?)
               </h3>
-              
             </div>
           </div>
         </div>
