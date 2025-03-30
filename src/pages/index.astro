@@ -3,10 +3,13 @@ import Layout from '../layouts/Layout.astro';
 
 import Header from '../components/landing/Header';
 import Hero from '../components/landing/Hero.astro';
+import HeroCode from '../components/landing/HeroCode.tsx';
 import ClientList from '../components/landing/ClientList.astro';
 import Stats from '../components/landing/Stats.astro';
 import Contact from '../components/landing/Contact';
 import Footer from '../components/landing/Footer';
+
+const prerender = false;
 ---
 
 <Layout title="Saturdays.io - Design Studio">
@@ -28,6 +31,8 @@ import Footer from '../components/landing/Footer';
 				</div>
 			</div>
 		</section>
+
+		<HeroCode />
 
 		<ClientList
 			logoSize={48}
