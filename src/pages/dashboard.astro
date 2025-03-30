@@ -59,7 +59,7 @@ const stats = [
   { name: 'Status', value: 'ONLINE' },
 ];
 
-// Mock fighter data
+// Mock fighter data to be replaced with actual data
 const ufcFighters = [
   { id: '1', name: 'Jon Jones', organization: 'UFC', image: '/pfp/2335639.png' },
   { id: '2', name: 'Alex Pereira', organization: 'UFC', image: '/pfp/4705658.png' },
@@ -74,21 +74,46 @@ const ufcFighters = [
   <section class="p-4 gap-y-2 bg-black">
     <DashboardHeader />
 
-    <!-- Stats -->
-    <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
-      {stats.map(stat => (
-        <StatCard
-          client:load
-          name={stat.name}
-          value={stat.value}
-          unit={stat.unit}
-        />
-      ))}
-    </dl>
+    <section class="">
+      <!-- Stats -->
+      <dl class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
+        {stats.map(stat => (
+          <StatCard
+            client:load
+            name={stat.name}
+            value={stat.value}
+            unit={stat.unit}
+          />
+        ))}
+      </dl>
+    </section>
 
-    <!-- Fighter sections -->
-    <div class="pt-8">
-      <FighterSection client:load title="UFC Fighters" fighters={ufcFighters} />
-    </div>
+    <section class="">
+      <!-- Fighter sections -->
+      <div class="pt-8">
+        <div class="bg-gray-800/30 border border-white/10 rounded-lg p-6 hover:bg-gray-700/30 transition-colors duration-200">
+          <h3 class="text-lg font-medium text-white">
+            Placeholder box
+          </h3>
+          
+        </div>
+      </div>
+    </section>
+
+    <section class="">
+      <!-- New sections -->
+        <div class="pt-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mt-2 gap-2">
+            <div class="bg-gray-800/30 border border-white/10 rounded-lg p-6 hover:bg-gray-700/30 transition-colors duration-200">
+              <h3 class="text-lg font-medium text-white">
+                Placeholder box
+              </h3>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </section>
 </DashboardLayout>
