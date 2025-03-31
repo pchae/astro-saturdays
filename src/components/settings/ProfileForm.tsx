@@ -128,7 +128,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
               {/* Removed Website field */}
             </div>
 
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="bg-black text-white hover:bg-indigo-400">
               {isLoading ? 'Saving...' : 'Save changes'}
             </Button>
 
