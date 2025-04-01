@@ -145,3 +145,77 @@ src: url('../fonts/poppins-v20-latin-700.eot?#iefix') format('embedded-opentype'
      font-weight: 700;
      src: url('/fonts/IBMPlexMono-Bold.ttf') format('truetype');
 }
+
+/* === Lora Fonts === */
+
+/* Lora-Regular - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: normal;
+     font-weight: 400;
+     src: url('/fonts/Lora-Regular.ttf') format('truetype');
+}
+
+/* Lora-Italic - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: italic;
+     font-weight: 400;
+     src: url('/fonts/Lora-Italic.ttf') format('truetype');
+}
+
+/* Lora-Medium - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: normal;
+     font-weight: 500;
+     src: url('/fonts/Lora-Medium.ttf') format('truetype');
+}
+
+/* Lora-MediumItalic - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: italic;
+     font-weight: 500;
+     src: url('/fonts/Lora-MediumItalic.ttf') format('truetype');
+}
+
+/* Lora-SemiBold - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: normal;
+     font-weight: 600;
+     src: url('/fonts/Lora-SemiBold.ttf') format('truetype');
+}
+
+/* Lora-SemiBoldItalic - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: italic;
+     font-weight: 600;
+     src: url('/fonts/Lora-SemiBoldItalic.ttf') format('truetype');
+}
+
+/* Lora-Bold - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: normal;
+     font-weight: 700;
+     src: url('/fonts/Lora-Bold.ttf') format('truetype');
+}
+
+/* Lora-BoldItalic - latin */
+@font-face {
+     font-display: swap;
+     font-family: 'Lora';
+     font-style: italic;
+     font-weight: 700;
+     src: url('/fonts/Lora-BoldItalic.ttf') format('truetype');
+}
