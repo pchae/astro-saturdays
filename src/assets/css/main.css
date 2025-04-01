@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import "tw-animate-css";
+@import './font.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -63,8 +64,8 @@
     }
 
     /* Font families */
-    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-serif: 'Merriweather', Georgia, serif;
+    --font-sans: 'Lora', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Lora', Georgia, serif;
     --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
   }
 }
