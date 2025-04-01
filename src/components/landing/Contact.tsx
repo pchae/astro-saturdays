@@ -5,7 +5,7 @@ export default function Contact() {
       <section id="cta">
         <div className="w-full bg-slate-100 border-y border-blue-200">
           <div className="mx-auto max-w-7xl py-24 sm:px-4 bg-gray-50 border-x border-blue-200">
-            <div className="relative isolate overflow-hidden bg-gray-900 px-6 shadow-2xl sm:rounded-lg sm:px-16 lg:flex lg:gap-x-20 lg:px-24">
+            <div className="relative isolate overflow-hidden bg-gray-900 px-6 shadow-2xl gap-x-8 sm:rounded-lg sm:px-12 lg:flex xl:gap-x-16 xl:px-24">
               <svg
                 viewBox="0 0 1024 1024"
                 aria-hidden="true"
@@ -20,11 +20,11 @@ export default function Contact() {
                 </defs>
               </svg>
               <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto py-12 md:py-16 lg:py-32 lg:text-left">
-                <h2 className="text-3xl font-bold tracking-tight leading-tight text-balance text-white sm:text-4xl">
-                  Add a force multiplier to your product design
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight text-balance text-white">
+                  Add a force multiplier to your Product Design
                 </h2>
                 <p className="mt-6 text-lg leading-normal text-pretty text-gray-300">
-                  Scale your capabilities with our Design systems and functional prototypes to achieve product market fit.
+                  Scale your team's capabilities with our Design systems, Training & Integration Workshops for Developers, and tools.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                   <Button
@@ -34,7 +34,7 @@ export default function Contact() {
                     rel="noopener noreferrer"
                     className="rounded-sm bg-white px-4 py-3 text-sm leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
-                    Get in touch
+                    Book a session
                   </Button>
                 </div>
               </div>
