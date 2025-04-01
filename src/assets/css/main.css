@@ -64,9 +64,9 @@
     }
 
     /* Font families */
-    --font-sans: 'Lora', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'JetBrains Mono', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     --font-serif: 'Lora', Georgia, serif;
-    --font-mono: ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
   }
 }
 

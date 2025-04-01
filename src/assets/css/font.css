@@ -110,40 +110,278 @@ src: url('../fonts/poppins-v20-latin-700.eot?#iefix') format('embedded-opentype'
      src: url('/fonts/RedHatMono-Bold.ttf') format('truetype');
 }
 
+/* === JetBrains Mono Fonts (from src/assets/fonts) === */
+
+/* JetBrainsMono-Thin - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100;
+  src: url('../fonts/JetBrainsMono-Thin.ttf') format('truetype');
+}
+
+/* JetBrainsMono-ThinItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 100;
+  src: url('../fonts/JetBrainsMono-ThinItalic.ttf') format('truetype');
+}
+
+/* JetBrainsMono-ExtraLight - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 200;
+  src: url('../fonts/JetBrainsMono-ExtraLight.ttf') format('truetype');
+}
+
+/* JetBrainsMono-ExtraLightItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 200;
+  src: url('../fonts/JetBrainsMono-ExtraLightItalic.ttf') format('truetype');
+}
+
+/* JetBrainsMono-Light - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/JetBrainsMono-Light.ttf') format('truetype');
+}
+
+/* JetBrainsMono-LightItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 300;
+  src: url('../fonts/JetBrainsMono-LightItalic.ttf') format('truetype');
+}
+
 /* JetBrainsMono-Regular - latin */
 @font-face {
-     font-display: swap;
-     font-family: 'JetBrains Mono';
-     font-style: normal;
-     font-weight: 400;
-     src: url('/fonts/JetBrainsMono-Regular.ttf') format('truetype');
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/JetBrainsMono-Regular.ttf') format('truetype');
+}
+
+/* JetBrainsMono-Italic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../fonts/JetBrainsMono-Italic.ttf') format('truetype');
+}
+
+/* JetBrainsMono-Medium - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/JetBrainsMono-Medium.ttf') format('truetype');
+}
+
+/* JetBrainsMono-MediumItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 500;
+  src: url('../fonts/JetBrainsMono-MediumItalic.ttf') format('truetype');
+}
+
+/* JetBrainsMono-SemiBold - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/JetBrainsMono-SemiBold.ttf') format('truetype');
+}
+
+/* JetBrainsMono-SemiBoldItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 600;
+  src: url('../fonts/JetBrainsMono-SemiBoldItalic.ttf') format('truetype');
 }
 
 /* JetBrainsMono-Bold - latin */
 @font-face {
-     font-display: swap;
-     font-family: 'JetBrains Mono';
-     font-style: normal;
-     font-weight: 700;
-     src: url('/fonts/JetBrainsMono-Bold.ttf') format('truetype');
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/JetBrainsMono-Bold.ttf') format('truetype');
+}
+
+/* JetBrainsMono-BoldItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../fonts/JetBrainsMono-BoldItalic.ttf') format('truetype');
+}
+
+/* JetBrainsMono-ExtraBold - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 800;
+  src: url('../fonts/JetBrainsMono-ExtraBold.ttf') format('truetype');
+}
+
+/* JetBrainsMono-ExtraBoldItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 800;
+  src: url('../fonts/JetBrainsMono-ExtraBoldItalic.ttf') format('truetype');
+}
+
+/* === IBM Plex Mono Fonts (from src/assets/fonts) === */
+
+/* IBMPlexMono-Thin - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 100;
+  src: url('../fonts/IBMPlexMono-Thin.ttf') format('truetype');
+}
+
+/* IBMPlexMono-ThinItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 100;
+  src: url('../fonts/IBMPlexMono-ThinItalic.ttf') format('truetype');
+}
+
+/* IBMPlexMono-ExtraLight - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 200;
+  src: url('../fonts/IBMPlexMono-ExtraLight.ttf') format('truetype');
+}
+
+/* IBMPlexMono-ExtraLightItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 200;
+  src: url('../fonts/IBMPlexMono-ExtraLightItalic.ttf') format('truetype');
+}
+
+/* IBMPlexMono-Light - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/IBMPlexMono-Light.ttf') format('truetype');
+}
+
+/* IBMPlexMono-LightItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 300;
+  src: url('../fonts/IBMPlexMono-LightItalic.ttf') format('truetype');
 }
 
 /* IBMPlexMono-Regular - latin */
 @font-face {
-     font-display: swap;
-     font-family: 'IBM Plex Mono';
-     font-style: normal;
-     font-weight: 400;
-     src: url('/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/IBMPlexMono-Regular.ttf') format('truetype');
+}
+
+/* IBMPlexMono-Italic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../fonts/IBMPlexMono-Italic.ttf') format('truetype');
+}
+
+/* IBMPlexMono-Medium - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/IBMPlexMono-Medium.ttf') format('truetype');
+}
+
+/* IBMPlexMono-MediumItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 500;
+  src: url('../fonts/IBMPlexMono-MediumItalic.ttf') format('truetype');
+}
+
+/* IBMPlexMono-SemiBold - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/IBMPlexMono-SemiBold.ttf') format('truetype');
+}
+
+/* IBMPlexMono-SemiBoldItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 600;
+  src: url('../fonts/IBMPlexMono-SemiBoldItalic.ttf') format('truetype');
 }
 
 /* IBMPlexMono-Bold - latin */
 @font-face {
-     font-display: swap;
-     font-family: 'IBM Plex Mono';
-     font-style: normal;
-     font-weight: 700;
-     src: url('/fonts/IBMPlexMono-Bold.ttf') format('truetype');
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/IBMPlexMono-Bold.ttf') format('truetype');
+}
+
+/* IBMPlexMono-BoldItalic - latin */
+@font-face {
+  font-display: swap;
+  font-family: 'IBM Plex Mono';
+  font-style: italic;
+  font-weight: 700;
+  src: url('../fonts/IBMPlexMono-BoldItalic.ttf') format('truetype');
 }
 
 /* === Lora Fonts === */
