@@ -28,11 +28,11 @@ function Counter() {
             <div className="mx-auto max-w-2xl">
               <div className="max-w-lg">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
-                  <h1 className="mt-10 text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-pretty text-gray-900">
-                    We partner with your developers to build elegant Design Systems
+                  <h1 className="mt-10 text-3xl sm:text-4xl font-bold tracking-tight leading-normal text-pretty bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
+                    We craft elegant Design Systems
                   </h1>
-                  <p className="mt-6 text-xl leading-normal text-gray-600">
-                    We create fully responsive, accessible, Design systems and performant code.
+                  <p className="mt-6 text-lg md:text-xl leading-normal text-gray-600">
+                    We create fully responsive, WCAG 2.x accessible Design systems and performant code for companies of all sizes.
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
                     <Button
