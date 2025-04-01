@@ -35,6 +35,13 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
 
+
+    /* Font families */
+    --font-sans: 'Helvetica Neue', 'Helvetica', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Lora', Georgia, serif;
+    --font-mono: 'Verdana', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+
+
     /* Navigation links - no underline and different colors */
     nav a, header a {
       @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
@@ -63,10 +70,6 @@
       @apply inline-block px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 no-underline font-medium;
     }
 
-    /* Font families */
-    --font-sans: 'Ubuntu Mono', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-serif: 'Lora', Georgia, serif;
-    --font-mono: 'Ubuntu Mono', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
   }
 }
 
@@ -138,15 +141,8 @@
   }
 }
 
-@layer theme {
-  :root {
 
-    /* Font families */
-    --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-family-serif: 'Lora', 'Georgia', 'Times New Roman', serif;
-    --font-family-mono: 'Ubuntu Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  }
-}
+
 
 :root {
   --radius: 0.625rem;
@@ -222,12 +218,13 @@
   --breakpoint-xs: 320px;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1440px;
-  --breakpoint-3xl: 1600px;
-  --breakpoint-4xl: 1920px;
-  --breakpoint-5xl: 2560px;
+  --breakpoint-lg: 960px;
+  --breakpoint-xl: 1024px;
+  --breakpoint-2xl: 1280px;
+  --breakpoint-3xl: 1440px;
+  --breakpoint-4xl: 1600px;
+  --breakpoint-5xl: 1920px;
+  --breakpoint-6xl: 2560px;
 
 
   /* Font Sizes */
@@ -257,6 +254,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+
   /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -276,11 +274,15 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -290,6 +292,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
+
 
 @layer base {
   * {
