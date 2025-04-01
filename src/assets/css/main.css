@@ -44,7 +44,7 @@
 
     /* Navigation links - no underline and different colors */
     nav a, header a {
-      @apply text-gray-800 hover:text-blue-600 no-underline active:text-blue-600 target:text-blue-600;
+      @apply text-gray-800 hover:text-blue-600 no-underline active:text-gray-900 target:text-gray-900;
     }
 
     /* Default link styles */
