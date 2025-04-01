@@ -64,9 +64,9 @@
     }
 
     /* Font families */
-    --font-sans: 'JetBrains Mono', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans: 'Ubuntu Mono', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     --font-serif: 'Lora', Georgia, serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
+    --font-mono: 'Ubuntu Mono', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
   }
 }
 
@@ -144,7 +144,7 @@
     /* Font families */
     --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-family-serif: 'Lora', 'Georgia', 'Times New Roman', serif;
-    --font-family-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-family-mono: 'Ubuntu Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   }
 }
 
