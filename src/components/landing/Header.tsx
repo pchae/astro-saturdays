@@ -176,7 +176,7 @@ export default function Header() {
             </button>
           </nav>
           <div className="flex flex-col justify-center h-[calc(100vh-100px)]">
-            <div className="divide-y divide-gray-500/10">
+            <div className="divide-y divide-gray-50/10">
               <div className="flex flex-col space-y-2 gap-y-4 py-6">
               {navigation.map((item) => {
                 const isCurrent = currentPath === item.href ||
@@ -198,7 +198,7 @@ export default function Header() {
                 }) 
               }
               </div>
-              <div className="py-6">
+              <div>
                 <a
                   href="/signin"
                   className="text-3xl font-bold no-underline transition-colors text-gray-900 hover:text-blue-600"
