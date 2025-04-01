@@ -133,7 +133,7 @@ export default function Header() {
                   className={cn(
                     "text-base font-bold transition-colors text-gray-900 hover:text-blue-600",
                     isCurrent
-                      ? "underline underline-offset-4 text-blue-600"
+                      ? "underline underline-offset-4 text-gray-900"
                       : "text-gray-900 hover:text-blue-600"
                   )}
                 >
@@ -145,7 +145,7 @@ export default function Header() {
           <Button
             as="a"
             href="/signin"
-            className="text-sm font-bold no-underline px-4 py-2 rounded-md transition-colors text-white bg-gray-800 hover:bg-blue-600"
+            className="text-sm font-bold no-underline px-4 py-2 rounded-xs transition-colors text-white bg-gray-800 hover:bg-blue-600"
           >
             Client Login
           </Button>
@@ -188,7 +188,7 @@ export default function Header() {
                       className={cn(
                         "text-3xl font-bold transition-colors no-underline text-gray-900 hover:text-blue-600",
                         isCurrent
-                          ? "underline underline-offset-4 text-blue-600"
+                          ? "underline underline-offset-4 text-gray-900"
                           : "text-gray-900 hover:text-blue-600"
                       )}
                     >
