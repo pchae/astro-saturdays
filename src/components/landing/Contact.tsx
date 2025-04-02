@@ -4,7 +4,7 @@ export default function Contact() {
     return (
       <section id="cta">
         <div className="w-full bg-slate-100 border-y border-blue-200">
-          <div className="mx-auto max-w-7xl py-24 sm:px-4 bg-gray-50 border-x border-blue-200">
+          <div className="mx-auto max-w-7xl py-24 sm:px-4 md:px-8 bg-gray-50 border-x border-blue-200">
             <div className="relative isolate overflow-hidden bg-gray-900 px-6 shadow-2xl gap-x-8 sm:rounded-lg sm:px-12 lg:flex xl:gap-x-16 xl:px-24">
               <svg
                 viewBox="0 0 1024 1024"
