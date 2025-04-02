@@ -32,9 +32,9 @@ export default function Contact() {
                     href="mailto:hello@saturdays.io"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-sm bg-white px-4 py-3 text-sm leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="rounded-xs bg-white px-6 py-3 text-base leading-normal font-bold no-underline text-gray-900 shadow-xs hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
-                    Book a session
+                    Book a consultation
                   </Button>
                 </div>
               </div>
