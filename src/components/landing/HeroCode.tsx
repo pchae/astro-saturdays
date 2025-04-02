@@ -26,13 +26,13 @@ function Counter() {
         <div className="mx-auto max-w-7xl pt-10 pb-24 sm:pb-32 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:px-8 lg:py-40 border-x border-blue-200">
           <div className="px-6 lg:px-0 lg:pt-4">
             <div className="mx-auto max-w-2xl">
-              <div className="max-w-lg">
+              <div className="max-w-full">
                 <div className="mt-24 sm:mt-32 lg:mt-16" />
                   <h1 className="mt-10 text-3xl sm:text-4xl font-bold tracking-tight leading-normal text-pretty bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
                     We craft elegant Design Systems
                   </h1>
                   <p className="mt-6 text-lg md:text-xl leading-normal text-gray-600">
-                    We create fully responsive, WCAG 2.x accessible Design systems and performant code for companies of all sizes.
+                    We create fully responsive, WCAG 2.x accessible Design systems that scale for products of all sizes.
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
                     <Button
