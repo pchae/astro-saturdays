@@ -43,14 +43,14 @@ This document outlines the planning schedule for design updates and development 
 - [ ] Implement Design system components and styling into Tailwind config
 - [x] Add an animation library, either Framer Motion or GSAP
 - [ ] Implement MagicUI or another UI effects library
-- [ ] Add Supabase API queries
+- [x] Add Supabase API queries
 - [ ] Add API calls to railway postgres database
-- [ ] Implement proper environment variable management
+- [x] Implement proper environment variable management
 - [ ] Set up monitoring and error tracking
 
 ### Components
 
-- [ ] Refactor Header component for better mobile support
+- [-] Refactor Header component for better mobile support
 - [ ] Create reusable form components with validation
 - [ ] Build modular card components with various style options
 - [ ] Develop toast notification system
