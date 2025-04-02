@@ -24,7 +24,7 @@ export default function Contact() {
                   Add a force multiplier to your Product Design
                 </h2>
                 <p className="mt-6 text-lg leading-normal text-pretty text-gray-300">
-                  Scale your team's capabilities with our Design systems, Training & Integration Workshops for Developers, and tools.
+                  Scale your team's capabilities with our Design systems and Training + Integration workshops for Design & Dev teams.
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
                   <Button
