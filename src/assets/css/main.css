@@ -37,7 +37,7 @@
 
 
     /* Font families */
-    --font-sans: 'Helvetica Neue', 'Helvetica', system-ui, -apple-system, sans-serif;
+    --font-sans: 'JetBrains Mono', 'Helvetica Neue', 'Helvetica', system-ui, -apple-system, sans-serif;
     --font-serif: 'Lora', Georgia, serif;
     --font-mono: 'Verdana', ui-monospace, 'SF Mono', Menlo, Monaco, monospace;
 
