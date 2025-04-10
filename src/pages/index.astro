@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 
 import Header from '../components/landing/Header';
-import ThreeDMarqueeDemo from '../components/landing/animHero.tsx';
+// import ThreeDMarqueeDemo from '../components/landing/animHero.tsx';
 import Hero from '../components/landing/Hero.astro';
 import HeroCode from '../components/landing/HeroCode.tsx';
 import ClientList from '../components/landing/ClientList.astro';
@@ -16,8 +16,6 @@ const prerender = true;
 <Layout title="Saturdays.io - Design Studio">
 
 	<Header client:load />
-
-	<ThreeDMarqueeDemo client:load />
 
 	<main>
 		<Hero
