@@ -105,11 +105,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 left-0 right-0 z-40 bg-white">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-        <a 
-          href="/" 
-          className="text-xl font-bold no-underline -m-1.5 p-1.5"
-        >
-          Saturdays.io
+        <a href="/" className="text-xl font-bold no-underline -m-1.5 p-1.5">
+          Saturdays
         </a>
         <div className="flex lg:hidden">
           <button
@@ -163,7 +160,7 @@ export default function Header() {
         >
           <nav className="flex items-center justify-between">
             <a href="/" className="no-underline-m-1.5 p-1.5">
-              <span className="text-xl font-bold">Saturdays.io</span>
+              <span className="text-xl font-bold">Saturdays</span>
             </a>
             <button
               type="button"
