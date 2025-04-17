@@ -8,6 +8,14 @@ import type { AuthConfig, AuthContext, AuthState, RoutePermission, AuthSession }
 import { AuthErrors, SessionError, UnauthorizedError } from '@/lib/errors/auth';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
+// TODO - APRIL 16 2025:
+// - Remove old, unused imports
+// - Remove commented out code
+// - Fix the redundant logic for PUBLIC AND PROTECTED ROUTES BELOW
+// - Create parity with the folio project's middleware
+
+
+
 // Default configuration
 const DEFAULT_CONFIG: AuthConfig = {
   publicRoutes: [
